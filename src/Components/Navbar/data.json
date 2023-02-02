@@ -1,0 +1,54 @@
+[
+    {
+        "title": "Home",
+        "icon": "bi-question-circle-fill",
+        "path": "/"
+    },
+    {
+        "title": "Oprations",
+        "icon": "bi-gear-fill",
+        "childrens": [
+            {
+                "title": "Create School",
+                "icon": "bi-house-fill",
+                "path": "/create-school"
+            },
+            {
+                "title": "Create User",
+                "icon": "bi-info-circle-fill",
+                "path": "/about"
+            }
+        ]
+    },
+    {
+        "title": "Roles",
+        "icon": "bi bi-diagram-3",
+        "childrens": [
+            {
+                "title": "List",
+                "path": "/list",
+                "icon": "bi bi-card-list"
+            },
+            {
+                "title": "Add",
+                "path": "/add",
+                "icon":"bi bi-person-add"
+            }
+        ]
+    },
+    {
+        "title": "Support",
+        "icon": "bi-question-circle-fill",
+        "path": "/support"
+    },
+    {
+        "title": "Report Bug",
+        "icon": "bi-bug",
+        "path": "/report-bug"
+    },
+    {
+        "title": "Logout",
+        "icon": "bi bi-box-arrow-left",
+        "path": "/logout"
+    }
+]
