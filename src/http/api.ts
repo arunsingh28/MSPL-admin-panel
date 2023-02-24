@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-
 let token = localStorage.getItem('token')
 
 const publicApi = axios.create({
@@ -13,7 +12,7 @@ const publicApi = axios.create({
 })
 
 const privateApi = axios.create({
-    baseURL: 'http://localhost:4000/v2/api',
+    baseURL: 'http://localhost:4000/v1/api',
     headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
@@ -22,7 +21,26 @@ const privateApi = axios.create({
     withCredentials: true
 })
 
+const lmsApi = axios.create({
+    baseURL: 'http://localhost:8000/v2/api/LMS',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    timeout: 10000,
+    withCredentials: true
+})
 
+const fileApi = axios.create({
+    baseURL: 'http://localhost:4000/v1/api',
+    headers: {
+        'Content-type': 'multipart/form-data',
+        'Authorization': 'Bearer ' + token
+    },
+    timeout: 10000,
+    withCredentials: true
+})
+
+// interface for school
 export interface Ischool {
     schoolName: string
     contestPerson:{
@@ -46,6 +64,10 @@ export interface Ischool {
     _id: string
 }
 
+// verify token
+export const verifyToken = async (token: string) => await privateApi.get(`/verify-token/${token}`)
+// create a new user
+export const empCreate = async (data: any) => await privateApi.post('/register', JSON.stringify(data))
 // login api
 export const login = async (data: any) => await publicApi.post('/login', JSON.stringify(data))
 // to create a new school
@@ -60,3 +82,19 @@ export const schoolDelete = async (id: string) => await privateApi.delete(`/dele
 export const schoolGetById = async (id: string) => await privateApi.get(`/get-school/${id}`)
 // search school by name and city
 export const schoolSearch = async (data: any) => await privateApi.post('/search-school', JSON.stringify(data))
+// create emp wiht file
+export const empWithFile = async (data: any) => await fileApi.post('/create-emp-from-file', data)
+// create school with file
+export const schoolWithFile = async (data: any) => await fileApi.post('/create-school-from-file', data)
+
+
+// setting > sound
+export const sound = async (data: any,_id:string) => await privateApi.post(`/sound-change/${_id}`, JSON.stringify(data))
+export const getSoundInfo = async (_id:string) => await privateApi.get(`/sound-change/grab/${_id}`)
+
+// setting > change password
+export const changePassword = async(data:any,_id:string) => await privateApi.post(`/change-password/${_id}`, JSON.stringify(data))
+
+
+// LMS
+export const initLMS = async(data:any) => await lmsApi.post('/init-lms', JSON.stringify(data))

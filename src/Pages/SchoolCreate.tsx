@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import Notification from '../Components/Notification';
 import TextField from '@mui/material/TextField';
 import { AxiosError } from 'axios'
+import FileUploader from '../Components/FileUploader';
 
 interface SchoolCreateProps {
     schoolName: string
@@ -192,6 +193,14 @@ const SchoolCreate = ({ title, content }: ParentCompProps) => {
         <div className='contianer w-full px-4'>
             <Notification setting={notification} />
             <h1 className='text-2xl text-gray-800 font-semibold pb-2'>Create New School</h1>
+            <FileUploader type={"school"}/>
+            <div className='flex justify-center'>
+                <div className="mt-6 grid grid-cols-3 w-1/3 justify-center items-center text-gray-400">
+                    <hr className='border-gray-400' />
+                    <p className='text-center text-sm'>OR</p>
+                    <hr className='border-gray-400' />
+                </div>
+            </div>
             <div className='border my-8 w-full mr-5 px-4 py-7 shadow-lg'>
                 <form className='' onSubmit={handleCreateSchool}>
                     <div className='flex flex-col gap-2'>

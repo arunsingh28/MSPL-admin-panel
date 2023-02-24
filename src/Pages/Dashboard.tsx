@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {schoolCount} from '../http/api'
 import Skeleton from '@mui/material/Skeleton';
 
@@ -13,6 +13,10 @@ const Dashboard = ({title,content}:ParentCompProps) => {
     document.querySelector('meta[name="description"]')?.setAttribute('content',content)
   },[content, title])
 
+  React.useEffect(()=>{
+
+  },[])
+
   const [schoolcount,setSchoolCount] = React.useState(0)
   const [isLoading,setIsLoading] = React.useState(true)
 
@@ -23,18 +27,21 @@ const Dashboard = ({title,content}:ParentCompProps) => {
       setSchoolCount(res.data.schoolCount)
     })
   },[])
+
+  
   return (
     <>
-
-    <div className='flex justify-between'>
-      {/* For variant="text", adjust the height via font-size */}
-      {/* <Skeleton variant="circular" width={40} height={40} /> */}
-      {/* <Skeleton variant="rectangular" width={210} height={60} /> */}
+      <h1 className='text-xl font-semibold text-gray-700'>All Stats</h1>
+    <div className='flex justify-between mt-5'>
       {
         isLoading ? <Skeleton variant="text" width={310} height={180} /> : <Card count={schoolcount}/>
       }
-      {/* <Skeleton variant="rounded" width={310} height={180}  /> */}
-      {/* <Skeleton variant="rounded" width={310} height={180}  /> */}
+       {
+        isLoading ? <Skeleton variant="text" width={310} height={180} /> : <Card count={schoolcount}/>
+      }
+       {
+        isLoading ? <Skeleton variant="text" width={310} height={180} /> : <Card count={schoolcount}/>
+      }
     </div>
     </>
   )
@@ -45,9 +52,10 @@ export default Dashboard
 
 const Card = ({count}:any) =>{
   return(
-    <div className='flex flex-col justify-center items-center'>
+    <div className='flex flex-col justify-center items-center bg-blue-100 px-32 py-5 rounded-md'>
       <div className='text-4xl font-bold text-gray-700'>{count}</div>
       <div className='text-xl font-bold text-gray-700'>Schools</div>
     </div>
   )
 }
+

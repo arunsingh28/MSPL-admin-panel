@@ -8,9 +8,13 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import BadgeIcon from '@mui/icons-material/Badge';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
+// import TablePagination from '@mui/material/TablePagination';
 
 const SchoolView = ({ title, content }: ParentCompProps) => {
+    const [error,setError] = React.useState<boolean>(false)
+
     React.useEffect(() => {
+        setError(false)
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
     }, [content, title])
@@ -28,6 +32,7 @@ const SchoolView = ({ title, content }: ParentCompProps) => {
                 setSchool(response.data.school)
                 setLoading(false)
             } catch (error) {
+                setError(true)
                 console.log('ERROR', error)
                 setLoading(false)
             }
@@ -39,7 +44,7 @@ const SchoolView = ({ title, content }: ParentCompProps) => {
     return (
         <div>
             {
-                loading ? <LinearProgress /> : (
+                loading ? error ? <LinearProgress /> : 'no data found': (
                     <>
                         <h1 className='text-3xl font-semibold text-gray-700 '>{school?.schoolName}</h1>
                         <div className='mt-5 shadow-lg px-5 py-5'>

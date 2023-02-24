@@ -7,6 +7,7 @@ import { schoolGetAll,schoolSearch } from '../http/api'
 import EditSchoolTable from '../Components/EditSchoolTable'
 import LinearProgress from '@mui/material/LinearProgress';
 import NoData from '../Assets/icons/no-data.png'
+
 const SchoolEdit = ({ content, title }: ParentCompProps) => {
 
     React.useEffect(() => {

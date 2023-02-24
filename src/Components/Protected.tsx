@@ -1,17 +1,19 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation, } from "react-router-dom";
 import React from "react";
-import { authContext } from '../Pages/Login'
+import { useSelector } from 'react-redux'
 
-const Protected = ({ children }: any) => {
-    const { isLoggedIn } = React.useContext(authContext);
 
-    React.useEffect(()=>{
-        console.log('auth State',isLoggedIn)
-    },[isLoggedIn])
+const Protected = ({ allowdRole }: any) => {
+    const location = useLocation();
 
-    if (!isLoggedIn) {
-        return <Navigate to="/login" replace />;
-    }
-    return children;
+    // fething the state from redux store
+    const auth = useSelector((state: any) => state.auth)
+
+    React.useEffect(() => {
+    }, [auth.isAuthenticated])
+
+    return auth.user?.role?.find((role: any) => allowdRole?.includes(role))
+        ? <Outlet />  : <Navigate to="/not-allowed" state={{ from: location }} replace />
+
 };
 export default Protected;

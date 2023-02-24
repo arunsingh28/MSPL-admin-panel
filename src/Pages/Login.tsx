@@ -1,21 +1,18 @@
 import React from 'react'
 import { ParentCompProps } from './Dashboard'
 import { Button } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import {login} from '../http/api'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { login } from '../http/api'
 import LinearProgress from '@mui/material/LinearProgress';
 import loginSound from '../Assets/sounds/login.mp3'
 import useSound from 'use-sound'
+import { useDispatch } from 'react-redux'
+import { auth } from '../store/slices/authSlice'
 
-export const authContext = React.createContext({
-  isLoggedIn: false,
-});
 
 const Login = ({ title, content }: ParentCompProps) => {
 
   const [play] = useSound(loginSound)
-
-  const isAuth = React.useContext(authContext);
 
   React.useEffect(() => {
     document.title = title
@@ -23,31 +20,50 @@ const Login = ({ title, content }: ParentCompProps) => {
   }, [content, title])
 
   const navigate = useNavigate();
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
 
-  const [error,setError] = React.useState('')
-  const [loading,setLoading] = React.useState(false)
+
+  const [error, setError] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
 
   const [cred, setCred] = React.useState({
     email: '',
     password: ''
   })
 
+  const dispatch = useDispatch()
+
   const handleLogin = async (e: any) => {
     e.preventDefault();
     setLoading(true)
-    const {data} = await login(cred);
-    if(data.success){
-      isAuth.isLoggedIn = true;
-      setLoading(false)
-      play()
-      localStorage.setItem('token', data.accessToken)
-      return navigate('/')
-    }else{
-      isAuth.isLoggedIn = false;
-      setError('Invalid Credentials')
+    login(cred).then((data:any) => {
+      console.log('data',data)
+      if (data.data.success) {
+        // dispatch Auth ----------------------
+        dispatch(auth({
+          user: data.data.user,
+          token: data.data.accessToken,
+          isAuthenticated: true,
+        }))
+        setLoading(false)
+        // play sound if user set to true
+        if(data.data.user.isMute.loginNotification){
+          play()
+        }
+        localStorage.setItem('token', data.data.accessToken)
+        return navigate(from, { replace: true })
+      } else {
+        setError('Invalid Credentials')
+        setLoading(false)
+        return navigate('/login')
+      }
+    }).catch((err:any) => {
+      console.log(err)
+      setError(err.message)
       setLoading(false)
       return navigate('/login')
-    }
+    })
   }
 
   return (
@@ -73,9 +89,9 @@ const Login = ({ title, content }: ParentCompProps) => {
                   type="password" name="password" id="password" placeholder="Password" />
               </div>
               {
-                loading && loading ? <LinearProgress /> :  <Button color='primary' variant='contained' sx={{background: '#1b356b',paddingX: 6, paddingY: 2, width: '100%' }} onClick={handleLogin}>Login</Button>
+                loading && loading ? <LinearProgress /> : <Button color='primary' variant='contained' sx={{ background: '#1b356b', paddingX: 6, paddingY: 2, width: '100%' }} onClick={handleLogin}>Login</Button>
               }
-            
+
             </form>
             <a className="text-blue-700 text-center text-sm" href="/login">Forgot password?</a>
           </div>

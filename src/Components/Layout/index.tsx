@@ -10,7 +10,7 @@ const Layout = () => {
     <Box>
      <Grid container component={'div'} sx={{display: {xs: 'none', md: 'flex'}}} >
        <Grid xs={2} md={2}>
-        <Navbar />
+        <Navbar/>
         </Grid>
         <Grid xs={10} md={10}>
         <Outlet />
