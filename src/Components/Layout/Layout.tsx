@@ -46,7 +46,15 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import UploadIcon from '@mui/icons-material/Upload';
 import WallpaperIcon from '@mui/icons-material/Wallpaper';
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
+import SportsMartialArtsIcon from '@mui/icons-material/SportsMartialArts';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+import CategoryIcon from '@mui/icons-material/Category';
 
+
+import { logoutApi } from '../../http/api'
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -135,8 +143,10 @@ export default function MiniDrawer() {
   const [gymMenu, setGymMenu] = React.useState(false);
   const [sportsMenu, setSportsMenu] = React.useState(false);
   const [coreMenu, setCoreMenu] = React.useState(false);
-  const [lms,setLms] = React.useState(false)
+  const [lms, setLms] = React.useState(false)
   const [blogMenu, setBlogMenu] = React.useState(false);
+  const [nutritionMenu, setNutritionMenu] = React.useState(false);
+  const [packageMenu, setPackageMenu] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -147,40 +157,53 @@ export default function MiniDrawer() {
   };
 
   const dispatch = useDispatch()
+
   const navigate = useNavigate();
 
   const [playLogout] = useSound(logoutSound)
 
 
-  const handleLogout = () => {
-    if(isMute){
+  const handleLogout = async () => {
+    if (isMute) {
       playLogout()
     }
-    dispatch(logout())
-    navigate('/login')
+    logoutApi().then((res) => {
+      if (res.data.success) {
+        dispatch(logout())
+        return navigate('/login')
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
   }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+
       <AppBar position="fixed" open={open} sx={{ background: "#1a2f59" }}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h5" noWrap component="div">
-            <img src={Logo} className="w-32 h-16" alt='logo' />
-            {/* <div className='font-semibold'> SportyLife (CRM)</div> */}
-          </Typography>
-        </Toolbar>
+        <div className='flex items-center justify-between'>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: 5,
+                ...(open && { display: 'none' }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h5" noWrap component="div">
+              <img src={Logo} className="w-32 h-16" alt='logo' />
+            </Typography>
+          </Toolbar>
+          {/* profile image and name */}
+          <div className='mr-5 border px-2 py-1 rounded-md'>
+            <p className='text-gray-50'>Hi, {auth?.user?.name || 'ERR'}</p>
+          </div>
+        </div>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
@@ -190,8 +213,8 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-           {/* Home */}
-           {
+          {/* Home */}
+          {
             [99]?.find((role: any) => auth.user?.role?.includes(role))
               ?
               <>
@@ -220,7 +243,250 @@ export default function MiniDrawer() {
                 </Link>
               </> : null
           }
+          {
+            open ? <Divider /> : null
+          }
+          {/* users */}
+          {
+            [99]?.find((role: any) => auth.user?.role?.includes(role))
+              ?
+              <>
+                <Link to="/users">
+                  <ListItem key="users" disablePadding sx={{ display: 'block' }}>
+                    {/* text with button */}
+                    <ListItemButton
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? 'initial' : 'center',
+                        px: 2.5,
+                      }}
+                    >
+                      {/* icons here */}
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : 'auto',
+                          justifyContent: 'center',
+                        }} >
+                        <ManageAccountsIcon sx={{ color: '#1cbf2a' }} />
+                      </ListItemIcon>
+                      <ListItemText primary="Users" sx={{ opacity: open ? 1 : 0 }} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+              </> : null
+          }
+          {
+            open ? <Divider /> : null
+          }
+          {/* nutrition */}
+          {
+            [901]?.find((role: any) => auth.user?.role?.includes(role))
+              ?
+              <>
+                <ListItem key="Nutrition" onClick={() => setNutritionMenu(!nutritionMenu)} disablePadding sx={{ display: 'block' }}>
+                  {/* text with button */}
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    {/* icons here */}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                      }} >
+                      <MenuBookIcon sx={{ color: '#1bc5d1' }} />
+                      {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                    </ListItemIcon>
+                    <ListItemText primary="Nutrition" sx={{ opacity: open ? 1 : 0 }} />
+                    {/* down arrow */}
+                    {
+                      open ? nutritionMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                    }
+                  </ListItemButton>
+                  <Collapse in={nutritionMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
+                    <List component="div" disablePadding>
+                      {
+                        [902]?.find((role: any) => auth.user?.role?.includes(role))
+                          ?
+                          <>
+                            <Link to="create-esdf">
+                              <ListItem key="Create Employe" disablePadding sx={{ display: 'block' }}>
+                                {/* text with button */}
+                                <ListItemButton
+                                  sx={{
+                                    minHeight: 48,
+                                    justifyContent: nutritionMenu ? 'initial' : 'center',
+                                    px: 2.5,
+                                  }}
+                                >
+                                  {/* icons here */}
+                                  <ListItemIcon
+                                    sx={{
+                                      minWidth: 0,
+                                      mr: open ? 3 : 'auto',
+                                      justifyContent: 'center',
+                                    }} >
 
+                                    <GroupAddIcon sx={{ color: '#fff' }} />
+                                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                  </ListItemIcon>
+                                  <ListItemText primary="Create Employee" sx={{ opacity: open ? nutritionMenu ? 1 : 1 : 0, color: '#fff' }} />
+                                </ListItemButton>
+                              </ListItem>
+                            </Link>
+                          </> : null
+                      }
+                      {/* second view */}
+                      {
+                        [903]?.find((role: any) => auth.user?.role?.includes(role))
+                          ?
+                          <>
+                            <Link to="emp-permission">
+                              <ListItem key="Permission" disablePadding sx={{ display: 'block' }}>
+                                {/* text with button */}
+                                <ListItemButton
+                                  sx={{
+                                    minHeight: 48,
+                                    justifyContent: nutritionMenu ? 'initial' : 'center',
+                                    px: 2.5,
+                                  }}
+                                >
+                                  {/* icons here */}
+                                  <ListItemIcon
+                                    sx={{
+                                      minWidth: 0,
+                                      mr: open ? 3 : 'auto',
+                                      justifyContent: 'center',
+                                    }} >
+                                    <EditIcon sx={{ color: '#fff' }} />
+                                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                  </ListItemIcon>
+
+                                  <ListItemText primary="Permission" sx={{ opacity: open ? nutritionMenu ? 1 : 1 : 0, color: '#fff' }} />
+                                </ListItemButton>
+                              </ListItem>
+                            </Link>
+                          </> : null
+                      }
+                    </List>
+                  </Collapse>
+                </ListItem>
+              </>
+              : null
+          }
+          {
+            open ? <Divider /> : null
+          }
+          {/* package */}
+          {
+            [901]?.find((role: any) => auth.user?.role?.includes(role))
+              ?
+              <>
+                <ListItem key="Packges" onClick={() => setPackageMenu(!packageMenu)} disablePadding sx={{ display: 'block' }}>
+                  {/* text with button */}
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
+                    }}
+                  >
+                    {/* icons here */}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                      }} >
+                      <ReceiptIcon sx={{ color: '#ef2926' }} />
+                      {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                    </ListItemIcon>
+                    <ListItemText primary="Packges" sx={{ opacity: open ? 1 : 0 }} />
+                    {/* down arrow */}
+                    {
+                      open ? packageMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                    }
+                  </ListItemButton>
+                  <Collapse in={packageMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
+                    <List component="div" disablePadding>
+                      {
+                        [902]?.find((role: any) => auth.user?.role?.includes(role))
+                          ?
+                          <>
+                            <Link to="new-create-package">
+                              <ListItem key="Create Package" disablePadding sx={{ display: 'block' }}>
+                                {/* text with button */}
+                                <ListItemButton
+                                  sx={{
+                                    minHeight: 48,
+                                    justifyContent: packageMenu ? 'initial' : 'center',
+                                    px: 2.5,
+                                  }}
+                                >
+                                  {/* icons here */}
+                                  <ListItemIcon
+                                    sx={{
+                                      minWidth: 0,
+                                      mr: open ? 3 : 'auto',
+                                      justifyContent: 'center',
+                                    }} >
+
+                                    <BookmarkAddIcon sx={{ color: '#fff' }} />
+                                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                  </ListItemIcon>
+                                  <ListItemText primary="Create Package" sx={{ opacity: open ? packageMenu ? 1 : 1 : 0, color: '#fff' }} />
+                                </ListItemButton>
+                              </ListItem>
+                            </Link>
+                          </> : null
+                      }
+                      {/* second view */}
+                      {
+                        [903]?.find((role: any) => auth.user?.role?.includes(role))
+                          ?
+                          <>
+                            <Link to="new-create-categories">
+                              <ListItem key="Categories" disablePadding sx={{ display: 'block' }}>
+                                {/* text with button */}
+                                <ListItemButton
+                                  sx={{
+                                    minHeight: 48,
+                                    justifyContent: packageMenu ? 'initial' : 'center',
+                                    px: 2.5,
+                                  }}
+                                >
+                                  {/* icons here */}
+                                  <ListItemIcon
+                                    sx={{
+                                      minWidth: 0,
+                                      mr: open ? 3 : 'auto',
+                                      justifyContent: 'center',
+                                    }} >
+                                    <CategoryIcon sx={{ color: '#fff' }} />
+                                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                  </ListItemIcon>
+
+                                  <ListItemText primary="Categories" sx={{ opacity: open ? packageMenu ? 1 : 1 : 0, color: '#fff' }} />
+                                </ListItemButton>
+                              </ListItem>
+                            </Link>
+                          </> : null
+                      }
+                    </List>
+                  </Collapse>
+                </ListItem>
+              </>
+              : null
+          }
+          {
+            open ? <Divider /> : null
+          }
           {/* core opration */}
           {
             [901]?.find((role: any) => auth.user?.role?.includes(role))
@@ -242,7 +508,7 @@ export default function MiniDrawer() {
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                       }} >
-                      <AdminPanelSettingsIcon sx={{color: '#fd8a0f'}}/>
+                      <AdminPanelSettingsIcon sx={{ color: '#fd8a0f' }} />
                       {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                     </ListItemIcon>
                     <ListItemText primary="Core Operation" sx={{ opacity: open ? 1 : 0 }} />
@@ -322,12 +588,15 @@ export default function MiniDrawer() {
               </>
               : null
           }
+          {
+            open ? <Divider /> : null
+          }
           {/* school */}
           {
             [101]?.find((role: any) => auth.user?.role?.includes(role))
               ?
               <>
-                <ListItem key="School Circle" onClick={() => setSchoolMenu(!schoolMenu)} disablePadding sx={{ display: 'block' }}>
+                <ListItem key="School Circle" onClick={() => setSchoolMenu(!schoolMenu)} disablePadding sx={{ display: 'block', borderBottom: '2px' }}>
                   {/* text with button */}
                   <ListItemButton
                     sx={{
@@ -343,7 +612,7 @@ export default function MiniDrawer() {
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                       }} >
-                      <SchoolIcon sx={{ color: '#6cbde0' }}/>
+                      <SchoolIcon sx={{ color: '#6cbde0' }} />
                       {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                     </ListItemIcon>
                     <ListItemText primary="School Circle" sx={{ opacity: open ? 1 : 0 }} />
@@ -423,6 +692,9 @@ export default function MiniDrawer() {
               </>
               : null
           }
+          {
+            open ? <Divider /> : null
+          }
           {/* Linktree */}
           {
             [99]?.find((role: any) => auth.user?.role?.includes(role))
@@ -453,6 +725,9 @@ export default function MiniDrawer() {
                 </Link>
               </> : null
           }
+          {
+            open ? <Divider /> : null
+          }
           {/* fitness FitnessCenterIcon */}
           {
             [102]?.find((role: any) => auth.user?.role?.includes(role))
@@ -474,7 +749,7 @@ export default function MiniDrawer() {
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                       }} >
-                      <FitnessCenterIcon sx={{ color: '#0e76de' }}/>
+                      <FitnessCenterIcon sx={{ color: '#0e76de' }} />
                       {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                     </ListItemIcon>
                     <ListItemText primary="Gym Circle" sx={{ opacity: open ? 1 : 0 }} />
@@ -551,6 +826,9 @@ export default function MiniDrawer() {
                 </ListItem>
               </> : null
           }
+          {
+            open ? <Divider /> : null
+          }
           {/* Academy */}
           {
             [100]?.find((role: any) => auth.user?.role?.includes(role))
@@ -572,7 +850,7 @@ export default function MiniDrawer() {
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                       }} >
-                      <SportsIcon sx={{ color: '#C47AFF' }}/>
+                      <SportsMartialArtsIcon sx={{ color: '#C47AFF' }} />
                       {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                     </ListItemIcon>
                     <ListItemText primary="Academy Circle" sx={{ opacity: open ? 1 : 0 }} />
@@ -595,7 +873,7 @@ export default function MiniDrawer() {
                                     minHeight: 48,
                                     justifyContent: sportsMenu ? 'initial' : 'center',
                                     px: 2.5,
-                                    background: false ? '#1d3d7d': '#5581a8',
+                                    background: false ? '#1d3d7d' : '#5581a8',
                                   }}
                                 >
                                   {/* icons here */}
@@ -646,12 +924,45 @@ export default function MiniDrawer() {
                               </ListItem>
                             </Link>  </> : null
                       }
+                      {/* coache */}
+                      {
+                        [1015]?.find((role: any) => auth.user?.role?.includes(role))
+                          ?
+                          <>
+                            <Link to="/create-coach">
+                              <ListItem key="academy coach" disablePadding sx={{ display: 'block' }}>
+                                {/* text with button */}
+                                <ListItemButton
+                                  sx={{
+                                    minHeight: 48,
+                                    justifyContent: sportsMenu ? 'initial' : 'center',
+                                    px: 2.5,
+                                  }}
+                                >
+                                  {/* icons here */}
+                                  <ListItemIcon
+                                    sx={{
+                                      minWidth: 0,
+                                      mr: open ? 3 : 'auto',
+                                      justifyContent: 'center',
+                                    }} >
+                                    <SportsIcon sx={{ color: '#fff' }} />
+                                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                  </ListItemIcon>
+                                  <ListItemText primary="Create Coach" sx={{ opacity: open ? sportsMenu ? 1 : 1 : 0, color: '#fff' }} />
+                                </ListItemButton>
+                              </ListItem>
+                            </Link>  </> : null
+                      }
                     </List>
 
                   </Collapse>
                 </ListItem>
               </>
               : null
+          }
+          {
+            open ? <Divider /> : null
           }
           {/* LMS */}
           {
@@ -674,7 +985,7 @@ export default function MiniDrawer() {
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                       }} >
-                      <AssignmentTurnedInIcon sx={{ color: '#6D67E4' }}/>
+                      <AssignmentTurnedInIcon sx={{ color: '#6D67E4' }} />
                       {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                     </ListItemIcon>
                     <ListItemText primary="LMS" sx={{ opacity: open ? 1 : 0 }} />
@@ -745,7 +1056,7 @@ export default function MiniDrawer() {
                             </Link>
                           </> : null
                       }
-                       {
+                      {
                         [1023]?.find((role: any) => auth.user?.role?.includes(role))
                           ?
                           <>
@@ -780,6 +1091,9 @@ export default function MiniDrawer() {
                 </ListItem>
               </> : null
           }
+          {
+            open ? <Divider /> : null
+          }
           {/* Blog */}
           {
             [901]?.find((role: any) => auth.user?.role?.includes(role))
@@ -801,7 +1115,7 @@ export default function MiniDrawer() {
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                       }} >
-                      <RssFeedIcon sx={{color: '#eb4646'}}/>
+                      <RssFeedIcon sx={{ color: '#eb4646' }} />
                       {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                     </ListItemIcon>
                     <ListItemText primary="Blog" sx={{ opacity: open ? 1 : 0 }} />
@@ -876,7 +1190,7 @@ export default function MiniDrawer() {
                           </> : null
                       }
                       {/* third view */}
-                       {
+                      {
                         [903]?.find((role: any) => auth.user?.role?.includes(role))
                           ?
                           <>
@@ -983,48 +1297,50 @@ export default function MiniDrawer() {
         <List>
           {/* setting */}
           <Link to="/settings">
-          <ListItem key="Setting" disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
+            <ListItem key="Setting" disablePadding sx={{ display: 'block' }}>
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
                 }}
               >
-                <SettingsIcon color='info'/>
-              </ListItemIcon>
-              <ListItemText primary="Setting" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <SettingsIcon color='info' />
+                </ListItemIcon>
+                <ListItemText primary="Setting" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
           </Link>
           {/* support */}
-          <ListItem key="Support" disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
+          <Link to="/support">
+            <ListItem key="Support" disablePadding sx={{ display: 'block' }}>
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
                 }}
               >
-                <SupportIcon color='error'/>
-              </ListItemIcon>
-              <ListItemText primary="Support" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <SupportIcon color='error' />
+                </ListItemIcon>
+                <ListItemText primary="Support" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          </Link>
           {/* logout ExitToAppIcon */}
           <ListItem key="Logout" disablePadding sx={{ display: 'block' }}>
             <ListItemButton
@@ -1042,7 +1358,7 @@ export default function MiniDrawer() {
                   justifyContent: 'center',
                 }}
               >
-                <ExitToAppIcon color='secondary'/>
+                <ExitToAppIcon color='secondary' />
               </ListItemIcon>
               <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>

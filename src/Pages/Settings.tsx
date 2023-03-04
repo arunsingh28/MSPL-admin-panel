@@ -4,7 +4,6 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import PasswordIcon from '@mui/icons-material/Password';
 
-
 import Sound from '../Components/Settings/Sound';
 import Password from '../Components/Settings/PasswordChange'
 
@@ -23,7 +22,7 @@ const Settings = ({ title, content }: ParentCompProps) => {
 
   return (
     <div>
-      <h1 className='text-2xl text-gray-800 font-semibold pb-2'>Settings</h1>
+      <h1 className='text-2xl text-gray-700 font-semibold pb-2'>Settings</h1>
       <div>
         {/* sound setting */}
         <div>

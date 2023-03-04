@@ -11,7 +11,6 @@ export interface TutorialState {
     nameModule?: boolean
     designModule?: boolean
     chapterNames?: string[]
-
     moduleNames?: string[]
     moduleDescription?: string[]
 }
@@ -77,5 +76,5 @@ const tutorialSlice = createSlice({
         // other function 
     }
 })
-export const { initTutorial, createModulee,nameModule } = tutorialSlice.actions
+export const { initTutorial, createModulee, nameModule } = tutorialSlice.actions
 export default tutorialSlice.reducer

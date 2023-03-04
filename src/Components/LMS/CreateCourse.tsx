@@ -32,7 +32,6 @@ const CreateCourse = () => {
     const handleOpen = () => {
         setLoading(true)
         initLMS(courseData).then((res) => {
-            console.log('res',res)
             if (res.data.success) {
                 setOpen(true)
                 toast.success(res.data.data.message)
@@ -44,8 +43,8 @@ const CreateCourse = () => {
             }
         }).catch((err) => {
             setLoading(false)
+            setOpen(true)
             toast.error('Course exits with same course title or course description')
-            console.log(err)
         })
     };
 
@@ -59,7 +58,7 @@ const CreateCourse = () => {
 
     return (
         <div className='my-10'>
-            <div className='w-full gap-4 shadow-md p-5 rounded-md'>
+            <div className='w-full gap-4 p-5 rounded-md'>
                 <h4 className='mb-5 text-gray-700 font-semibold text-xl'>Course Info</h4>
                 <TextField value={courseData.courseTitle} onChange={(e) => setCourseData({
                     ...courseData,
@@ -102,8 +101,6 @@ export default CreateCourse
 
 const Model = ({ handleClose, courseData }: any) => {
 
-    // courseData.courseId = '60f9b0b0b0b0b0b0b0b0b0b0'
-
     const LinkRef = React.useRef<HTMLAnchorElement>(null)
     const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -129,8 +126,8 @@ const Model = ({ handleClose, courseData }: any) => {
 
 
     return (
-        <div className='h-screen w-screen absolute top-0 left-0 bg-[#9494943a] flex justify-center items-center'>
-            <div className='bg-white py-4 w-[900px] h-[680px] z-20 rounded-md shadow-lg'>
+        <div className='h-screen w-screen absolute top-0 left-0 bg-[#3d3d3d72] flex justify-center items-center' style={{zIndex: '10000'}}>
+            <div className='bg-white py-4 w-[900px] h-[680px] rounded-md shadow-lg'>
                 {/* header */}
                 <div className='flex justify-between items-center px-3 py-2'>
                     <h2 className='text-lg font-semibold text-gray-600'>Add an activity or resource</h2>

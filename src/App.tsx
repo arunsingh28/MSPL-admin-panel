@@ -11,10 +11,18 @@ import SchoolCreate from './Pages/SchoolCreate';
 import SchoolEdit from './Pages/SchoolEdit';
 import SchoolView from './Pages/SchoolView';
 import Login from './Pages/Login';
-import Academy from './Pages/Academy';
 import CreateEmp from './Pages/CreateEmp';
 import CreateCourse from './Pages/LMS';
 import Settings from './Pages/Settings';
+import Support from './Pages/Support';
+import Users from './Pages/Users';
+import Package from './Pages/Package';
+
+import Profile from './Components/UserView/Profile';
+
+// academy
+import Academy from './Pages/Academy/Academy';
+import Coach from './Pages/Academy/Coach';
 
 // blog routes
 import NewBlog from './Pages/Blog'
@@ -43,6 +51,8 @@ import UploadBanner from './Components/Blog/UploadBanner';
 import Blog from './Components/Blog/Type/Blog'
 import Tutorial from './Components/Blog/Type/Tutorial';
 
+
+
 function App() {
 
   const location = useLocation();
@@ -59,6 +69,7 @@ function App() {
           <Route element={<Protected allowdRole={[99]} />}>
             <Route path='/' index element={<Dashboard title="Dashboard" content="Dashboard" />} />
             <Route path='/settings' element={<Settings title="Settings" content="Settings" />} />
+            <Route path='/support' element={<Support title="Supports" content="Support" />} />
           </Route>
           <Route element={<Protected allowdRole={[99, 1012]} />}>
             <Route path="/create-school" element={<SchoolCreate title="School Create" content="create school" />} />
@@ -75,10 +86,20 @@ function App() {
 
           {/* academy  */}
           <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
-            <Route path='/create-academy' element={<Academy title="Create Course" content="course" />}>
-            </Route>
+            <Route path='/create-academy' element={<Academy title="Create Course" content="course" />} />
+            <Route path='/create-coach' element={<Coach title="Create Coach" content="coach" />} />
           </Route>
 
+          {/* package  */}
+          <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
+            <Route path="/new-create-package" element={<Package title="Pacakge" content="Pacakge" />} />
+          </Route>
+
+          {/* Users */}
+          <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
+            <Route path='/users' element={<Users title="Users" content="Users" />} />
+            <Route path="user/:id" element={<Profile />} />
+          </Route>
 
           {/* LMS */}
           <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
@@ -95,24 +116,24 @@ function App() {
           {/* Blog */}
           <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
             <Route path='blog' element={<NewBlog title="Blog" content="blog" />}>
-              <Route path='new' element={<New/>}/>
-              <Route path='new/blog' element={<Blog/>}/>
-              <Route path='new/tutorial' element={<Tutorial/>}/>
-              <Route path='edit-blog' element={<EditBlog/>} />
-              <Route path='upload-banner' element={<UploadBanner/>} />
-              <Route path='edit-banner' element={<EditBanner/>} />
-              <Route path='statics' element={<Statics/>} />
+              <Route path='new' element={<New />} />
+              <Route path='new/blog' element={<Blog />} />
+              <Route path='new/tutorial' element={<Tutorial />} />
+              <Route path='edit-blog' element={<EditBlog />} />
+              <Route path='upload-banner' element={<UploadBanner />} />
+              <Route path='edit-banner' element={<EditBanner />} />
+              <Route path='statics' element={<Statics />} />
             </Route>
           </Route>
 
           {/* unathorized page */}
-          <Route path='/not-allowed' element={<NotAllowed />} />
         </Route>
         {/* end of school routes */}
 
         <Route path='/login' element={<Login title="SportyLife Login" content="Login" />} />
         {/* false route will redirect to login page */}
         <Route path="*" element={<Navigate to="/login" />} />
+        {/* <Route path='/not-allowed' element={<NotAllowed />} /> */}
       </Routes>
     </>
   );

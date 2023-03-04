@@ -5,7 +5,7 @@ import { Button, TextField } from '@mui/material'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Outlet } from 'react-router-dom';
-
+import { getTut } from '../../../http/api'
 
 const DesignModule = () => {
 
@@ -13,6 +13,15 @@ const DesignModule = () => {
   const chapterEl = React.useRef<any>(null)
   const [chapter, setChapter] = React.useState(0)
 
+  React.useEffect(() => {
+    getTut().then(res => {
+      if(res.data.info.modules) {
+        // dispatch(createModulee({
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+  }, [])
 
   const { name, description, moduleNames, modules, moduleDescription } = useSelector((state: any) => state.tutorial)
 

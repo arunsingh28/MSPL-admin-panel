@@ -2,6 +2,8 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { nameModule } from '../../../store/slices/TutuorialSlice'
 import { Button, TextField } from '@mui/material'
+import { initModuleName, getTut } from '../../../http/api'
+import CircularProgress from '@mui/material/CircularProgress';
 
 const NameModules = () => {
 
@@ -15,7 +17,27 @@ const NameModules = () => {
 
   const dispatch = useDispatch()
 
+  React.useEffect(() => {
+    console.log('tut', tutorial)
+    getTut().then(res => {
+      console.log('sd', res)
+    }).catch(err => {
+      console.log(err)
+    })
+  }, [])
+
   const handleNext = () => {
+    initModuleName({
+      name: tutorial.name,
+      moduleName: data,
+      moduleDescription: dataDescription
+    }).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    })
+
+
     dispatch(nameModule({
       name: tutorial.name,
       description: tutorial.description,
@@ -33,7 +55,7 @@ const NameModules = () => {
   }, [])
 
   // input for module name with array of modules
-  const handleChange = (e: any) => {
+  const handleName = (e: any) => {
     const { value } = e.target
     setData({
       ...data,
@@ -64,15 +86,15 @@ const NameModules = () => {
         {
           Array(tutorial.modules).fill(0).map((_, i) => {
             return (
-              <>
+              <div key={i}>
                 <p className='text-gray-700 font-semibold mt-3'>{i + 1} Module </p>
-                <div key={i} className="w-full mt-2 bg-gray-50 p-2 rounded-sm">
+                <div className="w-full mt-2 bg-gray-50 p-2 rounded-sm">
                   <p className='text-sm font-semibold'>Title</p>
-                  <TextField type="text" name={i.toString()} onChange={handleChange} sx={{ marginTop: 1,background: '#fff  ' }} ref={textEl} placeholder='Enter Module Name' fullWidth />
+                  <TextField type="text" name={i.toString()} onChange={handleName} sx={{ marginTop: 1, background: '#fff  ' }} ref={textEl} placeholder='Enter Module Name' fullWidth />
                   <p className='text-sm font-semibold mt-2'>Describe</p>
                   <textarea className='border w-full h-28 rounded-sm p-2' name={i.toString()} onChange={handleDesc} placeholder="Descibe the lesson" />
                 </div>
-              </>
+              </div>
             )
           })
         }
