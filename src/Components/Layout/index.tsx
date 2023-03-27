@@ -30,14 +30,3 @@ const Layout = () => {
 export default Layout
 
 
-
-// {/* <div className='flex dkt'>
-// <div className='flex-1 w-[210px] fixed top-0 left-0'>
-//   <Navbar />
-// </div>
-// <div className='flex-1 fixed top-0 w-full left-32'>
-// <div className='container mx-auto'>        
-//   <Outlet />
-//   </div>
-// </div>
-// </div> */}

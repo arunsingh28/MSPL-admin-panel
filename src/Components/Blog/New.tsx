@@ -5,7 +5,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import {useNavigate} from 'react-router-dom'
-
+import PlayArrowTwoToneIcon from '@mui/icons-material/PlayArrowTwoTone';
 
 const New = () => {
 
@@ -46,7 +46,7 @@ const New = () => {
                                 }} control={<Radio />} label="Tutorial" />
                             </RadioGroup>
                         </div>
-                        <Button variant="contained" disabled={disbleBtn} sx={{ paddingX: 7, paddingY: 1.6, background: '#1b356b', marginTop: 3 }} onClick={handleTypeBlog} size='large'>Create</Button>
+                        <Button variant="contained" disabled={disbleBtn} sx={{ paddingX: 7, paddingY: 1.6, background: '#1b356b', marginTop: 3 }} onClick={handleTypeBlog} size='large'>Create <PlayArrowTwoToneIcon fontSize='small'/></Button>
                     </FormControl>
                 </div>
                 {/* other half */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Layout from './Components/Layout';
+import PresistLogin from './Components/PresistLogin'
 import Layout2 from './Components/Layout/Layout'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
@@ -17,6 +18,14 @@ import Settings from './Pages/Settings';
 import Support from './Pages/Support';
 import Users from './Pages/Users';
 import Package from './Pages/Package';
+
+// nutriotion page
+import Ingridienents from './Pages/Nutrition/Ingridienents';
+import RecipiesCategories from './Pages/Nutrition/RecipiesCategories';
+import MealFrequency from './Pages/Nutrition/MealFrequency';
+import Recipies from './Pages/Nutrition/Recipies';
+import AddRecipie from './Pages/Nutrition/AddRecipie'
+import ViewIngridienents from './Pages/Nutrition/ViewIngridienents'
 
 import Profile from './Components/UserView/Profile';
 
@@ -58,82 +67,99 @@ function App() {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/'
 
+  const getAuth = localStorage.getItem('isAuth')
+  const localAuth = JSON.parse(getAuth || '{}')
+
+  console.log(localAuth)
+
+  const Roles = {
+    'user': [99, 1011, 1012, 901, 902, 903],
+    'superAdmin': [99, 1011, 1012, 901, 902, 903, 1012, 1011],
+  }
+
+
   return (
     <>
       <Routes>
-        {/* school protection routes */}
-        <Route path='/' element={<Layout2 />}>
-
-
-          {/* protected routes */}
-          <Route element={<Protected allowdRole={[99]} />}>
-            <Route path='/' index element={<Dashboard title="Dashboard" content="Dashboard" />} />
-            <Route path='/settings' element={<Settings title="Settings" content="Settings" />} />
-            <Route path='/support' element={<Support title="Supports" content="Support" />} />
-          </Route>
-          <Route element={<Protected allowdRole={[99, 1012]} />}>
-            <Route path="/create-school" element={<SchoolCreate title="School Create" content="create school" />} />
-          </Route>
-          <Route element={<Protected allowdRole={[99, 1011]} />}>
-            <Route path="/edit-school" element={<SchoolEdit title="School Edit" content="edit school" />} />
-            <Route path='/view-school/:id' element={<SchoolView title="School View" content="view school" />} />
-          </Route>
-          <Route element={<Protected allowdRole={[901, 902, 903]} />}>
-            <Route path="/create-emp" element={<CreateEmp title="Create Emp" content="Create Employe" />} />
-            <Route path="/emp-permission" element={<Permission title="Permission" content="Permission" />} />
-          </Route>
-
-
-          {/* academy  */}
-          <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
-            <Route path='/create-academy' element={<Academy title="Create Course" content="course" />} />
-            <Route path='/create-coach' element={<Coach title="Create Coach" content="coach" />} />
-          </Route>
-
-          {/* package  */}
-          <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
-            <Route path="/new-create-package" element={<Package title="Pacakge" content="Pacakge" />} />
-          </Route>
-
-          {/* Users */}
-          <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
-            <Route path='/users' element={<Users title="Users" content="Users" />} />
-            <Route path="user/:id" element={<Profile />} />
-          </Route>
-
-          {/* LMS */}
-          <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
-            <Route path='new-course-enroll' element={<CreateCourse title="Create Course" content="course" />}>
-              <Route path='chapter' index element={<Chapter />} />
-              <Route path='choice' element={<Choice />} />
-              <Route path='checklist' element={<Checklist />} />
-              <Route path='feedback' element={<Feedback />} />
-              <Route path='quiz' element={<Quiz />} />
-              <Route path='lesson' element={<Lesson />} />
-            </Route>
-          </Route>
-
-          {/* Blog */}
-          <Route element={<Protected allowdRole={[99, 1011, 1012, 901, 902, 903]} />}>
-            <Route path='blog' element={<NewBlog title="Blog" content="blog" />}>
-              <Route path='new' element={<New />} />
-              <Route path='new/blog' element={<Blog />} />
-              <Route path='new/tutorial' element={<Tutorial />} />
-              <Route path='edit-blog' element={<EditBlog />} />
-              <Route path='upload-banner' element={<UploadBanner />} />
-              <Route path='edit-banner' element={<EditBanner />} />
-              <Route path='statics' element={<Statics />} />
-            </Route>
-          </Route>
-
-          {/* unathorized page */}
-        </Route>
-        {/* end of school routes */}
+        {/* public route */}
 
         <Route path='/login' element={<Login title="SportyLife Login" content="Login" />} />
         {/* false route will redirect to login page */}
         <Route path="*" element={<Navigate to="/login" />} />
-        {/* <Route path='/not-allowed' element={<NotAllowed />} /> */}
+
+        <Route path='/' element={<Layout2 />}>
+          <Route element={<PresistLogin />}>
+            {/* protected routes */}
+            <Route element={<Protected allowdRole={Roles.user} />}>
+              <Route path='/' index element={<Dashboard title="Dashboard" content="Dashboard" />} />
+              <Route path='/settings' element={<Settings title="Settings" content="Settings" />} />
+              <Route path='/support' element={<Support title="Supports" content="Support" />} />
+            </Route>
+            <Route element={<Protected allowdRole={Roles.user} />}>
+              <Route path="/create-school" element={<SchoolCreate title="School Create" content="create school" />} />
+            </Route>
+            <Route element={<Protected allowdRole={Roles.user} />}>
+              <Route path="/edit-school" element={<SchoolEdit title="School Edit" content="edit school" />} />
+              <Route path='/view-school/:id' element={<SchoolView title="School View" content="view school" />} />
+            </Route>
+            <Route element={<Protected allowdRole={Roles.user} />}>
+              <Route path="/create-emp" element={<CreateEmp title="Create Emp" content="Create Employe" />} />
+              <Route path="/emp-permission" element={<Permission title="Permission" content="Permission" />} />
+            </Route>
+
+
+            {/* academy  */}
+            <Route element={<Protected allowdRole={Roles.superAdmin} />}>
+              <Route path='/create-academy' element={<Academy title="Create Course" content="course" />} />
+              <Route path='/create-coach' element={<Coach title="Create Coach" content="coach" />} />
+            </Route>
+
+            {/* package  */}
+            <Route element={<Protected allowdRole={Roles.superAdmin} />}>
+              <Route path="/new-create-package" element={<Package title="Pacakge" content="Pacakge" />} />
+            </Route>
+
+            {/* Users */}
+            <Route element={<Protected allowdRole={Roles.superAdmin} />}>
+              <Route path='/users' element={<Users title="Users" content="Users" />} />
+              <Route path="user/:id" element={<Profile />} />
+            </Route>
+
+            {/* LMS */}
+            <Route element={<Protected allowdRole={Roles.superAdmin} />}>
+              <Route path='new-course-enroll' element={<CreateCourse title="Create Course" content="course" />}>
+                <Route path='chapter' index element={<Chapter />} />
+                <Route path='choice' element={<Choice />} />
+                <Route path='checklist' element={<Checklist />} />
+                <Route path='feedback' element={<Feedback />} />
+                <Route path='quiz' element={<Quiz />} />
+                <Route path='lesson' element={<Lesson />} />
+              </Route>
+            </Route>
+            {/* Blog */}
+            <Route element={<Protected allowdRole={Roles.superAdmin} />}>
+              <Route path='blog' element={<NewBlog title="Blog" content="blog" />}>
+                <Route path='new' element={<New />} />
+                <Route path='new/blog' element={<Blog />} />
+                <Route path='new/tutorial' element={<Tutorial />} />
+                <Route path='edit-blog' element={<EditBlog />} />
+                <Route path='upload-banner' element={<UploadBanner />} />
+                <Route path='edit-banner' element={<EditBanner />} />
+                <Route path='statics' element={<Statics />} />
+              </Route>
+            </Route>
+            {/* Nutrition */}
+            <Route element={<Protected allowdRole={Roles.superAdmin} />}>
+              <Route path='/add-ingridienents' element={<Ingridienents title="Ingridienents" content="Ingridienents" />} />
+              <Route path='/recipie-categoies' element={<RecipiesCategories title="Recipies" content="Recipies" />} />
+              <Route path='/meal-frequency' element={<MealFrequency title="Meal Frequency" content="Meal Frequency" />} />
+              <Route path='/create-new-recipie' element={<Recipies title="New Recipies" content="Meal Recipies" />} />
+              <Route path='/add-new-recipie' element={<AddRecipie title="Add new recipies" content="Recipies" />} />
+              <Route path='/view-ingridienents' element={<ViewIngridienents title="All ViewIngridienents" content="ViewIngridienents" />} />
+            </Route>
+            {/* unathorized page */}
+          </Route>
+        </Route>
       </Routes>
     </>
   );

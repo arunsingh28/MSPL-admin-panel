@@ -9,7 +9,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Back from '../Back';
 import chart from '../../Assets/download.png'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-
+import GaugeChart from 'react-gauge-chart'
 
 
 // import CircularProgress from '@mui/material/CircularProgress';
@@ -23,7 +23,9 @@ interface Iuser {
     phone: Number;
     password: string;
     dob: Date;
-    sex: string;
+    BMI: number;
+    BMR: number;
+    gender: string;
     referal_code: string;
     planType: string;
     measurement: {
@@ -45,11 +47,19 @@ const Profile = () => {
 
     const [isLoading, setIsLoading] = React.useState(false)
 
+    const [BMI, setBMI] = React.useState(0.0)
+
+    const convertToDouble = (num: any) => {
+        const newFraction = 0 + '.' + num
+        return setBMI(parseFloat(newFraction))
+    }
+
     React.useEffect(() => {
         setIsLoading(true)
         getUserById(id).then(res => {
             setIsLoading(false)
             setUser(res.data)
+            convertToDouble(res.data?.BMI)
         }).catch(err => {
             setIsLoading(false)
             console.log(err)
@@ -67,12 +77,16 @@ const Profile = () => {
         return age;
     }
 
+
+    const converToPercent = (num: any, howMuch: number) => {
+        return num / howMuch
+    }
+
     return (
         <>
             {/* back module */}
             <Back />
-
-            <div className='flex gap-3 flex-wrap justify-between'>
+            <div className='flex gap-6 flex-wrap'>
                 {/* personal info */}
                 <div className='pr-5 pl-5 py-4 border rounded-md bg-blue-50 hover:shadow-lg'>
                     {
@@ -91,7 +105,7 @@ const Profile = () => {
                                         </div>
                                     </div>
                                     {
-                                        user?.sex === 'Male' ? <img src="https://sportylife.in/public/uploads/images/vtv2Op53eFyqtVsdS9ELPKZFifM2eEnDDc5VqFp1.png" alt="img" className='w-20 h-20 flex-1 rounded-md drop-shadow-md ml-4' /> : <img src="https://sportylife.in/public/uploads/images/dummy_female.png" alt="img" className='w-20 h-20 flex-1 rounded-md drop-shadow-md ml-4' />
+                                        user?.gender === 'Male' ? <img src="https://sportylife.in/public/uploads/images/vtv2Op53eFyqtVsdS9ELPKZFifM2eEnDDc5VqFp1.png" alt="img" className='w-20 h-20 flex-1 rounded-md drop-shadow-md ml-4' /> : <img src="https://sportylife.in/public/uploads/images/dummy_female.png" alt="img" className='w-20 h-20 flex-1 rounded-md drop-shadow-md ml-4' />
                                     }
                                 </div>
                             </>
@@ -122,9 +136,9 @@ const Profile = () => {
                         isLoading ? <ProfileSkeleton /> : <>
                             <div className='mt-7 flex gap-2'>
                                 {
-                                    user?.sex === 'Male' ? <Male /> : <Female />
+                                    user?.gender === 'Male' ? <Male /> : <Female />
                                 }
-                                <p className='text-gray-700'>{user?.sex}</p>
+                                <p className='text-gray-700'>{user?.gender}</p>
                             </div>
                             <div className='mt-5 flex gap-2'>
                                 <CalendarMonthIcon color='error' />
@@ -170,7 +184,50 @@ const Profile = () => {
                         </>
                     }
                 </div>
+                {/* BMI */}
+                <div className='py-4 px-5 border rounded-md bg-black hover:shadow-lg'>
+                    <h2 className='font-semibold text-gray-200'>BMI : {user?.BMI?.toFixed(2) || 0}</h2>
+                    {
+                        isLoading ? <ProfileSkeleton /> : <GaugeChart id="gauge-chart"
+                            nrOfLevels={30}
+                            // marginInPercent={10}
+                            cornerRadius={2}
+                            arcsLength={[0.3, 0.3, 0.3, 0.3, 0.3]}
+                            formatTextValue={value => `${value} kg/m2`}
+                            // arcsLength={[0.3, 0.1, 0.2]}
+                            colors={["#4ee333", "#f0ce22", "#ff9f0f", "#fc4857", "#ff061a"]}
+                            arcWidth={0.1}
+                            percent={BMI}
+                        />
+                    }
+                </div>
+                <div className='py-4 flex-col flex items-center px-5 border rounded-md bg-green-200 hover:shadow-lg'>
+                    {/* <h2 className='font-semibold text-gray-700'>BMR : {user?.BMR.toFixed(2)} Cal</h2> */}
+                    <h2 className='font-semibold text-gray-600'>BMR : {user?.BMR?.toFixed(2) || 0} Cal</h2>
+                    <div>
+                        {/* carb */}
+                        <div className='mt-2 flex gap-2 items-center'>
+                            <div className='w-2 h-2 bg-red-500 rounded-full' />
+                            <p className='text-gray-700'>Carb : {converToPercent(user?.BMR?.toFixed(2), 50) || 0} Gram</p>
+                        </div>
+                        {/* fat */}
+                        <div className='mt-2 flex gap-2 items-center'>
+                            <div className='w-2 h-2 bg-yellow-500 rounded-full' />
+                            <p className='text-gray-700'>Fat : {converToPercent(user?.BMR?.toFixed(2), 20) || 0} Gram</p>
+                        </div>
+                        {/* protein */}
+                        <div className='mt-2 flex gap-2 items-center'>
+                            <div className='w-2 h-2 bg-green-500 rounded-full' />
+                            <p className='text-gray-700'>Protein : {converToPercent(user?.BMR?.toFixed(2), 30) || 0} Gram</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+            {/* BMI */}
+
+
+
+
 
             {/* chat plan */}
             <div className='py-5'>

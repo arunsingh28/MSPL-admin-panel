@@ -37,8 +37,6 @@ interface Iuser {
 
 const UserTable = ({ allUser }: any) => {
 
-
-
     const [isLoading, setIsloading] = React.useState(false)
 
 
@@ -62,7 +60,7 @@ const UserTable = ({ allUser }: any) => {
                         </TableHead>
                         <TableBody>
                             {
-                                allUser && allUser.map((row: Iuser, index: number) => {
+                                allUser && allUser?.map((row: Iuser, index: number) => {
                                     return (
                                         <>
                                             <TableRow
@@ -71,14 +69,14 @@ const UserTable = ({ allUser }: any) => {
                                                 tabIndex={-1}
                                                 key={index}
                                             >
-                                                <TableCell align="left">{row.name}</TableCell>
-                                                <TableCell align="left">{(row as any).phone}</TableCell>
-                                                <TableCell align="left">{row.email}</TableCell>
-                                                <TableCell align="left">{row.isPaid || <div className='flex items-center gap-2'><div className='h-3 w-3 bg-orange-500 rounded-full' />Paid</div>}</TableCell>
-                                                <TableCell align="left">{row.isBlocked || <div className='flex items-center gap-2'><div className='h-3 w-3 bg-green-500 rounded-full' />Active</div>}</TableCell>
+                                                <TableCell align="left">{row?.name}</TableCell>
+                                                <TableCell align="left">{(row as any)?.phone}</TableCell>
+                                                <TableCell align="left">{row?.email}</TableCell>
+                                                <TableCell align="left">{row?.isPaid ? <div className='flex items-center gap-2'><div className='h-3 w-3 bg-green-500 rounded-full' />Paid</div> : <div className='flex items-center gap-2'><div className='h-3 w-3 bg-orange-500 rounded-full' /> Unpaid</div>}</TableCell>
+                                                <TableCell align="left">{row?.isBlocked ? <div className='flex items-center gap-2'><div className='h-3 w-3 bg-green-500 rounded-full' />Active</div> : <div className='flex items-center gap-2'><div className='h-3 w-3 bg-orange-500 rounded-full' />Unactive</div>}</TableCell>
 
                                                 {/* <TableCell align="center">{row.sports.isBadminton}</TableCell> */}
-                                                <Link to={`/user/${row._id}`}>
+                                                <Link to={`/user/${row?._id}`}>
                                                     <TableCell align="center">
                                                         <Button variant="outlined"> <RemoveRedEyeIcon />View</Button>
                                                     </TableCell>

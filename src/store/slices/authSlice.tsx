@@ -1,10 +1,10 @@
-import { createSlice,PayloadAction } from '@reduxjs/toolkit'
-import {RootState} from '../store'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { truncate } from 'fs/promises'
+import { RootState } from '../store'
 
 export interface AuthState {
     user: any
     token: string
-    roles?: number[]
     isAuthenticated: boolean
 }
 
@@ -12,19 +12,18 @@ export interface AuthState {
 const initialState: AuthState = {
     user: null,
     token: '',
-    roles: [],
     isAuthenticated: false,
 }
+
 
 // Create a slice of state
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        auth: (state, action:PayloadAction<AuthState>) => {
+        auth: (state, action: PayloadAction<AuthState>) => {
             state.user = action.payload.user
             state.token = action.payload.token
-            state.isAuthenticated = true
             // state.isLoading = false
             // state.error = null
         },
@@ -39,5 +38,5 @@ const authSlice = createSlice({
 })
 
 // Export the slice reducer
-export const { auth,logout } = authSlice.actions
+export const { auth, logout } = authSlice.actions
 export default authSlice.reducer

@@ -3,11 +3,13 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import empFile from '../Assets/xlsx/account-format.xlsx'
 import schollFile from '../Assets/xlsx/school-format.xlsx'
+import ingridienentFile from '../Assets/xlsx/ingridienents-format.xlsx'
 import { Link } from 'react-router-dom'
-import { empWithFile, schoolWithFile } from '../http/api'
+import { empWithFile, schoolWithFile, ingridientWithFile } from '../http/api'
 import { toast } from 'react-toastify'
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
+
 
 interface FileUploaderProps {
     type: string
@@ -23,7 +25,11 @@ const FileUploader = ({ type }: FileUploaderProps) => {
     React.useEffect(() => {
         if (type === 'emp') {
             setFile(empFile)
-        } else {
+        }
+        if (type === 'ingridienents') {
+            setFile(ingridienentFile)
+        }
+        else {
             setFile(schollFile)
         }
     }, [type, file, fileEl])
@@ -39,7 +45,8 @@ const FileUploader = ({ type }: FileUploaderProps) => {
             const formData = new FormData()
             formData.append('file', file)
             // for emp bulk upload function
-            if(type === 'emp'){
+            if (type === 'emp') {
+                // for academy bulk upload function
                 empWithFile(formData).then(res => {
                     if (res.data.success) {
                         console.log(res.data)
@@ -47,25 +54,26 @@ const FileUploader = ({ type }: FileUploaderProps) => {
                         setLoading(false)
                     }
                 }).catch(err => {
-                    console.log('ERROR',err.response)
+                    console.log('ERROR', err.response)
                     toast.error(err.response.data.message)
                     setLoading(false)
                 }).finally(() => setLoading(false))
-            } 
-            if(type === 'acd'){
+            }
+            if (type === 'ingridienents') {
                 // for academy bulk upload function
-                // empWithFile(formData).then(res => {
-                //     if (res.data.success) {
-                //         console.log(res.data)
-                //         toast.success(res.data.message)
-                //         setLoading(false)
-                //     }
-                // }).catch(err => {
-                //     console.log('ERROR',err.response)
-                //     toast.error(err.response.data.message)
-                //     setLoading(false)
-                // }).finally(() => setLoading(false))
-                }
+                ingridientWithFile(formData).then(res => {
+                    console.log('ingri',res)
+                    if (res.data.success) {
+                        console.log(res.data)
+                        toast.success(res.data.message)
+                        setLoading(false)
+                    }
+                }).catch(err => {
+                    console.log('ERROR ing', err.response)
+                    toast.error(err.response.data.message)
+                    setLoading(false)
+                }).finally(() => setLoading(false))
+            }
             else {
                 // for school bulk upload function
                 schoolWithFile(formData).then(res => {
@@ -74,7 +82,7 @@ const FileUploader = ({ type }: FileUploaderProps) => {
                         setLoading(false)
                     }
                 }).catch(err => {
-                    console.log('ERROR1',err)
+                    console.log('ERROR1', err)
                     toast.error(err.response.data.message)
                     setLoading(false)
                 }).finally(() => setLoading(false))
