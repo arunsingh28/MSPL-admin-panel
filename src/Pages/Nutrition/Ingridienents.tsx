@@ -11,8 +11,11 @@ import MenuItem from '@mui/material/MenuItem';
 import { Button } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CircularProgress from '@mui/material/CircularProgress';
+import Back from '../../Components/Back'
+import { useAppSelector } from '../../store/hook';
 
 const Ingridienents = ({ title, content }: ParentCompProps) => {
+    const { token } = useAppSelector(state => state.auth)
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -61,7 +64,7 @@ const Ingridienents = ({ title, content }: ParentCompProps) => {
             toast.error('Please fill all the details')
         }
         else {
-            createIngridient(ingridient).then(res => {
+            createIngridient(ingridient, token).then(res => {
                 toast.success(res.data.message)
                 setIngridient({
                     name: '',
@@ -87,6 +90,7 @@ const Ingridienents = ({ title, content }: ParentCompProps) => {
     }
     return (
         <div>
+            <Back />
             <p className='text-2xl text-gray-700 font-semibold mb-4'>Create Ingridienents</p>
             <FileUploader type={"ingridienents"} />
             <div className='flex justify-center'>
@@ -121,10 +125,11 @@ const Ingridienents = ({ title, content }: ParentCompProps) => {
             </div>
             <div className='mt-5 flex gap-4'>
                 <TextField type="number"
-                    label="Ingridienent's Protein" variant="outlined"
-                    value={ingridient.protein}
-                    onChange={(e) => setIngridient({ ...ingridient, protein: e.target.value })}
-                    placeholder='Protein' className='w-full border h-12 rounded-md px-2 text-gray-700 mt-1' />
+                    label="Ingridienent's Quantity" variant="outlined"
+                    value={ingridient.quantity}
+                    onChange={(e) => setIngridient({ ...ingridient, quantity: e.target.value })}
+                    placeholder='Quantity example 100' className='w-full border h-12 rounded-md px-2 text-gray-700 mt-1' />
+
                 <TextField type="number"
                     label="Ingridienent's Carb" variant="outlined"
                     value={ingridient.carbs}
@@ -145,10 +150,10 @@ const Ingridienents = ({ title, content }: ParentCompProps) => {
             </div>
             <div className='mt-5 flex gap-4'>
                 <TextField type="number"
-                    label="Ingridienent's Quantity" variant="outlined"
-                    value={ingridient.quantity}
-                    onChange={(e) => setIngridient({ ...ingridient, quantity: e.target.value })}
-                    placeholder='Quantity' className='w-full border h-12 rounded-md px-2 text-gray-700 mt-1 flex-1' />
+                    label="Ingridienent's Protein" variant="outlined"
+                    value={ingridient.protein}
+                    onChange={(e) => setIngridient({ ...ingridient, protein: e.target.value })}
+                    placeholder='Protein' className='border h-12 rounded-md px-2 text-gray-700 mt-1 flex-1' />
                 {/* save btn */}
                 <div className='flex-1' />
             </div>
@@ -156,7 +161,7 @@ const Ingridienents = ({ title, content }: ParentCompProps) => {
                 <Button size='medium' sx={{ paddingX: 7, paddingY: 1.8, background: '#1b356b' }}
                     variant="contained" disabled={disable} className='flex-1' onClick={handleCreate}><SaveIcon className='mr-2' />
                     {
-                        isLoading ? <CircularProgress size={20} color="inherit" />  : 'save'
+                        isLoading ? <CircularProgress size={20} color="inherit" /> : 'save'
                     }
                 </Button>
             </div>

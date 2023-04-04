@@ -3,9 +3,15 @@ import { ParentCompProps } from '../Dashboard'
 import DeleteOutlineTwoToneIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 import AppRegistrationTwoToneIcon from '@mui/icons-material/AppRegistrationTwoTone';
 import CircularProgress from '@mui/material/CircularProgress';
-import { getAllIngridient } from '../../http/api';
+import { getAllIngridient, delteIngridient } from '../../http/api';
+import { toast } from 'react-toastify'
+import Back from '../../Components/Back';
+import { useAppSelector } from '../../store/hook'
 
 const ViewIngridienents = ({ title, content }: ParentCompProps) => {
+
+    const { token } = useAppSelector(state => state.auth)
+
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -14,26 +20,58 @@ const ViewIngridienents = ({ title, content }: ParentCompProps) => {
     const [ingridient, setIngridient] = React.useState<any>([])
     const [isLoading, setIsLoading] = React.useState(false)
 
+    const [filterData, setFilterData] = React.useState<any>([])
+
+    const [filterString, setFilterString] = React.useState<string>('')
+
     React.useEffect(() => {
-        getAllIngridient().then(res => {
+        getAllIngridient(token).then(res => {
             setIsLoading(true)
             console.log(res.data.data)
             setIngridient(res.data.data)
+            setFilterData(res.data.data)
         }).catch(err => {
             console.log(err)
         })
     }, [])
 
 
-    const handleDelete = async (id: string) => { }
+
+
+    const handleDelete = async (id: string) => {
+        const confirm = window.confirm('Are you sure you want to delete this ingredient?')
+        if (!confirm) return
+        delteIngridient(id, token).then((res) => {
+            toast.success(res.data.message)
+            // update ingredient list and remove the deleted one
+            setIngridient(ingridient.filter((item: any) => item._id !== id))
+
+        }).catch(er => {
+            toast.error(er.response.data.message)
+        })
+    }
+
+    const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target
+        setFilterString(value)
+        const filteredData = filterData.filter((item: any) => item.name.toLowerCase().includes(value.toLowerCase()))
+        setIngridient(filteredData)
+
+    }
 
     const handleEdit = async (id: string) => { }
 
-    const convertToDay = (timestamp: string) => { return '2 day' }
 
     return (
         <div>
+            <Back />
             <p className='text-2xl text-gray-700 font-semibold mb-4 '>All Ingredients List</p>
+            <div>
+                <input type="text" className='border' value={filterString} onChange={handleFilter} />
+            </div>
+            <div>
+                {ingridient.length}
+            </div>
             <div>
                 <div className="relative overflow-x-auto rounded-sm max-h-[600px]">
                     <table className="w-full text-sm text-left text-gray-500">
@@ -42,15 +80,6 @@ const ViewIngridienents = ({ title, content }: ParentCompProps) => {
                                 <th scope="col" className="px-6 py-3">
                                     Ingredients Name
                                 </th>
-                                {/* <th scope="col" className="px-6 py-3">
-                                    Created At
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Updated At
-                                </th> */}
-                                {/* <th scope="col" className="px-6 py-3">
-                                Status
-                            </th> */}
                                 <th scope="col" className="px-6 py-3">
                                     Delete
                                 </th>
@@ -66,17 +95,6 @@ const ViewIngridienents = ({ title, content }: ParentCompProps) => {
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
                                             {item.name}
                                         </td>
-                                        {/* <td className="px-6 py-4">
-                                            {
-                                                convertToDay(item.updatedAt)
-                                            }
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {
-                                                convertToDay(item.createdAt)
-                                            }
-                                        </td> */}
-
                                         <td className="px-6 py-4">
                                             <div className='flex items-center gap-1 border w-24 justify-center py-1 rounded-md cursor-pointer hover:bg-red-200' onClick={() => handleDelete(item._id)}><DeleteOutlineTwoToneIcon /> Delete</div>
                                         </td>

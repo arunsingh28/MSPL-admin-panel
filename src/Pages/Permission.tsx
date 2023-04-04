@@ -4,7 +4,7 @@ import { TextField, Button } from '@mui/material';
 import { getEmp } from '../http/api'
 import { toast } from 'react-toastify'
 import CircularProgress from '@mui/material/CircularProgress';
-
+import { useAppSelector } from '../store/hook'
 
 interface IUser {
     empId: string,
@@ -25,6 +25,9 @@ interface IUser {
 }
 
 const Permission = ({ title, content }: ParentCompProps) => {
+
+    const { token } = useAppSelector(state => state.auth)
+
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -60,7 +63,7 @@ const Permission = ({ title, content }: ParentCompProps) => {
 
     const handleFindEmp = async () => {
         setIsLoading(true)
-        const res = await getEmp({ emp })
+        const res = await getEmp({ emp }, token)
         if (res.data.success) {
             setIsLoading(false)
             setShow(false)

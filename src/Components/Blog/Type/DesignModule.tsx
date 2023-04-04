@@ -1,29 +1,19 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { createModulee } from '../../../store/slices/TutuorialSlice'
-import { Button, TextField } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { Button } from '@mui/material'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Outlet } from 'react-router-dom';
-import { getTut } from '../../../http/api'
+import { useAppSelector } from '../../../store/hook'
 
 const DesignModule = () => {
+  const { token } = useAppSelector(state => state.auth)
 
-  const dispatch = useDispatch()
+
   const chapterEl = React.useRef<any>(null)
   const [chapter, setChapter] = React.useState(0)
 
-  React.useEffect(() => {
-    getTut().then(res => {
-      if(res.data.info.modules) {
-        // dispatch(createModulee({
-      }
-    }).catch(err => {
-      console.log(err)
-    })
-  }, [])
 
-  const { name, description, moduleNames, modules, moduleDescription } = useSelector((state: any) => state.tutorial)
+  const { moduleNames, moduleDescription } = useSelector((state: any) => state.tutorial)
 
 
   const [currentModule, setCurrentModule] = React.useState(moduleNames[0])

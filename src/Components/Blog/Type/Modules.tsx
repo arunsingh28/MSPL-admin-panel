@@ -3,11 +3,14 @@ import { Button } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { createModulee } from '../../../store/slices/TutuorialSlice'
 import { toast } from 'react-toastify'
-import { initModule, getTut } from '../../../http/api'
+// import { initModule, getTut } from '../../../http/api'
 import CircularProgress from '@mui/material/CircularProgress';
+import { useAppSelector } from '../../../store/hook'
+
 
 const Tab1 = () => {
 
+    const { token } = useAppSelector(state => state.auth)
     const dispatch = useDispatch()
     const { name, description } = useSelector((state: any) => state.tutorial)
 
@@ -22,41 +25,41 @@ const Tab1 = () => {
         if (inputEl.current?.value) return setDisabled(false)
     }, [inputEl.current?.value])
 
-    React.useEffect(() => {
-        setPageLoading(false)
-        getTut().then(res => {
-            if (res.data.info.initTutorial === false) {
-                setDisabled(true)
-                setPageLoading(true)
-                dispatch(createModulee({
-                    name: res.data.tutorial.TutorialTitle,
-                    description: res.data.tutorial.TutorialDescription,
-                    modules: res.data.tutorial.moduleNumber
-                }))
-            }
-        }).catch(err => {
-            setPageLoading(true)
-            console.log(err)
-        })
-    }, [])
+    // React.useEffect(() => {
+    //     setPageLoading(false)
+    //     getTut(token).then(res => {
+    //         if (res.data.info.initTutorial === false) {
+    //             setDisabled(true)
+    //             setPageLoading(true)
+    //             dispatch(createModulee({
+    //                 name: res.data.tutorial.TutorialTitle,
+    //                 description: res.data.tutorial.TutorialDescription,
+    //                 modules: res.data.tutorial.moduleNumber
+    //             }))
+    //         }
+    //     }).catch(err => {
+    //         setPageLoading(true)
+    //         console.log(err)
+    //     })
+    // }, [])
 
     const handleNext = async () => {
         if (!inputEl.current?.value) return toast.error('Please enter the number of modules')
         // api call
-        initModule({
-            name,
-            modules: parseInt(inputEl.current?.value as string),
-        }).then(res => {
-            toast.success(res.data.message)
-            // dispatch action
-            dispatch(createModulee({
-                name: name,
-                description: description,
-                modules: parseInt(inputEl.current?.value as string)
-            }))
-        }).catch(err => {
-            toast.error(err.response.data.message)
-        })
+        // initModule({
+        //     name,
+        //     modules: parseInt(inputEl.current?.value as string),
+        // }, token).then(res => {
+        //     toast.success(res.data.message)
+        //     // dispatch action
+        //     dispatch(createModulee({
+        //         name: name,
+        //         description: description,
+        //         modules: parseInt(inputEl.current?.value as string)
+        //     }))
+        // }).catch(err => {
+        //     toast.error(err.response.data.message)
+        // })
     }
 
     return (

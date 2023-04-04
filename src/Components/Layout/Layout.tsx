@@ -25,10 +25,8 @@ export default function MiniDrawer() {
 
   const getUser = localStorage.getItem('user')
   const user = JSON.parse(getUser || '{}')
-  console.log(user)
   const getAuth = localStorage.getItem('isAuth')
   const isAuth = JSON.parse(getAuth || '{}')
-  console.log(isAuth)
 
   const from = location.state?.from?.pathname || '/'
 

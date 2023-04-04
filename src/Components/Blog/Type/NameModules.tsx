@@ -2,11 +2,13 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { nameModule } from '../../../store/slices/TutuorialSlice'
 import { Button, TextField } from '@mui/material'
-import { initModuleName, getTut } from '../../../http/api'
+// import { initModuleName, getTut } from '../../../http/api'
 import CircularProgress from '@mui/material/CircularProgress';
+import { useAppSelector } from '../../../store/hook'
 
 const NameModules = () => {
 
+  const { token } = useAppSelector(state => state.auth)
   const textEl = React.useRef<HTMLInputElement>(null)
 
   const tutorial = useSelector((state: any) => state.tutorial)
@@ -17,25 +19,25 @@ const NameModules = () => {
 
   const dispatch = useDispatch()
 
-  React.useEffect(() => {
-    console.log('tut', tutorial)
-    getTut().then(res => {
-      console.log('sd', res)
-    }).catch(err => {
-      console.log(err)
-    })
-  }, [])
+  // React.useEffect(() => {
+  //   console.log('tut', tutorial)
+  //   getTut(token).then(res => {
+  //     console.log('sd', res)
+  //   }).catch(err => {
+  //     console.log(err)
+  //   })
+  // }, [])
 
   const handleNext = () => {
-    initModuleName({
-      name: tutorial.name,
-      moduleName: data,
-      moduleDescription: dataDescription
-    }).then(res => {
-      console.log(res)
-    }).catch(err => {
-      console.log(err)
-    })
+    // initModuleName({
+    //   name: tutorial.name,
+    //   moduleName: data,
+    //   moduleDescription: dataDescription
+    // }, token).then(res => {
+    //   console.log(res)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
 
 
     dispatch(nameModule({

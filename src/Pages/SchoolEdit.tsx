@@ -3,12 +3,15 @@ import { ParentCompProps } from './Dashboard'
 import Notification from '../Components/Notification'
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
-import { schoolGetAll,schoolSearch } from '../http/api'
+import { schoolGetAll, schoolSearch } from '../http/api'
 import EditSchoolTable from '../Components/EditSchoolTable'
 import LinearProgress from '@mui/material/LinearProgress';
 import NoData from '../Assets/icons/no-data.png'
+import { useAppSelector } from '../store/hook'
 
 const SchoolEdit = ({ content, title }: ParentCompProps) => {
+
+    const { token } = useAppSelector(state => state.auth)
 
     React.useEffect(() => {
         document.title = title
@@ -21,7 +24,7 @@ const SchoolEdit = ({ content, title }: ParentCompProps) => {
         type: 'success'
     })
     const [allSchool, setAllSchool] = React.useState([])
-    const [isLoading,setIsLoading] = React.useState(false)
+    const [isLoading, setIsLoading] = React.useState(false)
 
     const [search, setSearch] = React.useState({
         city: '',
@@ -30,7 +33,7 @@ const SchoolEdit = ({ content, title }: ParentCompProps) => {
 
     React.useEffect(() => {
         setIsLoading(true)
-        schoolGetAll().then(res => {
+        schoolGetAll(token).then(res => {
             setIsLoading(false)
             setAllSchool(res.data.school)
         }).catch(err => {
@@ -42,7 +45,7 @@ const SchoolEdit = ({ content, title }: ParentCompProps) => {
     // handle search school
     const handleSearch = () => {
         setIsLoading(true)
-        schoolSearch(search).then(res => {
+        schoolSearch(search, token).then(res => {
             setIsLoading(false)
             console.log('res', res)
             setAllSchool(res.data.school)
@@ -77,7 +80,7 @@ const SchoolEdit = ({ content, title }: ParentCompProps) => {
             </div>
             <div className='mt-5'>
                 {
-                    isLoading ?  <LinearProgress />: allSchool?.length > 0 ? <EditSchoolTable allSchool={allSchool} /> : <NoDataFound/>
+                    isLoading ? <LinearProgress /> : allSchool?.length > 0 ? <EditSchoolTable allSchool={allSchool} /> : <NoDataFound />
                 }
             </div>
         </div>
@@ -86,10 +89,10 @@ const SchoolEdit = ({ content, title }: ParentCompProps) => {
 
 export default SchoolEdit
 
-const NoDataFound = ()=>{
-    return(
+const NoDataFound = () => {
+    return (
         <div className='flex justify-center items-center h-96 flex-col'>
-            <img src={NoData} alt="No Data Found" className='w-40'/>
+            <img src={NoData} alt="No Data Found" className='w-40' />
             <h1 className='text-2xl text-gray-800 mt-5'>No Data Found</h1>
         </div>
     )

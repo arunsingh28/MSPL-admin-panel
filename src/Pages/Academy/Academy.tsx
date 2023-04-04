@@ -5,7 +5,7 @@ import { TextField, Button } from '@mui/material'
 import { academyCreate } from '../../http/api'
 import { toast } from 'react-toastify'
 import CircularProgress from '@mui/material/CircularProgress';
-
+import { useAppSelector } from '../../store/hook'
 
 interface AcademyData {
     academyName: string,
@@ -30,6 +30,7 @@ interface AcademyData {
 }
 
 const Academy = ({ title, content }: ParentCompProps) => {
+    const { token } = useAppSelector(state => state.auth)
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -56,20 +57,20 @@ const Academy = ({ title, content }: ParentCompProps) => {
     })
     const [disable, setDisable] = React.useState(true)
 
-    React.useEffect(()=>{
-        if(data.academyName && data.academyEmail && data.contactName && data.contactNumber && data.contactEmail && (data.cricket || data.football || data.badminton || data.basketball || data.tennis || data.otherSport)){
+    React.useEffect(() => {
+        if (data.academyName && data.academyEmail && data.contactName && data.contactNumber && data.contactEmail && (data.cricket || data.football || data.badminton || data.basketball || data.tennis || data.otherSport)) {
             setDisable(false)
-        }else{
+        } else {
             setDisable(true)
         }
-    },[data])
+    }, [data])
 
     const [loading, setLoading] = React.useState(false)
 
     const handleCreate = async (e: any) => {
         e.preventDefault()
         setLoading(true)
-        academyCreate(data).then(res => {
+        academyCreate(data, token).then(res => {
             if (res.data.success) {
                 setLoading(false)
                 toast.success(res.data.message)

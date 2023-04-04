@@ -11,7 +11,6 @@ const Protected = ({ allowdRole }: any) => {
 
     const getAuth = localStorage.getItem('isAuth',)
     const localAuth = JSON.parse(getAuth || '{}')
-    console.log(localAuth)
 
 
     return auth.user?.role?.find((role: any) => allowdRole?.includes(role))

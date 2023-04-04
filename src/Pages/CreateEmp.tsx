@@ -6,9 +6,13 @@ import { Button } from '@mui/material'
 import PermissionTable from '../Components/PermissionTable';
 import { empCreate } from '../http/api'
 import FileUploader from '../Components/FileUploader'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
+import { useAppSelector } from '../store/hook';
 
 const CreateEmp = ({ title, content }: ParentCompProps) => {
+
+    const { token } = useAppSelector(state => state.auth)
+
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -54,7 +58,7 @@ const CreateEmp = ({ title, content }: ParentCompProps) => {
         setData({ ...data, role: [changeRole(role)] })
         console.log(data)
         try {
-            const { data: res } = await empCreate(data)
+            const { data: res } = await empCreate(data, token)
             if (res.success) {
                 console.log(res)
                 toast.success(res.message)
@@ -71,7 +75,7 @@ const CreateEmp = ({ title, content }: ParentCompProps) => {
     return (
         <div>
             <p className='text-2xl text-gray-700 font-semibold mb-4'>Create Employee Account</p>
-            <FileUploader type={"emp"}/>
+            <FileUploader type={"emp"} />
             <div className='flex justify-center'>
                 <div className="mt-6 grid grid-cols-3 w-1/3 justify-center items-center text-gray-400">
                     <hr className='border-gray-400' />

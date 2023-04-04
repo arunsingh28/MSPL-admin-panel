@@ -11,6 +11,8 @@ const label = { inputProps: { 'aria-label': 'Checkbox' } };
 const Sound = () => {
 
     const _id = useSelector((state: any) => state.auth.user._id)
+    const { token } = useSelector((state: any) => state.auth)
+
 
     const [isLoading, setIsLoading] = React.useState(false)
 
@@ -25,7 +27,7 @@ const Sound = () => {
     // fetching the sound settings
     React.useEffect(() => {
         const fetch = async () => {
-            getSoundInfo(_id).then((res) => {
+            getSoundInfo(_id, token).then((res) => {
                 setIsLoading(true)
                 setDisable({
                     loginNotification: res.data.data.loginNotification,
@@ -43,7 +45,7 @@ const Sound = () => {
     // updating the sound settings
     const updateSoundSettings = async () => {
         setLoading(true)
-        sound(disable, _id).then((res) => {
+        sound(disable, _id, token).then((res) => {
             setLoading(false)
             toast.success(res.data.message)
         }).catch((err) => {

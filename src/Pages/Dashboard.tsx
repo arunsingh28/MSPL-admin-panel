@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { schoolCount, refreshToken } from '../http/api'
 import Skeleton from '@mui/material/Skeleton';
 import bg from '../Assets/bg.svg'
-import { useAppSelector, useAppDispatch } from '../store/hook';
+import { useAppSelector } from '../store/hook';
 
 export interface ParentCompProps {
   title: string
@@ -11,9 +11,8 @@ export interface ParentCompProps {
 
 const Dashboard = ({ title, content }: ParentCompProps) => {
 
-  const auth = useAppSelector(state => state.auth)
+  const { token } = useAppSelector(state => state.auth)
 
-  console.log(auth)
 
   React.useEffect(() => {
     document.title = title
@@ -29,7 +28,7 @@ const Dashboard = ({ title, content }: ParentCompProps) => {
 
   React.useEffect(() => {
     setIsLoading(true)
-    schoolCount().then((res) => {
+    schoolCount(token).then((res) => {
       setIsLoading(false)
       setSchoolCount(res.data.schoolCount)
     })

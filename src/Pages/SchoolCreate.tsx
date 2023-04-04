@@ -6,6 +6,8 @@ import Notification from '../Components/Notification';
 import TextField from '@mui/material/TextField';
 import { AxiosError } from 'axios'
 import FileUploader from '../Components/FileUploader';
+import { useAppSelector } from '../store/hook'
+
 
 interface SchoolCreateProps {
     schoolName: string
@@ -24,6 +26,8 @@ interface SchoolCreateProps {
 }
 
 const SchoolCreate = ({ title, content }: ParentCompProps) => {
+
+    const { token } = useAppSelector(state => state.auth)
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -133,7 +137,7 @@ const SchoolCreate = ({ title, content }: ParentCompProps) => {
         }
 
         // send data to server
-        await schoolCreate(schoolForm).then(async (res) => {
+        await schoolCreate(schoolForm, token).then(async (res) => {
             console.log('res', await res.data)
             setNotification({
                 message: 'School Created Successfully',
@@ -193,7 +197,7 @@ const SchoolCreate = ({ title, content }: ParentCompProps) => {
         <div className='contianer w-full px-4'>
             <Notification setting={notification} />
             <h1 className='text-2xl text-gray-800 font-semibold pb-2'>Create New School</h1>
-            <FileUploader type={"school"}/>
+            <FileUploader type={"school"} />
             <div className='flex justify-center'>
                 <div className="mt-6 grid grid-cols-3 w-1/3 justify-center items-center text-gray-400">
                     <hr className='border-gray-400' />

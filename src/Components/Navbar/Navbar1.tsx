@@ -1,6 +1,5 @@
 import React from 'react'
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -25,12 +24,11 @@ import SupportIcon from '@mui/icons-material/Support';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../../Assets/LOGO.png'
-import { Collapse, MenuItem } from '@mui/material';
+import { Collapse } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import PencilIcon from '../../Assets/icons/icons8-pencil-16.png'
 import useSound from 'use-sound'
 import logoutSound from '../../Assets/sounds/logout.mp3'
 import { useDispatch, useSelector } from 'react-redux'
@@ -55,10 +53,11 @@ import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
-import MicrowaveOutlinedIcon from '@mui/icons-material/MicrowaveOutlined';
 import LocalDiningOutlinedIcon from '@mui/icons-material/LocalDiningOutlined';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
-import MenuBookIcon from '@mui/icons-material/MenuBook'; 
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import CastForEducationIcon from '@mui/icons-material/CastForEducation';
+
 
 import { logoutApi } from '../../http/api'
 
@@ -156,16 +155,7 @@ const Navbar1 = () => {
         setOpen(false);
     };
 
-    // get user from local storage
-    const getUser = localStorage.getItem('user')
-    const user = JSON.parse(getUser || '{}')
-
-
-
-
     const auth = useSelector((state: any) => state.auth)
-
-    console.log('layout', auth)
 
     const isMute = useSelector((state: any) => state.auth.user?.isMute.logoutNotification)
 
@@ -173,6 +163,11 @@ const Navbar1 = () => {
     React.useEffect(() => {
 
     }, [auth])
+
+    const firstInitial = auth.user?.name?.charAt(0)
+    const lastInitial = auth.user?.name?.split(" ").pop().charAt(0)
+
+    const intials = firstInitial + lastInitial
 
 
     const dispatch = useDispatch()
@@ -219,7 +214,12 @@ const Navbar1 = () => {
                         </Typography>
                     </Toolbar>
                     {/* profile image and name */}
-                    <div className='mr-5  px-2 py-1 rounded-md'>
+                    <div className='mr-5 px-2 py-1 rounded-md flex items-center justify-center gap-2'>
+                        {
+                            auth?.user?.profilePic ? <img src={auth?.user?.profilePic} alt="profile" className='w-10 h-10 rounded-full' /> : <div className='bg-orange-300 border-orange-200 drop-shadow-md rounded-full px-[11px] py-[10px] tracking-wide pointer-events-none'>
+                                <p className='text-[18px]'>{intials}</p>
+                            </div>
+                        }
                         <p className='text-gray-50'>Hi, {auth?.user?.name || 'ERR'}</p>
                     </div>
                 </div>
@@ -234,7 +234,7 @@ const Navbar1 = () => {
                 <List>
                     {/* Home */}
                     {
-                        [99]?.find((role: any) => auth.user?.role?.includes(role) || user.role?.includes(role))
+                        [999]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <Link to="/">
@@ -263,11 +263,11 @@ const Navbar1 = () => {
                             </> : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [999]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* users */}
                     {
-                        [99]?.find((role: any) => auth.user?.role?.includes(role) || user.role?.includes(role))
+                        [91]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <Link to="/users">
@@ -296,11 +296,11 @@ const Navbar1 = () => {
                             </> : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [92]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* nutrition */}
                     {
-                        [901]?.find((role: any) => auth.user?.role?.includes(role))
+                        [92]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <ListItem key="Nutrition" onClick={() => setNutritionMenu(!nutritionMenu)} disablePadding sx={{ display: 'block' }}>
@@ -331,7 +331,7 @@ const Navbar1 = () => {
                                     <Collapse in={nutritionMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
-                                                [902]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [921]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="add-ingridienents">
@@ -362,7 +362,7 @@ const Navbar1 = () => {
                                             }
                                             {/* FilterListOutlinedIcon */}
                                             {
-                                                [902]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [922]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="view-ingridienents">
@@ -393,7 +393,7 @@ const Navbar1 = () => {
                                             }
                                             {/* second view */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [923]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="recipie-categoies">
@@ -424,7 +424,7 @@ const Navbar1 = () => {
                                             }
                                             {/* meal frequency */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [924]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="meal-frequency">
@@ -455,7 +455,7 @@ const Navbar1 = () => {
                                             }
                                             {/* Recipie */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [925]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="create-new-recipie">
@@ -486,11 +486,11 @@ const Navbar1 = () => {
                                             }
                                             {/* Diet plan */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [926]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
-                                                        <Link to="create-new-recipie">
-                                                            <ListItem key="frequency" disablePadding sx={{ display: 'block' }}>
+                                                        <Link to="diet-planner">
+                                                            <ListItem key="diet-planner" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
                                                                 <ListItemButton
                                                                     sx={{
@@ -522,11 +522,11 @@ const Navbar1 = () => {
                             : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [93]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* package */}
                     {
-                        [901]?.find((role: any) => auth.user?.role?.includes(role))
+                        [93]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <ListItem key="Packges" onClick={() => setPackageMenu(!packageMenu)} disablePadding sx={{ display: 'block' }}>
@@ -557,7 +557,7 @@ const Navbar1 = () => {
                                     <Collapse in={packageMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
-                                                [902]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [931]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="new-create-package">
@@ -589,11 +589,11 @@ const Navbar1 = () => {
                                             }
                                             {/* second view */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [932]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
-                                                        <Link to="new-create-categories">
-                                                            <ListItem key="Categories" disablePadding sx={{ display: 'block' }}>
+                                                        <Link to="list-package">
+                                                            <ListItem key="List Package" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
                                                                 <ListItemButton
                                                                     sx={{
@@ -613,7 +613,7 @@ const Navbar1 = () => {
                                                                         {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                                                     </ListItemIcon>
 
-                                                                    <ListItemText primary="Categories" sx={{ opacity: open ? packageMenu ? 1 : 1 : 0, color: '#fff' }} />
+                                                                    <ListItemText primary="List Package" sx={{ opacity: open ? packageMenu ? 1 : 1 : 0, color: '#fff' }} />
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
@@ -626,11 +626,11 @@ const Navbar1 = () => {
                             : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [94]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* core opration */}
                     {
-                        [901]?.find((role: any) => auth.user?.role?.includes(role))
+                        [94]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <ListItem key="Core Circle" onClick={() => setCoreMenu(!coreMenu)} disablePadding sx={{ display: 'block' }}>
@@ -661,7 +661,7 @@ const Navbar1 = () => {
                                     <Collapse in={coreMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
-                                                [902]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [941]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="create-emp">
@@ -693,7 +693,7 @@ const Navbar1 = () => {
                                             }
                                             {/* second view */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [942]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="emp-permission">
@@ -730,11 +730,11 @@ const Navbar1 = () => {
                             : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [95]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* school */}
                     {
-                        [101]?.find((role: any) => auth.user?.role?.includes(role))
+                        [95]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <ListItem key="School Circle" onClick={() => setSchoolMenu(!schoolMenu)} disablePadding sx={{ display: 'block', borderBottom: '2px' }}>
@@ -765,7 +765,7 @@ const Navbar1 = () => {
                                     <Collapse in={schoolMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
-                                                [1012]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [951]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="create-school">
@@ -797,7 +797,7 @@ const Navbar1 = () => {
                                             }
                                             {/* second view */}
                                             {
-                                                [1011]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [952]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="/edit-school">
@@ -834,11 +834,11 @@ const Navbar1 = () => {
                             : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [96]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* Linktree */}
                     {
-                        [99]?.find((role: any) => auth.user?.role?.includes(role))
+                        [96]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <Link to="/">
@@ -867,11 +867,11 @@ const Navbar1 = () => {
                             </> : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [97]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* fitness FitnessCenterIcon */}
                     {
-                        [102]?.find((role: any) => auth.user?.role?.includes(role))
+                        [97]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <ListItem key="Gym Circle" onClick={() => setGymMenu(!gymMenu)} disablePadding sx={{ display: 'block' }}>
@@ -901,7 +901,7 @@ const Navbar1 = () => {
                                     <Collapse in={gymMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
-                                                [1022]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [971]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="create-school">
@@ -933,7 +933,7 @@ const Navbar1 = () => {
                                             }
                                             {/* second view */}
                                             {
-                                                [1023]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [972]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="/edit-gym">
@@ -968,11 +968,11 @@ const Navbar1 = () => {
                             </> : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [98]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* Academy */}
                     {
-                        [100]?.find((role: any) => auth.user?.role?.includes(role))
+                        [98]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <ListItem key="Academy Circle" onClick={() => setSportsMenu(!sportsMenu)} disablePadding sx={{ display: 'block' }}>
@@ -1003,7 +1003,7 @@ const Navbar1 = () => {
                                     <Collapse in={sportsMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
-                                                [1014]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [981]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="Create-academy">
@@ -1037,7 +1037,7 @@ const Navbar1 = () => {
 
                                             {/* second view */}
                                             {
-                                                [1015]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [982]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="/edit-gym">
@@ -1067,7 +1067,7 @@ const Navbar1 = () => {
                                             }
                                             {/* coache */}
                                             {
-                                                [1015]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [983]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="/create-coach">
@@ -1103,11 +1103,11 @@ const Navbar1 = () => {
                             : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [90]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* LMS */}
                     {
-                        [102]?.find((role: any) => auth.user?.role?.includes(role))
+                        [90]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <ListItem key="LMS" onClick={() => setLms(!lms)} disablePadding sx={{ display: 'block' }}>
@@ -1137,7 +1137,7 @@ const Navbar1 = () => {
                                     <Collapse in={lms} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
-                                                [1022]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [901]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="new-course-enroll">
@@ -1168,11 +1168,11 @@ const Navbar1 = () => {
                                             }
                                             {/* edit view */}
                                             {
-                                                [1023]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [901]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
-                                                        <Link to="/edit-gym">
-                                                            <ListItem key="Modify Course" disablePadding sx={{ display: 'block' }}>
+                                                        <Link to="/view-course">
+                                                            <ListItem key="view Course" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
                                                                 <ListItemButton
                                                                     sx={{
@@ -1188,21 +1188,21 @@ const Navbar1 = () => {
                                                                             mr: open ? 3 : 'auto',
                                                                             justifyContent: 'center',
                                                                         }} >
-                                                                        <DesignServicesIcon sx={{ color: '#fff' }} />
+                                                                        <CastForEducationIcon sx={{ color: '#fff' }} />
                                                                         {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                                                     </ListItemIcon>
-                                                                    <ListItemText primary="Modify Course" sx={{ opacity: open ? lms ? 1 : 1 : 0, color: '#fff' }} />
+                                                                    <ListItemText primary="View Course" sx={{ opacity: open ? lms ? 1 : 1 : 0, color: '#fff' }} />
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
                                                     </> : null
                                             }
                                             {
-                                                [1023]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [909]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="/edit-gym">
-                                                            <ListItem key="Create Category" disablePadding sx={{ display: 'block' }}>
+                                                            <ListItem key="Edit Course" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
                                                                 <ListItemButton
                                                                     sx={{
@@ -1221,7 +1221,7 @@ const Navbar1 = () => {
                                                                         <EditIcon sx={{ color: '#fff' }} />
                                                                         {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                                                     </ListItemIcon>
-                                                                    <ListItemText primary="Create Category" sx={{ opacity: open ? lms ? 1 : 1 : 0, color: '#fff' }} />
+                                                                    <ListItemText primary="Edit Course" sx={{ opacity: open ? lms ? 1 : 1 : 0, color: '#fff' }} />
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
@@ -1233,11 +1233,11 @@ const Navbar1 = () => {
                             </> : null
                     }
                     {
-                        open ? <Divider /> : null
+                        open ? [81]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* Blog */}
                     {
-                        [901]?.find((role: any) => auth.user?.role?.includes(role))
+                        [81]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
                             <>
                                 <ListItem key="Blog" onClick={() => setBlogMenu(!blogMenu)} disablePadding sx={{ display: 'block' }}>
@@ -1268,7 +1268,7 @@ const Navbar1 = () => {
                                     <Collapse in={blogMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
-                                                [902]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [811]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="blog/new">
@@ -1300,7 +1300,7 @@ const Navbar1 = () => {
                                             }
                                             {/* second view */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [812]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="blog/edit-blog">
@@ -1332,7 +1332,7 @@ const Navbar1 = () => {
                                             }
                                             {/* third view */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [813]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="blog/upload-banner">
@@ -1364,7 +1364,7 @@ const Navbar1 = () => {
                                             }
                                             {/* Edit banner */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [814]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="blog/edit-banner">
@@ -1396,7 +1396,7 @@ const Navbar1 = () => {
                                             }
                                             {/* StackedBarChartIcon */}
                                             {
-                                                [903]?.find((role: any) => auth.user?.role?.includes(role))
+                                                [815]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
                                                     <>
                                                         <Link to="blog/statics">

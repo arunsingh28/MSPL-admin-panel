@@ -1,24 +1,26 @@
-import axios from 'axios'
-import { useEffect } from 'react'
+import { refreshToken } from '../http/api'
 import { useAppDispatch, useAppSelector } from '../store/hook'
+import { useEffect } from 'react'
+import { auth } from '../store/slices/authSlice'
 
 const useRefreshToken = () => {
     const dispatch = useAppDispatch()
-    const { token } = useAppSelector(state => state.auth)
-    
-    useEffect(() => {
-        const interval = setInterval(() => {
-            axios.post('http://localhost:5000/api/v1/auth/refresh-token', { token }, { withCredentials: true })
-                .then(res => {
-                    console.log(res)
-                    dispatch({ type: 'SET_TOKEN', payload: res.data.token })
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        }, 1000 * 60 * 10)
-        return () => clearInterval(interval)
-    }, [token, dispatch])
+    const { token, user, isAuthenticated } = useAppSelector(state => state.auth)
+
+    const refresh = async () => {
+        try {
+            const { data } = await refreshToken()
+            console.log(data)
+            dispatch(auth({
+                user,
+                token: data.accessToken,
+                isAuthenticated: true,
+            }))
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
 }
 
 

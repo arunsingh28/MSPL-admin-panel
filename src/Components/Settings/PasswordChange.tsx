@@ -4,14 +4,15 @@ import { changePassword } from '../../http/api'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import CircularProgress from '@mui/material/CircularProgress';
-// not visiable
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useAppSelector } from '../../store/hook'
 
 const PasswordChange = () => {
 
     const _id = useSelector((state: any) => state.auth.user._id)
 
+    const { token } = useAppSelector(state => state.auth)
 
     const [loading, setLoading] = React.useState(false)
 
@@ -61,7 +62,7 @@ const PasswordChange = () => {
             })
         }
         if (data.newPassword === data.confirmPassword) {
-            changePassword(data, _id).then((res: any) => {
+            changePassword(data, _id, token).then((res: any) => {
                 setLoading(false)
                 if (res.data.success === false) {
                     toast.error(res.data.message)

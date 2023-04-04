@@ -18,10 +18,10 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 
-
 const EditSchoolTable = ({ allSchool }: any) => {
 
     const isMute = useSelector((state: any) => state.auth.user?.isMute.deleteNotification)
+    const { token } = useSelector((state: any) => state.auth)
 
     const [playActive] = useSound(errorSound, { volume: 1 })
 
@@ -43,14 +43,14 @@ const EditSchoolTable = ({ allSchool }: any) => {
         // eslint-disable-next-line no-restricted-globals
         const disicion = confirm('Are you sure ?')
         if (disicion === true) {
-            schoolDelete(id).then((res) => {
+            schoolDelete(id, token).then((res: any) => {
                 setIsloading(false)
-                schoolGetAll().then(res => {
+                schoolGetAll(token).then((res: any) => {
                     setAllSchool(res.data.school)
-                }).catch(err => {
+                }).catch((err: any) => {
                     setIsloading(false)
                 })
-            }).catch((err) => {
+            }).catch((err: any) => {
                 setIsloading(false)
             })
         } else {

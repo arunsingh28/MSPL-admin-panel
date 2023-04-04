@@ -3,9 +3,10 @@ import { ParentCompProps } from './Dashboard'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import PasswordIcon from '@mui/icons-material/Password';
-
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import Sound from '../Components/Settings/Sound';
 import Password from '../Components/Settings/PasswordChange'
+import Profile from '../Components/Settings/Profile';
 
 
 const Settings = ({ title, content }: ParentCompProps) => {
@@ -17,7 +18,8 @@ const Settings = ({ title, content }: ParentCompProps) => {
 
   const [showBody, setShowBody] = React.useState({
     sound: false,
-    password: false
+    password: false,
+    profile: false
   })
 
   return (
@@ -28,7 +30,8 @@ const Settings = ({ title, content }: ParentCompProps) => {
         <div>
           <div className={showBody.sound ? 'flex gap-5  px-10 py-4 rounded-sm border': 'hover:bg-gray-100 bg-blue-50 flex gap-5 px-10 py-4 rounded-sm border'} onClick={()=>{setShowBody({
             sound: !showBody.sound,
-            password: false
+            password: false,
+            profile: false
           })}}>
             <ArrowRightIcon sx={{ 
               color: '#444',
@@ -50,6 +53,7 @@ const Settings = ({ title, content }: ParentCompProps) => {
           <div className={showBody.password ? 'flex gap-5  px-10 py-4 rounded-sm border': 'hover:bg-gray-100 bg-blue-50 flex gap-5 px-10 py-4 rounded-sm border'} onClick={()=>{setShowBody({
             sound: false,
             password: !showBody.password,
+            profile: false
           })}}>
             <ArrowRightIcon sx={{ 
               color: '#444',
@@ -66,7 +70,28 @@ const Settings = ({ title, content }: ParentCompProps) => {
             showBody.password ? <Password/> : null
           }
         </div>
-        {/* next settings */}
+        {/* edit profile */}
+        <div>
+          <div className={showBody.password ? 'flex gap-5  px-10 py-4 rounded-sm border': 'hover:bg-gray-100 bg-blue-50 flex gap-5 px-10 py-4 rounded-sm border'} onClick={()=>{setShowBody({
+            sound: false,
+            password: false,
+            profile: !showBody.profile
+          })}}>
+            <ArrowRightIcon sx={{ 
+              color: '#444',
+              transition: 'all 0.3s ease-in-out',
+              transform: showBody.profile ? 'rotate(90deg)' : 'rotate(0deg)', 
+              }}  />
+            <div className='flex justify-between w-full'>
+              <p className='text-gray-700'>Update Profile</p>
+                <AssignmentIndIcon sx={{ color: '#444' }} />
+            </div>
+          </div>
+          {/* body of sound setting */}
+          {
+            showBody.profile ? <Profile/> : null
+          }
+        </div>
       </div>
     </div>
   )

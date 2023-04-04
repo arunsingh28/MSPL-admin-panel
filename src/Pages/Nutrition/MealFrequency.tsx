@@ -9,8 +9,10 @@ import SaveIcon from '@mui/icons-material/Save';
 import CircularProgress from '@mui/material/CircularProgress';
 import { createDietFrequency, getAllDietFrequency, deleteDietFrequency, updateDietFrequency } from '../../http/api'
 import { toast } from 'react-toastify';
+import { useAppSelector } from '../../store/hook';
 
 const MealFrequency = ({ title, content }: ParentCompProps) => {
+    const { token } = useAppSelector(state => state.auth)
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -26,7 +28,7 @@ const MealFrequency = ({ title, content }: ParentCompProps) => {
     const handleDelete = async (id: string) => {
         const promt = window.confirm('Are you sure you want to delete this category?')
         if (!promt) return
-        const res = await deleteDietFrequency(id)
+        const res = await deleteDietFrequency(id, token)
         // clear the deleted category from the state
         setMealFrequnecy(mealFrequnecy.filter((item: any) => item._id !== id))
         toast.success(res.data.message)
@@ -37,7 +39,7 @@ const MealFrequency = ({ title, content }: ParentCompProps) => {
         if (promt === '') return toast.error('Please enter a valid name')
         if (promt !== null) {
             try {
-                const res = await updateDietFrequency({ name: promt }, id)
+                const res = await updateDietFrequency({ name: promt }, id, token)
                 setMealFrequnecy(res.data.data)
                 toast.success(res.data.message)
             } catch (error: any) {
@@ -47,7 +49,7 @@ const MealFrequency = ({ title, content }: ParentCompProps) => {
     }
 
     React.useEffect(() => {
-        getAllDietFrequency().then(res => {
+        getAllDietFrequency(token).then(res => {
             setIsLoading(true)
             setMealFrequnecy(res.data.data)
         }).catch(err => {
@@ -157,6 +159,7 @@ export default MealFrequency
 
 
 const AddModel = ({ setVisiable }: any) => {
+    const { token } = useAppSelector(state => state.auth)
 
     const inputRef = React.useRef()
 
@@ -168,7 +171,7 @@ const AddModel = ({ setVisiable }: any) => {
     // set focus on input
     React.useEffect(() => {
         // inputRef.current.focus()
-    },[])
+    }, [])
 
     React.useEffect(() => {
         if (name !== '') {
@@ -181,7 +184,7 @@ const AddModel = ({ setVisiable }: any) => {
     const handleSaveCategory = () => {
         setIsLoading(true)
         try {
-            createDietFrequency({ name }).then(res => {
+            createDietFrequency({ name }, token).then(res => {
                 setIsLoading(false)
                 toast.success(res.data.message)
             }).catch(err => {

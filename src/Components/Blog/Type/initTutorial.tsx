@@ -3,12 +3,14 @@ import { Button } from '@mui/material'
 import { useDispatch } from 'react-redux'
 import { initTutorial } from '../../../store/slices/TutuorialSlice'
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { initTut, getTut } from '../../../http/api'
+// import { initTut, getTut } from '../../../http/api'
 import { toast } from 'react-toastify'
 import CircularProgress from '@mui/material/CircularProgress';
-
+import { useAppSelector } from '../../../store/hook'
 
 const InitTutorial = () => {
+
+    const { token } = useAppSelector(state => state.auth)
 
     const dispatch = useDispatch()
     const fileEl = React.useRef<HTMLInputElement>(null)
@@ -23,21 +25,21 @@ const InitTutorial = () => {
 
     const [btnDis, setBtnDis] = React.useState<any>(true)
 
-    React.useEffect(() => {
-        setPageLoading(false)
-        getTut().then(res => {
-            if (res.data.info.initTutorial === false) {
-                setPageLoading(true)
-                dispatch(initTutorial({
-                    name: res.data.tutorial.TutorialTitle,
-                    description: res.data.tutorial.TutorialDescription
-                }))
-            }
-        }).catch(err => {
-            setPageLoading(true)
-            console.log(err)
-        })
-    }, [])
+    // React.useEffect(() => {
+    //     setPageLoading(false)
+    //     getTut(token).then(res => {
+    //         if (res.data.info.initTutorial === false) {
+    //             setPageLoading(true)
+    //             dispatch(initTutorial({
+    //                 name: res.data.tutorial.TutorialTitle,
+    //                 description: res.data.tutorial.TutorialDescription
+    //             }))
+    //         }
+    //     }).catch(err => {
+    //         setPageLoading(true)
+    //         console.log(err)
+    //     })
+    // }, [])
 
     const [data, setData] = React.useState({
         name: '',
@@ -61,22 +63,22 @@ const InitTutorial = () => {
     const handleNext = () => {
         setLoading(true)
         // api call
-        initTut({
-            name: data.name,
-            description: data.description,
-        }).then(res => {
-            setLoading(false)
-            dispatch(initTutorial({
-                name: data.name,
-                description: data.description,
-            }))
-            toast.success(res.data.message)
-        }).catch(err => {
-            setLoading(false)
-            toast.error(err.response.data.message)
-        }).finally(() => {
-            setLoading(false)
-        })
+        // initTut({
+        //     name: data.name,
+        //     description: data.description,
+        // }, token).then(res => {
+        //     setLoading(false)
+        //     dispatch(initTutorial({
+        //         name: data.name,
+        //         description: data.description,
+        //     }))
+        //     toast.success(res.data.message)
+        // }).catch(err => {
+        //     setLoading(false)
+        //     toast.error(err.response.data.message)
+        // }).finally(() => {
+        //     setLoading(false)
+        // })
     }
 
     const handleFile = () => {

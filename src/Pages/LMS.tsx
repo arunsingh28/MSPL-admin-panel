@@ -2,6 +2,7 @@ import React from 'react'
 import { ParentCompProps } from './Dashboard'
 import { Button } from '@mui/material'
 import CreateCourseForm from '../Components/LMS/CreateCourse'
+import Back from '../Components/Back'
 
 const CreateCourse = ({ content, title }: ParentCompProps) => {
     React.useEffect(() => {
@@ -17,10 +18,11 @@ const CreateCourse = ({ content, title }: ParentCompProps) => {
 
     return (
         <div className=''>
-            <h1 className='text-2xl text-gray-800 font-semibold'>Enroll New Course</h1>
+            <Back/>
+            <h1 className='text-gray-700 font-semibold text-2xl'>Enroll New Course</h1>
             {
                 showForm ? <CreateCourseForm /> :
-                    <div className='my-10 flex justify-center items-center'>
+                    <div className='my-5 flex justify-center items-center'>
                         <Button variant='contained' onClick={handleFormShow} sx={
                             {
                                 background: '#19356a',

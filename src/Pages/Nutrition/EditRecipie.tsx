@@ -1,6 +1,5 @@
 import React from 'react'
-import { getAllRecipeCategory, getAllIngridient, saveRecipie } from '../../http/api'
-// import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import { getAllRecipeCategory, getAllIngridient, updateRecipe } from '../../http/api'
 import { TextField } from '@mui/material'
 import { Button } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
@@ -10,12 +9,12 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { ParentCompProps } from '../Dashboard'
 import Back from '../../Components/Back';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useAppSelector } from '../../store/hook'
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../store/hook';
 
 interface IRecipie {
     name: string;
     ingredients: [] | any;
-    // instructions: string;
     preparationTime: number;
     tags: any[] | any;
     image: any[] | any;
@@ -24,45 +23,43 @@ interface IRecipie {
     nutritionName: string;
 }
 
+
 interface ImageProps {
     height: number;
     width: number;
     src: string;
 }
 
-const NewRecipie = ({ title, content }: ParentCompProps) => {
+const EditRecipie = ({ title, content }: ParentCompProps) => {
     const { token } = useAppSelector(state => state.auth)
+    const location = useLocation()
+    const navigate = useNavigate()
 
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
     }, [content, title])
 
+
+    const [newImageUpload, setNewImageUpload] = React.useState<boolean>(false)
+
     const imgRef = React.useRef<HTMLInputElement>(null)
     const [disable, setDisable] = React.useState(true)
     const [isLoading, setIsLoading] = React.useState(false)
-    const [recipeData, setRecipiData] = React.useState<IRecipie>({
-        name: '',
-        ingredients: [],
-        tags: [],
-        // instructions: '',
-        preparationTime: 0,
-        image: [],
-        status: true,
-        sourceLink: '',
-        nutritionName: '',
-    })
+
+    const [recipeData, setRecipiData] = React.useState<IRecipie>(location.state.from)
+
 
     const [loadingCategory, setLoadingCategory] = React.useState<boolean>(false)
     const [loadingIngridient, setLoadingIngridient] = React.useState<boolean>(false)
-    const [categoryTag, setCategoryTag] = React.useState<any>([])
-    const [foodCategory, setFoodCategory] = React.useState<any>([])
-    const [ingridient, setIngridient] = React.useState<any>([])
+    const [categoryTag, setCategoryTag] = React.useState<any>(location.state.from.tags)
+    const [foodCategory, setFoodCategory] = React.useState<any>()
+    const [ingridient, setIngridient] = React.useState<any>()
 
     // ingridient add
     const [ingridientVisiable, setIngridientVisiable] = React.useState<boolean>(false)
     const [searchIngriedient, setSearchIngriedient] = React.useState<string>('')
-    const [filterIngridient, setFilterIngridient] = React.useState<any>(ingridient)
+    const [filterIngridient, setFilterIngridient] = React.useState<any>(location.state.from.ingredients)
 
     React.useEffect(() => {
         // fetch all food category from server
@@ -77,11 +74,21 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
     }, [])
 
 
+
     const [preview, setPreview] = React.useState<ImageProps>({
-        height: 0,
-        width: 0,
-        src: ''
+        height: 400,
+        width: 400,
+        src: recipeData.image.location
     })
+
+    React.useEffect(() => {
+        if (preview.src !== recipeData.image.location) {
+            setNewImageUpload(true)
+            console.log('new image upload')
+        } else {
+            setNewImageUpload(false)
+        }
+    }, [preview, recipeData.image.location])
 
     React.useEffect(() => {
         if (recipeData.name !== '') {
@@ -108,23 +115,6 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
         }
     }
 
-    const handleSaveCategory = async () => {
-
-        // getAllRecipe().then(res => { console.log(res) })
-
-        console.log({ recipeData })
-
-        const form = new FormData()
-        form.append('data', JSON.stringify(recipeData))
-        form.append('file', recipeData.image)
-
-        saveRecipie(form, token).then(res => {
-            console.log('RES', res)
-            toast.error(res.data.message)
-        }).catch((err) => {
-            toast.error(err.response.data.message)
-        })
-    }
 
     const searchRef = React.useRef<any>()
 
@@ -160,11 +150,10 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
     // const [ingridientArray, setIngridientArray] = React.useState<Ingridient | any>([])
 
     // create new array of ingridient with quantity and unit in object
-    const [ingridientArray, setIngridientArray] = React.useState<any>([])
+    const [ingridientArray, setIngridientArray] = React.useState<any>(location.state.from.ingredients)
 
     // add ingridient
     const handleSelect = (item: string) => {
-        console.log({ recipeData })
         setIngridientArray([{ name: item, quantity: 0, unit: 'Gram (GM)' }, ...ingridientArray])
         setRecipiData({ ...recipeData, ingredients: [...ingridientArray, { name: item, quantity: 0, unit: 'Gram (GM)' }] })
         setIngridientVisiable(false)
@@ -177,14 +166,12 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
         // remove the ingridient from recipeData
         const updatedRecipeData = [...recipeData.ingredients].filter((ingridient: any) => ingridient.name !== item.name)
         setRecipiData({ ...recipeData, ingredients: updatedRecipeData })
-        console.log({ recipeData })
         setIngridientArray(updatedIngridient)
     }
 
     // handle ingredient unit
     const handleUnit = (unit: any, index: number) => {
         const updatedIngridient = [...ingridientArray]
-        console.log('updated', updatedIngridient)
         updatedIngridient[index].unit = unit
         setIngridientArray(updatedIngridient)
         // update recipeData
@@ -194,17 +181,40 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
     const handleQuantity = (quant: any, index: number) => {
         const updatedIngridient = [...ingridientArray]
         updatedIngridient[index].quantity = quant
-        console.log('quant', updatedIngridient)
         setIngridientArray(updatedIngridient)
         // update recipeData
         setRecipiData({ ...recipeData, ingredients: updatedIngridient })
     }
+
+    const handleSaveCategory = async () => {
+        const form = new FormData()
+        form.append('data', JSON.stringify(recipeData))
+        form.append('id', await location.state.from._id)
+        form.append('file', await recipeData.image)
+        form.append('isNewFile', JSON.stringify(newImageUpload))
+        form.append('key', await location.state.from.image.key)
+        setIsLoading(true)
+        if (location.state.from._id) {
+            updateRecipe(form, token)
+                .then(res => {
+                    setIsLoading(false)
+                    toast.success('Recipie updated successfully')
+                    navigate(-1)
+                })
+                .catch(err => {
+                    setIsLoading(false)
+                    toast.error('Something went wrong')
+                })
+        }
+    }
+
     return (
         <div className='mr-64'>
             <Back />
             <p className='text-2xl text-gray-700 font-semibold mb-4 '>New Recipie</p>
             <div className='h-auto relative'>
                 {/* header */}
+                <Back />
                 {/* body */}
                 <div className='py-5 flex flex-col gap-6'>
                     <div className='flex gap-2'>
@@ -320,13 +330,14 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
                                                 <tbody>
                                                     {
                                                         ingridientArray.map((item: any, index: number) => {
+
                                                             return (
                                                                 <tr className="bg-white border-b" key={index}>
                                                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                                                         {item.name}
                                                                     </th>
                                                                     <td className="px-6 py-4">
-                                                                        <input type="text" onChange={(e) => handleQuantity(e.target.value, index)} className='border w-10 h-8 rounded-md px-1' placeholder='0' />
+                                                                        <input type="text" value={item.quantity} onChange={(e) => handleQuantity(e.target.value, index)} className='border w-10 h-8 rounded-md px-1' placeholder='0' />
                                                                     </td>
                                                                     <td className="px-6 py-4">
                                                                         <select value={item.unit} onChange={(e) => handleUnit(e.target.value, index)}>
@@ -405,4 +416,4 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
     )
 }
 
-export default NewRecipie
+export default EditRecipie

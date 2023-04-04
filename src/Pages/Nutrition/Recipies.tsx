@@ -3,52 +3,52 @@ import { ParentCompProps } from '../Dashboard'
 import DeleteOutlineTwoToneIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 import AppRegistrationTwoToneIcon from '@mui/icons-material/AppRegistrationTwoTone';
 import CircularProgress from '@mui/material/CircularProgress';
-import { getAllRecipe, deleteDietFrequency, updateDietFrequency } from '../../http/api'
+import { getAllRecipe, deleteRecipe, getRecipeById } from '../../http/api'
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Back from '../../Components/Back';
+import { useAppSelector } from '../../store/hook';
 
 const Recipies = ({ title, content }: ParentCompProps) => {
+
+    const { token } = useAppSelector(state => state.auth)
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
     }, [content, title])
 
+    const navigate = useNavigate()
 
     const [recipe, setRecipe] = React.useState<any>([])
 
-    const [isLoading, setIsLoading] = React.useState(false)
 
-    const handleDelete = async (id: string) => {
-        // comfirm the delete
-        const res = await deleteDietFrequency(id)
-        console.log(res)
-        // clear the deleted category from the state
-        setRecipe(recipe.filter((item: any) => item._id !== id))
-        toast.success(res.data.message)
-    }
-
-    const handleEdit = async (id: string) => {
-        const promt = window.prompt('Enter new Diet Frequency Name')
-        if (promt === '') return toast.error('Please enter a valid name')
-        if (promt !== null) {
-            try {
-                const res = await updateDietFrequency({ name: promt }, id)
-                setRecipe(res.data.data)
-                toast.success(res.data.message)
-            } catch (error: any) {
-                toast.error(error.response.data.message)
-            }
-        }
-    }
-
+    // get all recipies
     React.useEffect(() => {
-        getAllRecipe().then(res => {
+        getAllRecipe(token).then(res => {
             setIsLoading(true)
             setRecipe(res.data.recipe)
         }).catch(err => {
             console.log(err)
         })
     }, [])
+
+    const [isLoading, setIsLoading] = React.useState(false)
+
+    const handleDelete = async (id: string) => {
+        const confirm = window.confirm('Are you sure you want to delete this recipie?')
+        if (!confirm) return
+        // comfirm the delete
+        const res = await deleteRecipe(id, token)
+        // clear the deleted category from the state
+        setRecipe(recipe.filter((item: any) => item._id !== id))
+        toast.success(res.data.message)
+    }
+
+    const handleEdit = async (id: string) => {
+        const res = await getRecipeById(id, token)
+        navigate(`/edit-recipe/${id}`, { state: { from: res.data.recipe } })
+    }
+
 
     // calculate day from time with respect to current date and time and minutes
     const convertToDay = (timestamp: string) => {
@@ -66,9 +66,9 @@ const Recipies = ({ title, content }: ParentCompProps) => {
     }
 
 
-
     return (
         <div>
+            <Back />
             <p className='text-2xl text-gray-700 font-semibold mb-4 '>Nutrition Recipies List</p>
             <div className='flex justify-between mb-2 items-center gap-5'>
                 <p className='text-gray-700 text-sm'>Showing {recipe.length} Records</p>

@@ -9,13 +9,15 @@ import { empWithFile, schoolWithFile, ingridientWithFile } from '../http/api'
 import { toast } from 'react-toastify'
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
-
+import { useAppSelector } from '../store/hook'
 
 interface FileUploaderProps {
     type: string
 }
 
 const FileUploader = ({ type }: FileUploaderProps) => {
+
+    const { token } = useAppSelector(state => state.auth)
 
     const [file, setFile] = React.useState<any>(null)
     const fileEl = React.useRef<HTMLInputElement>(null)
@@ -47,13 +49,13 @@ const FileUploader = ({ type }: FileUploaderProps) => {
             // for emp bulk upload function
             if (type === 'emp') {
                 // for academy bulk upload function
-                empWithFile(formData).then(res => {
+                empWithFile(formData, token).then((res: any) => {
                     if (res.data.success) {
                         console.log(res.data)
                         toast.success(res.data.message)
                         setLoading(false)
                     }
-                }).catch(err => {
+                }).catch((err: any) => {
                     console.log('ERROR', err.response)
                     toast.error(err.response.data.message)
                     setLoading(false)
@@ -61,14 +63,14 @@ const FileUploader = ({ type }: FileUploaderProps) => {
             }
             if (type === 'ingridienents') {
                 // for academy bulk upload function
-                ingridientWithFile(formData).then(res => {
-                    console.log('ingri',res)
+                ingridientWithFile(formData, token).then((res: any) => {
+                    console.log('ingri', res)
                     if (res.data.success) {
                         console.log(res.data)
                         toast.success(res.data.message)
                         setLoading(false)
                     }
-                }).catch(err => {
+                }).catch((err: any) => {
                     console.log('ERROR ing', err.response)
                     toast.error(err.response.data.message)
                     setLoading(false)
@@ -76,12 +78,12 @@ const FileUploader = ({ type }: FileUploaderProps) => {
             }
             else {
                 // for school bulk upload function
-                schoolWithFile(formData).then(res => {
+                schoolWithFile(formData, token).then((res: any) => {
                     if (res.data.success) {
                         toast.success(res.data.message)
                         setLoading(false)
                     }
-                }).catch(err => {
+                }).catch((err: any) => {
                     console.log('ERROR1', err)
                     toast.error(err.response.data.message)
                     setLoading(false)

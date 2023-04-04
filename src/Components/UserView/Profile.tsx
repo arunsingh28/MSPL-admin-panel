@@ -1,15 +1,16 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { getUserById } from '../../http/api'
-import { MarkEmailRead, PhoneAndroid, Transgender, Female, Male } from '@mui/icons-material';
+import { getUserById, attachUserToNutritionist } from '../../http/api'
+import { MarkEmailRead, PhoneAndroid, Female, Male } from '@mui/icons-material';
 import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility';
 import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
-import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Back from '../Back';
 import chart from '../../Assets/download.png'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import GaugeChart from 'react-gauge-chart'
+import { useAppSelector } from '../../store/hook';
+import { toast } from 'react-toastify'
 
 
 // import CircularProgress from '@mui/material/CircularProgress';
@@ -42,6 +43,10 @@ interface Iuser {
 }
 
 const Profile = () => {
+
+    const { user: currentUser, token } = useAppSelector(state => state.auth)
+
+
     const { id }: any = useParams()
     const [user, setUser] = React.useState<Iuser>()
 
@@ -56,7 +61,7 @@ const Profile = () => {
 
     React.useEffect(() => {
         setIsLoading(true)
-        getUserById(id).then(res => {
+        getUserById(id, token).then(res => {
             setIsLoading(false)
             setUser(res.data)
             convertToDouble(res.data?.BMI)
@@ -82,6 +87,14 @@ const Profile = () => {
         return num / howMuch
     }
 
+    const handleBook = () => {
+        attachUserToNutritionist(id, { nutritionist: currentUser._id }, token).then(res => {
+            toast.success(res.data.message)
+        }).catch(err => {
+            toast.error(err.response.data.message)
+        })
+    }
+
     return (
         <>
             {/* back module */}
@@ -94,14 +107,14 @@ const Profile = () => {
                             <ProfileSkeleton /> : <>
                                 <div className='flex gap-2 items-center justify-center'>
                                     <div className=''>
-                                        <h1 className='text-2xl text-gray-700 font-semibold w-full'>{user?.name}</h1>
+                                        <h1 className='text-2xl text-gray-700 font-semibold w-full'>{user?.name || 'Null'}</h1>
                                         <div className='mt-5 flex gap-2'>
                                             <MarkEmailRead color='success' />
-                                            <p className='text-gray-700'>{user?.email}</p>
+                                            <p className='text-gray-700'>{user?.email || 'Null'}</p>
                                         </div>
                                         <div className='mt-5 flex gap-2'>
                                             <PhoneAndroid color='info' />
-                                            <p className='text-gray-700'>{(user as any)?.phone}</p>
+                                            <p className='text-gray-700'>{(user as any)?.phone || 'Not found'}</p>
                                         </div>
                                     </div>
                                     {
@@ -119,11 +132,11 @@ const Profile = () => {
                             <div className='flex gap-4 mt-5'>
                                 <div className='rounded-md py-2 px-5 flex flex-col items-center justify-center'>
                                     <SettingsAccessibilityIcon fontSize='large' sx={{ color: '#444', fontSize: 50 }} />
-                                    <span className='text-gray-700 mt-2'>{user?.measurement.height} CM</span>
+                                    <span className='text-gray-700 mt-2'>{user?.measurement?.height || 0} CM</span>
                                 </div>
                                 <div className=' rounded-md flex flex-col items-center justify-center py-2 px-5'>
                                     <MonitorWeightIcon fontSize='large' sx={{ color: '#444', fontSize: 50 }} />
-                                    <span className='text-gray-700 mt-2'>{user?.measurement.weight} KG</span>
+                                    <span className='text-gray-700 mt-2'>{user?.measurement?.weight || 0} KG</span>
                                 </div>
                             </div>
                         </>
@@ -138,7 +151,7 @@ const Profile = () => {
                                 {
                                     user?.gender === 'Male' ? <Male /> : <Female />
                                 }
-                                <p className='text-gray-700'>{user?.gender}</p>
+                                <p className='text-gray-700'>{user?.gender || 'Null'}</p>
                             </div>
                             <div className='mt-5 flex gap-2'>
                                 <CalendarMonthIcon color='error' />
@@ -222,9 +235,9 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
+                <button className='bg-indigo-600 px-10 h-10 text-gray-100 rounded-sm' onClick={handleBook}>Take</button>
             </div>
             {/* BMI */}
-
 
 
 

@@ -9,8 +9,13 @@ import SaveIcon from '@mui/icons-material/Save';
 import CircularProgress from '@mui/material/CircularProgress';
 import { createRecipiCategory, getAllRecipeCategory, deleteRecipeCategory, updateRecipeCategory } from '../../http/api'
 import { toast } from 'react-toastify';
+import Back from '../../Components/Back';
+import { useAppSelector } from '../../store/hook'
+
 
 const RecipiesCategories = ({ title, content }: ParentCompProps) => {
+    const { token } = useAppSelector(state => state.auth)
+
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -22,7 +27,7 @@ const RecipiesCategories = ({ title, content }: ParentCompProps) => {
     const [recipiCategories, setRecipiCategories] = React.useState<any>([])
 
     const handleDelete = async (id: string) => {
-        const res = await deleteRecipeCategory(id)
+        const res = await deleteRecipeCategory(id, token)
         // clear the deleted category from the state
         setRecipiCategories(recipiCategories.filter((item: any) => item._id !== id))
         toast.success(res.data.message)
@@ -33,7 +38,7 @@ const RecipiesCategories = ({ title, content }: ParentCompProps) => {
         if (promt === '') return toast.error('Please enter a valid name')
         if (promt !== null) {
             try {
-                const res = await updateRecipeCategory({ name: promt }, id)
+                const res = await updateRecipeCategory({ name: promt }, id, token)
                 setRecipiCategories(res.data.data)
                 toast.success(res.data.message)
             } catch (error: any) {
@@ -43,7 +48,7 @@ const RecipiesCategories = ({ title, content }: ParentCompProps) => {
     }
 
     React.useEffect(() => {
-        getAllRecipeCategory().then(res => {
+        getAllRecipeCategory(token).then(res => {
             setRecipiCategories(res.data.data)
         }).catch(err => {
             console.log(err)
@@ -68,6 +73,7 @@ const RecipiesCategories = ({ title, content }: ParentCompProps) => {
 
     return (
         <div>
+            <Back />
             <p className='text-2xl text-gray-700 font-semibold mb-4'>Recipies Categories</p>
             <div className='flex justify-between mb-2 items-center gap-5'>
                 <p className='text-gray-700 text-sm'>Showing {recipiCategories.length} Records</p>
@@ -137,6 +143,8 @@ export default RecipiesCategories
 
 
 const AddModel = ({ setVisiable }: any) => {
+
+    const { token } = useAppSelector(state => state.auth)
     const [disable, setDisable] = React.useState(true)
     const [isLoading, setIsLoading] = React.useState(false)
 
@@ -153,7 +161,7 @@ const AddModel = ({ setVisiable }: any) => {
     const handleSaveCategory = () => {
         setIsLoading(true)
         try {
-            createRecipiCategory({ name }).then(res => {
+            createRecipiCategory({ name }, token).then(res => {
                 setIsLoading(false)
                 toast.success(res.data.message)
             }).catch(err => {

@@ -38,7 +38,7 @@ const Login = ({ title, content }: ParentCompProps) => {
     e.preventDefault();
     setLoading(true)
     login(cred).then((data: any) => {
-      console.log('login...',data)
+      console.log(data.data)
       if (data.data.success) {
         // dispatch Auth ----------------------
         dispatch(auth({
@@ -46,25 +46,24 @@ const Login = ({ title, content }: ParentCompProps) => {
           token: data.data.accessToken,
           isAuthenticated: true,
         }))
-        // save data info local storage
-        localStorage.setItem('user', JSON.stringify(data.data.data))
-        localStorage.setItem('isAuth', JSON.stringify(data.data.isAuthenticated))
 
         setLoading(false)
         // play sound if user set to true
         if (data.data.user.isMute.loginNotification) {
           play()
         }
-        localStorage.setItem('token', data.data.accessToken)
-        return navigate(from, { replace: true })
+        if (data.data.user.role.length === 8) {
+          return navigate('/users', { replace: true })
+        } else {
+          return navigate(from, { replace: true })
+        }
       } else {
         setError(data.data.message || 'Invalid Credentials')
         setLoading(false)
         return navigate('/login')
       }
     }).catch((err: any) => {
-      console.log("err",err)
-      if (err.response.status === 401) {
+      if (err.response?.status === 401) {
         setError(err.response.data.message)
         setLoading(false)
         return navigate('/login')
