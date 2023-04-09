@@ -65,8 +65,6 @@ const UserTable = ({ allUser }: any) => {
         setUserId(id)
     }
 
-
-
     return (
         <div>
             {
@@ -117,11 +115,11 @@ const UserTable = ({ allUser }: any) => {
                                                 </TableCell>
                                                 {/* <TableCell align="center">{row.sports.isBadminton}</TableCell> */}
                                                 <TableCell align="center">
-                                                    <Button variant="outlined" disabled={row.profileTimeline === 'init' ? true : false} onClick={() => handleEditProfile(row?._id)}><EditIcon />Edit</Button>
+                                                    <Button variant="outlined" disabled={disableDelete} onClick={() => handleEditProfile(row?._id)}><EditIcon />Edit</Button>
                                                 </TableCell>
 
                                                 <TableCell align="center">
-                                                    <Button variant="outlined" color='error' disabled={disableDelete}><DeleteIcon />
+                                                    <Button variant="outlined" sx={{ cursor: disableDelete ? 'not-allowed' : 'auto' }} color='error' disabled={disableDelete}><DeleteIcon />
                                                         {
                                                             isLoading ? <CircularProgress size={20} /> : 'Delete'
                                                         }
