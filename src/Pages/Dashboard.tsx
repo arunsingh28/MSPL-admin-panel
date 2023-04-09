@@ -53,7 +53,7 @@ const Dashboard = ({ title, content }: ParentCompProps) => {
     <>
       <h1 className='text-gray-700 font-semibold text-2xl'>All Stats</h1>
       <button className='px-10 py-2 bg-red-400 mt-3 rounded-md text-gray-50' onClick={handleRefreh} type="button">Refresh Tkn</button>
-      <div className='flex justify-between mt-5'>
+      <div className='flex mt-5 flex-wrap gap-4'>
         {
           isLoading ? <Skeleton variant="text" width={310} height={180} /> : <Card count={schoolcount} />
         }

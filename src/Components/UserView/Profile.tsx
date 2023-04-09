@@ -29,6 +29,7 @@ interface Iuser {
     gender: string;
     referal_code: string;
     planType: string;
+    nutritionist: string
     measurement: {
         height: number;
         weight: number;
@@ -87,8 +88,9 @@ const Profile = () => {
         return num / howMuch
     }
 
-    const handleBook = () => {
-        attachUserToNutritionist(id, { nutritionist: currentUser._id }, token).then(res => {
+    const handleBook = (e: any) => {
+        const nutritionist = currentUser._id
+        attachUserToNutritionist(id, nutritionist, { nutritionist: currentUser._id }, token).then(res => {
             toast.success(res.data.message)
         }).catch(err => {
             toast.error(err.response.data.message)
@@ -235,7 +237,7 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
-                <button className='bg-indigo-600 px-10 h-10 text-gray-100 rounded-sm' onClick={handleBook}>Take</button>
+                <button className={user?.nutritionist ? 'bg-gray-600 px-10 h-10 cursor-not-allowed text-gray-100 rounded-sm' : 'bg-indigo-600 px-10 h-10 text-gray-100 rounded-sm'} disabled={user?.nutritionist ? true : false} onChange={(e)=> e.currentTarget.disabled} onClick={handleBook}>Take</button>
             </div>
             {/* BMI */}
 
@@ -243,7 +245,7 @@ const Profile = () => {
 
 
             {/* chat plan */}
-            <div className='py-5'>
+            {/* <div className='py-5'>
                 <h2 className='text-2xl text-gray-700 font-semibold'>Reports</h2>
                 <div className='flex gap-4 mt-5'>
                     <div className='border h-96 w-1/2 bg-cyan-50'>
@@ -255,7 +257,7 @@ const Profile = () => {
                         <img src={chart} alt="" className='mt-2 mx-1' />
                     </div>
                 </div>
-            </div>
+            </div> */}
         </>
     )
 }

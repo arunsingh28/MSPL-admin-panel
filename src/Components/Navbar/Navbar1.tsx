@@ -17,13 +17,18 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { Outlet, Link, useNavigate } from 'react-router-dom'
 import HomeIcon from '@mui/icons-material/Home';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import SchoolIcon from '@mui/icons-material/School';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SportsIcon from '@mui/icons-material/Sports';
 import SupportIcon from '@mui/icons-material/Support';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../../Assets/LOGO.png'
+import SportsVolleyballOutlinedIcon from '@mui/icons-material/SportsVolleyballOutlined';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 import { Collapse } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -33,12 +38,11 @@ import useSound from 'use-sound'
 import logoutSound from '../../Assets/sounds/logout.mp3'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../../store/slices/authSlice'
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -50,15 +54,18 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import CategoryIcon from '@mui/icons-material/Category';
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
-import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
 import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
 import LocalDiningOutlinedIcon from '@mui/icons-material/LocalDiningOutlined';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
 import CastForEducationIcon from '@mui/icons-material/CastForEducation';
-
-
+import ProfileModel from '../Settings/ProfileModel';
+import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import { logoutApi } from '../../http/api'
 
 const drawerWidth = 240;
@@ -133,10 +140,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 
+
 const Navbar1 = () => {
 
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+
+    const [openProfile, setOpenProfile] = React.useState(false);
 
     const [schoolMenu, setSchoolMenu] = React.useState(false);
     const [gymMenu, setGymMenu] = React.useState(false);
@@ -146,6 +156,7 @@ const Navbar1 = () => {
     const [blogMenu, setBlogMenu] = React.useState(false);
     const [nutritionMenu, setNutritionMenu] = React.useState(false);
     const [packageMenu, setPackageMenu] = React.useState(false);
+    const [mobileMenu, setMobileMenu] = React.useState(false)
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -191,6 +202,8 @@ const Navbar1 = () => {
         })
     }
 
+
+
     return (
         <>
             <CssBaseline />
@@ -214,13 +227,15 @@ const Navbar1 = () => {
                         </Typography>
                     </Toolbar>
                     {/* profile image and name */}
-                    <div className='mr-5 px-2 py-1 rounded-md flex items-center justify-center gap-2'>
+                    <div className='mr-5 px-2 py-1 rounded-md flex items-center justify-center gap-2 relative' onClick={() => setOpenProfile(!openProfile)}>
                         {
-                            auth?.user?.profilePic ? <img src={auth?.user?.profilePic} alt="profile" className='w-10 h-10 rounded-full' /> : <div className='bg-orange-300 border-orange-200 drop-shadow-md rounded-full px-[11px] py-[10px] tracking-wide pointer-events-none'>
-                                <p className='text-[18px]'>{intials}</p>
-                            </div>
+                            auth?.user?.profilePic ? <img src={auth?.user?.profilePic} alt="profile" className='w-10 h-10 rounded-full' /> :
+                                <div className='bg-orange-300 border-orange-200 drop-shadow-md rounded-full px-[11px] py-[10px] tracking-wide pointer-events-none'>
+                                    <p className='text-[18px]'>{intials}</p>
+                                </div>
                         }
                         <p className='text-gray-50'>Hi, {auth?.user?.name || 'ERR'}</p>
+                        {openProfile && <ProfileModel data={auth} setOpenProfile={setOpenProfile} profile={auth?.user?.profilePic} intials={intials} />}
                     </div>
                 </div>
             </AppBar>
@@ -254,7 +269,7 @@ const Navbar1 = () => {
                                                     mr: open ? 3 : 'auto',
                                                     justifyContent: 'center',
                                                 }} >
-                                                <DashboardIcon sx={{ color: '#2192FF' }} />
+                                                <DashboardOutlinedIcon sx={{ color: '#2192FF' }} />
                                             </ListItemIcon>
                                             <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
                                         </ListItemButton>
@@ -262,8 +277,36 @@ const Navbar1 = () => {
                                 </Link>
                             </> : null
                     }
+                    {/* nutrisit dashboard */}
+                    {/* {
+                        [91]?.find((role: any) => auth.user?.role?.includes(role))
+                            ?
+                            <>
+                                <Link to="/">
+                                    <ListItem key="Dashboard" disablePadding sx={{ display: 'block' }}>
+                                        <ListItemButton
+                                            sx={{
+                                                minHeight: 48,
+                                                justifyContent: open ? 'initial' : 'center',
+                                                px: 2.5,
+                                            }}
+                                        >
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 3 : 'auto',
+                                                    justifyContent: 'center',
+                                                }} >
+                                                <DashboardIcon sx={{ color: '#2192FF' }} />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                </Link>
+                            </> : null
+                    } */}
                     {
-                        open ? [999]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
+                        open ? [91]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* users */}
                     {
@@ -287,13 +330,46 @@ const Navbar1 = () => {
                                                     mr: open ? 3 : 'auto',
                                                     justifyContent: 'center',
                                                 }} >
-                                                <ManageAccountsIcon sx={{ color: '#1cbf2a' }} />
+                                                <ManageAccountsOutlinedIcon sx={{ color: '#1cbf2a' }} />
                                             </ListItemIcon>
                                             <ListItemText primary="Users" sx={{ opacity: open ? 1 : 0 }} />
                                         </ListItemButton>
                                     </ListItem>
                                 </Link>
                             </> : null
+                    }
+                    {
+                        open ? [92]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
+                    }
+                    {
+                        [91]?.find((role: any) => auth.user?.role?.includes(role))
+                            ?
+                            <>
+                                <Link to="/my-client">
+                                    <ListItem key="MY-Client" disablePadding sx={{ display: 'block' }}>
+                                        {/* text with button */}
+                                        <ListItemButton
+                                            sx={{
+                                                minHeight: 48,
+                                                justifyContent: open ? 'initial' : 'center',
+                                                px: 2.5,
+                                            }}
+                                        >
+                                            {/* icons here */}
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 3 : 'auto',
+                                                    justifyContent: 'center',
+                                                }} >
+                                                <PeopleOutlineIcon sx={{ color: '#0b00a1' }} />
+                                            </ListItemIcon>
+                                            <ListItemText primary="My Clients" sx={{ opacity: open ? 1 : 0 }} />
+                                        </ListItemButton>
+                                    </ListItem>
+                                </Link>
+                            </> : null
+
                     }
                     {
                         open ? [92]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
@@ -319,7 +395,7 @@ const Navbar1 = () => {
                                                 mr: open ? 3 : 'auto',
                                                 justifyContent: 'center',
                                             }} >
-                                            <MedicationLiquidIcon sx={{ color: '#1bc5d1' }} />
+                                            <NoteAltOutlinedIcon sx={{ color: '#1bc5d1' }} />
                                             {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                         </ListItemIcon>
                                         <ListItemText primary="Nutrition" sx={{ opacity: open ? 1 : 0 }} />
@@ -522,6 +598,108 @@ const Navbar1 = () => {
                             : null
                     }
                     {
+                        open ? [82]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
+                    }
+                    {
+                        [82]?.find((role: any) => auth.user?.role?.includes(role))
+                            ?
+                            <>
+                                <ListItem key="mobile" onClick={() => setMobileMenu(!mobileMenu)} disablePadding sx={{ display: 'block' }}>
+                                    {/* text with button */}
+                                    <ListItemButton
+                                        sx={{
+                                            minHeight: 48,
+                                            justifyContent: open ? 'initial' : 'center',
+                                            px: 2.5,
+                                        }}
+                                    >
+                                        {/* icons here */}
+                                        <ListItemIcon
+                                            sx={{
+                                                minWidth: 0,
+                                                mr: open ? 3 : 'auto',
+                                                justifyContent: 'center',
+                                            }} >
+                                            <MobileFriendlyIcon sx={{ color: '#323131' }} />
+                                            {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                        </ListItemIcon>
+                                        <ListItemText primary="Mobile" sx={{ opacity: open ? 1 : 0 }} />
+                                        {/* down arrow */}
+                                        {
+                                            open ? mobileMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                                        }
+                                    </ListItemButton>
+                                    <Collapse in={mobileMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
+                                        <List component="div" disablePadding>
+                                            {
+                                                [821]?.find((role: any) => auth.user?.role?.includes(role))
+                                                    ?
+                                                    <>
+                                                        <Link to="mobile-banner">
+                                                            <ListItem key="banner" disablePadding sx={{ display: 'block' }}>
+                                                                {/* text with button */}
+                                                                <ListItemButton
+                                                                    sx={{
+                                                                        minHeight: 48,
+                                                                        justifyContent: mobileMenu ? 'initial' : 'center',
+                                                                        px: 2.5,
+                                                                    }}
+                                                                >
+                                                                    {/* icons here */}
+                                                                    <ListItemIcon
+                                                                        sx={{
+                                                                            minWidth: 0,
+                                                                            mr: open ? 3 : 'auto',
+                                                                            justifyContent: 'center',
+                                                                        }} >
+                                                                        <ViewCarouselIcon sx={{ color: '#fff' }} />
+                                                                        {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                                                    </ListItemIcon>
+                                                                    <ListItemText primary="Banner" sx={{ opacity: open ? mobileMenu ? 1 : 1 : 0, color: '#fff' }} />
+                                                                </ListItemButton>
+                                                            </ListItem>
+                                                        </Link>
+                                                    </> : null
+                                            }
+                                            {/* second view */}
+                                            {
+                                                [822]?.find((role: any) => auth.user?.role?.includes(role))
+                                                    ?
+                                                    <>
+                                                        <Link to="list-package">
+                                                            <ListItem key="List Package" disablePadding sx={{ display: 'block' }}>
+                                                                {/* text with button */}
+                                                                <ListItemButton
+                                                                    sx={{
+                                                                        minHeight: 48,
+                                                                        justifyContent: mobileMenu ? 'initial' : 'center',
+                                                                        px: 2.5,
+                                                                    }}
+                                                                >
+                                                                    {/* icons here */}
+                                                                    <ListItemIcon
+                                                                        sx={{
+                                                                            minWidth: 0,
+                                                                            mr: open ? 3 : 'auto',
+                                                                            justifyContent: 'center',
+                                                                        }} >
+                                                                        <CategoryIcon sx={{ color: '#fff' }} />
+                                                                        {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                                                    </ListItemIcon>
+
+                                                                    <ListItemText primary="List Package" sx={{ opacity: open ? mobileMenu ? 1 : 1 : 0, color: '#fff' }} />
+                                                                </ListItemButton>
+                                                            </ListItem>
+                                                        </Link>
+                                                    </> : null
+                                            }
+                                        </List>
+                                    </Collapse>
+                                </ListItem>
+                            </>
+                            : null
+                    }
+                    {
                         open ? [93]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
                     {/* package */}
@@ -545,7 +723,7 @@ const Navbar1 = () => {
                                                 mr: open ? 3 : 'auto',
                                                 justifyContent: 'center',
                                             }} >
-                                            <ReceiptIcon sx={{ color: '#ef2926' }} />
+                                            <LocalOfferOutlinedIcon sx={{ color: '#ef2926' }} />
                                             {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                         </ListItemIcon>
                                         <ListItemText primary="Packges" sx={{ opacity: open ? 1 : 0 }} />
@@ -649,7 +827,7 @@ const Navbar1 = () => {
                                                 mr: open ? 3 : 'auto',
                                                 justifyContent: 'center',
                                             }} >
-                                            <AdminPanelSettingsIcon sx={{ color: '#fd8a0f' }} />
+                                            <AdminPanelSettingsOutlinedIcon sx={{ color: '#fd8a0f' }} />
                                             {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                         </ListItemIcon>
                                         <ListItemText primary="Core Operation" sx={{ opacity: open ? 1 : 0 }} />
@@ -991,7 +1169,7 @@ const Navbar1 = () => {
                                                 mr: open ? 3 : 'auto',
                                                 justifyContent: 'center',
                                             }} >
-                                            <SportsMartialArtsIcon sx={{ color: '#C47AFF' }} />
+                                            <SportsVolleyballOutlinedIcon sx={{ color: '#C47AFF' }} />
                                             {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                         </ListItemIcon>
                                         <ListItemText primary="Academy Circle" sx={{ opacity: open ? 1 : 0 }} />
@@ -1126,7 +1304,7 @@ const Navbar1 = () => {
                                                 mr: open ? 3 : 'auto',
                                                 justifyContent: 'center',
                                             }} >
-                                            <AssignmentTurnedInIcon sx={{ color: '#6D67E4' }} />
+                                            <SchoolOutlinedIcon sx={{ color: '#6D67E4' }} />
                                             {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                         </ListItemIcon>
                                         <ListItemText primary="LMS" sx={{ opacity: open ? 1 : 0 }} />
@@ -1453,7 +1631,7 @@ const Navbar1 = () => {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    <SettingsIcon color='info' />
+                                    <SettingsOutlinedIcon color='info' />
                                 </ListItemIcon>
                                 <ListItemText primary="Setting" sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>

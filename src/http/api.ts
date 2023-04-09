@@ -408,7 +408,7 @@ export const removeNutritionProfile = async (key: string, id: string, token: str
 
 
 // attach user to nutritionist
-export const attachUserToNutritionist = async (id: string, data: any, token: string) => await privateApi.post(`/attach-user-to-nutritionist/${id}`, JSON.stringify(data), {
+export const attachUserToNutritionist = async (id: string, nutriID: string, data: any, token: string) => await privateApi.post(`/attach-user-to-nutritionist/${id}/${nutriID}`, JSON.stringify(data), {
     headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
@@ -453,6 +453,22 @@ export const fetchModules = async (id: string, token: string) => await lmsApi.ge
 })
 
 export const updateModuleContent = async (id: string, data: any, token: string) => await lmsApi.put(`/update-lesson/${id}`, JSON.stringify(data), {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// save banner
+export const createMobileBanner = async (data: any, bannerkey: string, token: string) => await filePrivateApi.post(`/create-banner/?key=${bannerkey}`, data, {
+    headers: {
+        'Content-type': 'multipart/form-data',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// fetch all my client
+export const fetchMyClient = async (id: string, token: string) => await privateApi.get(`/fetch-all-client/${id}`, {
     headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token

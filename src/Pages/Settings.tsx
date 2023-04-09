@@ -25,7 +25,7 @@ const Settings = ({ title, content }: ParentCompProps) => {
   return (
     <div>
       <h1 className='text-2xl text-gray-700 font-semibold pb-2'>Settings</h1>
-      <div>
+      <div className='flex flex-col gap-2'>
         {/* sound setting */}
         <div>
           <div className={showBody.sound ? 'flex gap-5  px-10 py-4 rounded-sm border': 'hover:bg-gray-100 bg-blue-50 flex gap-5 px-10 py-4 rounded-sm border'} onClick={()=>{setShowBody({

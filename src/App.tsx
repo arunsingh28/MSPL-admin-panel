@@ -2,8 +2,8 @@ import React from 'react';
 import './App.css';
 import Layout from './Components/Layout';
 import Layout2 from './Components/Layout/Layout'
-import { Routes, Route, Navigate } from 'react-router-dom';
-
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import NotAvailable from './Components/NotAvailable';
 
 // page routes
 import Dashboard from './Pages/Dashboard';
@@ -28,7 +28,8 @@ import AddRecipie from './Pages/Nutrition/AddRecipie'
 import ViewIngridienents from './Pages/Nutrition/ViewIngridienents'
 import EditRecipie from './Pages/Nutrition/EditRecipie';
 import DietPlanner from './Pages/Nutrition/DietPlanner';
-
+import MyClient from './Pages/Nutrition/MyClient';
+import MyClientTask from './Pages/Nutrition/MyClientLayout';
 
 import Profile from './Components/UserView/Profile';
 
@@ -70,6 +71,9 @@ import ViewModules from './Components/LMS/temp-lms/ViewModules';
 import EditModule from './Components/LMS/temp-lms/EditCourse'
 
 
+// mobile
+import Banner from './Pages/Mobile/Banner';
+
 function App() {
 
 
@@ -99,6 +103,11 @@ function App() {
             <Route path="/create-school" element={<SchoolCreate title="School Create" content="create school" />} />
           </Route>
           <Route element={<Protected allowdRole={Roles.superAdmin} />}>
+            <Route path="/mobile-banner" element={<Banner title="Mobile Banner" content="Mobile Banner" />} />
+          </Route>
+
+
+          <Route element={<Protected allowdRole={Roles.superAdmin} />}>
             <Route path="/edit-school" element={<SchoolEdit title="School Edit" content="edit school" />} />
             <Route path='/view-school/:id' element={<SchoolView title="School View" content="view school" />} />
           </Route>
@@ -124,6 +133,18 @@ function App() {
           <Route element={<Protected allowdRole={Roles.superAdmin} />}>
             <Route path='/users' element={<Users title="Users" content="Users" />} />
             <Route path="user/:id" element={<Profile />} />
+          </Route>
+
+          {/* myClient */}
+          <Route element={<Protected allowdRole={Roles.superAdmin} />}>
+            <Route path="/my-client" element={<MyClient title="Clients" content="My client" />} />
+            <Route path="/my-client/:id" element={<MyClientTask />}>
+              {/* child router */}
+              <Route path="progress-tracker" element={<NotAvailable from="Progress Tracker"/>} />
+              <Route path="meal-planner" index element={<DietPlanner title="Diet Planner" content="Planner" />} />
+              <Route path="notes" element={<NotAvailable from="Notes" />} />
+              <Route path="assisment-form" element={<NotAvailable from="Assisment From"/>} />
+            </Route>
           </Route>
 
           {/* LMS */}
@@ -154,6 +175,9 @@ function App() {
               <Route path='statics' element={<Statics />} />
             </Route>
           </Route>
+
+
+
           {/* Nutrition */}
           <Route element={<Protected allowdRole={Roles.superAdmin} />}>
             <Route path='/add-ingridienents' element={<Ingridienents title="Ingridienents" content="Ingridienents" />} />
@@ -163,7 +187,6 @@ function App() {
             <Route path='/add-new-recipie' element={<AddRecipie title="Add new recipies" content="Recipies" />} />
             <Route path='/view-ingridienents' element={<ViewIngridienents title="All ViewIngridienents" content="ViewIngridienents" />} />
             <Route path='/edit-recipe/:id' element={<EditRecipie title="Edit Recipie" content="Edit Recipie" />} />
-            <Route path='/diet-planner' element={<DietPlanner title="Diet Planner" content="Diet Planner" />} />
           </Route>
           {/* unathorized page */}
         </Route>
