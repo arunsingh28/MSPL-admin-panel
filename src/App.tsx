@@ -53,6 +53,7 @@ import Checklist from './Components/LMS/MenuContainer/Checklist';
 import Feedback from './Components/LMS/MenuContainer/Feedback';
 import Quiz from './Components/LMS/MenuContainer/Quiz';
 import Lesson from './Components/LMS/temp-lms/Lesson';
+import File from './Components/LMS/temp-lms/File';
 
 // blog
 import New from './Components/Blog/New';
@@ -140,10 +141,10 @@ function App() {
             <Route path="/my-client" element={<MyClient title="Clients" content="My client" />} />
             <Route path="/my-client/:id" element={<MyClientTask />}>
               {/* child router */}
-              <Route path="progress-tracker" element={<NotAvailable from="Progress Tracker"/>} />
+              <Route path="progress-tracker" element={<NotAvailable from="Progress Tracker" />} />
               <Route path="meal-planner" index element={<DietPlanner title="Diet Planner" content="Planner" />} />
               <Route path="notes" element={<NotAvailable from="Notes" />} />
-              <Route path="assisment-form" element={<NotAvailable from="Assisment From"/>} />
+              <Route path="assisment-form" element={<NotAvailable from="Assisment From" />} />
             </Route>
           </Route>
 
@@ -154,7 +155,8 @@ function App() {
 
             <Route path='new-course-enroll' element={<CreateCourse title="Create Course" content="course" />}>
               <Route path='modules/:id' index element={<Modules title="Module" content="Module" />} />
-              <Route path='chapter/:id' index element={<Chapter />} />
+              <Route path='chapter/:id' element={<Chapter />} />
+              <Route path='file/:id' element={<File />} />
               <Route path='choice' element={<Choice />} />
               <Route path='checklist' element={<Checklist />} />
               <Route path='feedback' element={<Feedback />} />

@@ -70,7 +70,7 @@ const Profile = () => {
             setIsLoading(false)
             console.log(err)
         })
-    }, [])
+    }, [id, token])
 
     const getAge = (dateString: any) => {
         const today = new Date();
@@ -84,8 +84,9 @@ const Profile = () => {
     }
 
 
-    const converToPercent = (num: any, howMuch: number) => {
-        return num / howMuch
+    const converToPercent = (total: any, percent: any) => {
+        const result = (total * percent) / 100
+        return result.toFixed(2)
     }
 
     const handleBook = (e: any) => {
@@ -223,21 +224,21 @@ const Profile = () => {
                         {/* carb */}
                         <div className='mt-2 flex gap-2 items-center'>
                             <div className='w-2 h-2 bg-red-500 rounded-full' />
-                            <p className='text-gray-700'>Carb : {converToPercent(user?.BMR?.toFixed(2), 50) || 0} Gram</p>
+                            <p className='text-gray-700'>Carb : {converToPercent(user?.BMR, 40) || 0} Gram</p>
                         </div>
                         {/* fat */}
                         <div className='mt-2 flex gap-2 items-center'>
                             <div className='w-2 h-2 bg-yellow-500 rounded-full' />
-                            <p className='text-gray-700'>Fat : {converToPercent(user?.BMR?.toFixed(2), 20) || 0} Gram</p>
+                            <p className='text-gray-700'>Fat : {converToPercent(user?.BMR, 40) || 0} Gram</p>
                         </div>
                         {/* protein */}
                         <div className='mt-2 flex gap-2 items-center'>
                             <div className='w-2 h-2 bg-green-500 rounded-full' />
-                            <p className='text-gray-700'>Protein : {converToPercent(user?.BMR?.toFixed(2), 30) || 0} Gram</p>
+                            <p className='text-gray-700'>Protein : {converToPercent(user?.BMR, 20) || 0} Gram</p>
                         </div>
                     </div>
                 </div>
-                <button className={user?.nutritionist ? 'bg-gray-600 px-10 h-10 cursor-not-allowed text-gray-100 rounded-sm' : 'bg-indigo-600 px-10 h-10 text-gray-100 rounded-sm'} disabled={user?.nutritionist ? true : false} onChange={(e)=> e.currentTarget.disabled} onClick={handleBook}>Take</button>
+                <button className={user?.nutritionist ? 'bg-gray-600 px-10 h-10 cursor-not-allowed text-gray-100 rounded-sm' : 'bg-indigo-600 px-10 h-10 text-gray-100 rounded-sm'} disabled={user?.nutritionist ? true : false} onChange={(e) => e.currentTarget.disabled} onClick={handleBook}>Take</button>
             </div>
             {/* BMI */}
 

@@ -48,7 +48,7 @@ const ProfileModel = ({ data, setOpenProfile, intials, profile }: any) => {
                 <div className='flex justify-start gap-4 ml-2 items-center'>
                     {
                         profile ?
-                            <img src={profile} alt="profile" className='w-16 h-16 rounded-full border border-gray-200' /> :
+                            <img src={profile} alt="profile" className='w-16 h-16 rounded-full border border-gray-200 object-cover' /> :
                             <div className='bg-orange-300 border-orange-200 drop-shadow-md rounded-full px-[11px] py-[10px] tracking-wide pointer-events-none'>
                                 <p className='text-[25px]'>{intials}</p>
                             </div>

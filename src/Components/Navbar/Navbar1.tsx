@@ -144,7 +144,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const Navbar1 = () => {
 
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
 
     const [openProfile, setOpenProfile] = React.useState(false);
 
@@ -229,7 +229,7 @@ const Navbar1 = () => {
                     {/* profile image and name */}
                     <div className='mr-5 px-2 py-1 rounded-md flex items-center justify-center gap-2 relative' onClick={() => setOpenProfile(!openProfile)}>
                         {
-                            auth?.user?.profilePic ? <img src={auth?.user?.profilePic} alt="profile" className='w-10 h-10 rounded-full' /> :
+                            auth?.user?.profilePic ? <img src={auth?.user?.profilePic} alt="profile" className='w-10 h-10 rounded-full object-cover' /> :
                                 <div className='bg-orange-300 border-orange-200 drop-shadow-md rounded-full px-[11px] py-[10px] tracking-wide pointer-events-none'>
                                     <p className='text-[18px]'>{intials}</p>
                                 </div>
@@ -555,37 +555,6 @@ const Navbar1 = () => {
                                                                         {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
                                                                     </ListItemIcon>
                                                                     <ListItemText primary="Recipies" sx={{ opacity: open ? nutritionMenu ? 1 : 1 : 0, color: '#fff' }} />
-                                                                </ListItemButton>
-                                                            </ListItem>
-                                                        </Link>
-                                                    </> : null
-                                            }
-                                            {/* Diet plan */}
-                                            {
-                                                [926]?.find((role: any) => auth.user?.role?.includes(role))
-                                                    ?
-                                                    <>
-                                                        <Link to="diet-planner">
-                                                            <ListItem key="diet-planner" disablePadding sx={{ display: 'block' }}>
-                                                                {/* text with button */}
-                                                                <ListItemButton
-                                                                    sx={{
-                                                                        minHeight: 48,
-                                                                        justifyContent: nutritionMenu ? 'initial' : 'center',
-                                                                        px: 2.5,
-                                                                    }}
-                                                                >
-                                                                    {/* icons here */}
-                                                                    <ListItemIcon
-                                                                        sx={{
-                                                                            minWidth: 0,
-                                                                            mr: open ? 3 : 'auto',
-                                                                            justifyContent: 'center',
-                                                                        }} >
-                                                                        <MenuBookIcon sx={{ color: '#fff' }} />
-                                                                        {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                                                    </ListItemIcon>
-                                                                    <ListItemText primary="Diet Planner" sx={{ opacity: open ? nutritionMenu ? 1 : 1 : 0, color: '#fff' }} />
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>

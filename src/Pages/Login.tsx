@@ -44,7 +44,7 @@ const Login = ({ title, content }: ParentCompProps) => {
         dispatch(auth({
           user: data.data.user,
           token: data.data.accessToken,
-          isAuthenticated: true,
+          isAuthenticated: true
         }))
 
         setLoading(false)

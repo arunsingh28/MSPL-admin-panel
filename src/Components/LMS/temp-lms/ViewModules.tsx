@@ -1,14 +1,13 @@
 import React from 'react'
 import { ParentCompProps } from '../../../Pages/Dashboard'
-import { fetchAllCourse } from '../../../http/api'
+import { fetchAllCourse, deleteCourse } from '../../../http/api'
 import Back from '../../Back'
 import { useAppSelector } from '../../../store/hook'
 import { useNavigate } from 'react-router-dom'
-import { Button } from '@mui/material'
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import FlightLandIcon from '@mui/icons-material/FlightLand';
-
+import { toast } from 'react-toastify'
 
 const ViewModules = ({ title, content }: ParentCompProps) => {
 
@@ -31,13 +30,26 @@ const ViewModules = ({ title, content }: ParentCompProps) => {
         })
     }, [token])
 
+    const handleDeleteCourse = (id: string) => {
+        const prompt = window.confirm('Are you sure you want to delete this course?')
+        if (prompt) {
+            deleteCourse(id, token).then((res: any) => {
+                if (res.data.success === false) return toast.error(res.data.message)
+                toast.success('Course deleted successfully')
+                setAllCourse(allCourse.filter((course: any) => course._id !== id))
+            }).catch((err: any) => {
+                toast.error(err.response.data.message)
+            })
+        } else return
+    }
+
     return (
         <div className=''>
             <Back />
             <h1 className='text-gray-700 font-semibold text-2xl'>All Modules</h1>
             <div className='flex flex-col gap-3 mt-5'>
                 {
-                    allCourse?.map((course: any) => {
+                    allCourse && allCourse.length === 0 ? <p className='mx-auto text-gray-600'>No Course Found</p> : allCourse?.map((course: any) => {
                         return (
                             <div key={course._id} className='border px-2 py-1 rounded-sm'>
                                 <h1>{course.courseTitle}</h1>
@@ -55,7 +67,7 @@ const ViewModules = ({ title, content }: ParentCompProps) => {
                                         </button>
                                     </div>
                                     <div className='flex gap-2'>
-                                        <button className='px-4 py-1 border border-red-500 rounded-sm text-red-500'>
+                                        <button className='px-4 py-1 border border-red-500 rounded-sm text-red-500 hover:bg-red-500 hover:text-gray-50' onClick={() => handleDeleteCourse(course._id)}>
                                             <DeleteOutlineIcon className='mr-2' />
                                             Delete
                                         </button>

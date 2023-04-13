@@ -61,8 +61,8 @@ const CreateCourse = () => {
 
     return (
         <div className=''>
-            <div className='w-[600px] gap-4 p-5 rounded-md'>
-                <h4 className='mb-5 text-gray-700 font-semibold text-xl'>Course Info</h4>
+            <div className='w-[600px] gap-4 py-4 rounded-md'>
+                <h4 className='mb-5 text-gray-600 font-semibold text-xl'>Course Info</h4>
                 <TextField value={courseData.courseTitle} onChange={(e) => setCourseData({
                     ...courseData,
                     courseTitle: e.target.value
@@ -115,7 +115,8 @@ const Model = ({ handleClose, courseData }: any) => {
         choice: false,
         checklist: false,
         chapter: false,
-        lesson: false
+        lesson: false,
+        file: false
     })
 
 
@@ -154,7 +155,8 @@ const Model = ({ handleClose, courseData }: any) => {
                                     feedback: false,
                                     checklist: false,
                                     choice: false,
-                                    lesson: false
+                                    lesson: false,
+                                    file: false
                                 })
                             }} className={checked.chapter ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
                                 <input type="radio" checked={checked.chapter} />
@@ -168,12 +170,28 @@ const Model = ({ handleClose, courseData }: any) => {
                                     feedback: false,
                                     checklist: false,
                                     choice: false,
-                                    lesson: true
+                                    lesson: true,
+                                    file: false
                                 })
                             }} className={checked.lesson ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
                                 <input type="radio" checked={checked.lesson} />
                                 <CastForEducationIcon />
                                 <span>Lessons</span>
+                            </Link>
+                            <Link to={`/new-course-enroll/file/${courseData.courseId}`} onClick={() => {
+                                setChecked({
+                                    chapter: false,
+                                    quiz: false,
+                                    feedback: false,
+                                    checklist: false,
+                                    choice: false,
+                                    lesson: false,
+                                    file: true
+                                })
+                            }} className={checked.file ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
+                                <input type="radio" checked={checked.file} />
+                                <PlayLessonIcon />
+                                <span>File</span>
                             </Link>
                             {/* <Link to="/new-course-enroll/quiz" onClick={() => {
                                 setChecked({

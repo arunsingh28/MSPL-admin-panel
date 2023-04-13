@@ -23,7 +23,7 @@ const privateApi = axios.create({
 })
 
 const tutorialApi = axios.create({
-    baseURL: developmentLink + 'v2/tutorial',
+    baseURL: developmentLink + 'v2/lms',
     timeout: 10000,
     withCredentials: true
 })
@@ -253,7 +253,7 @@ export const createIngridient = async (data: any, token: string) => await privat
     }
 })
 // fetch all    ingridient
-export const getAllIngridient = async (token: string) => await privateApi.get('/fetch-ingridient', {
+export const getAllIngridient = async (page: number, limit: number, token: string) => await privateApi.get(`/fetch-ingridient?page=${page}&limit=${limit}`, {
     headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
@@ -467,10 +467,49 @@ export const createMobileBanner = async (data: any, bannerkey: string, token: st
     }
 })
 
+// fetch all banner
+export const fetchAllBanner = async (token: string) => await privateApi.get('/get-all-banner', {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// delte banner delete-banner/:id
+export const deleteBanner = async (id: string, token: string) => await privateApi.delete(`/delete-banner/${id}`, {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
 // fetch all my client
 export const fetchMyClient = async (id: string, token: string) => await privateApi.get(`/fetch-all-client/${id}`, {
     headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// delete client
+export const deleteClient = async (id: string, token: string) => await privateApi.delete(`/delete-client/${id}`, {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// delete course delete-course/:id
+export const deleteCourse = async (id: string, token: string) => await lmsApi.delete(`/delete-course/${id}`, {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+export const uploadPDFCourse = async (data: any, id: string, token: string) => await lmsApi.post(`/upload-pdf-course/${id}`, data, {
+    headers: {
+        'Content-type': 'multipart/form-data',
         'Authorization': 'Bearer ' + token
     }
 })

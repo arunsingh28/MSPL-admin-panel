@@ -101,7 +101,7 @@ const MyClientTask = () => {
                 </div>
             </div>
             {/* weeks  its hidden*/}
-            <div className='w-full mt-2 hidden'>
+            <div className='w-full mt-4'>
                 <div className='flex overflow-auto'>
                     <div className='h-16 border w-32 flex flex-col items-center justify-center'>
                         <h1 className='text-gray-700'>

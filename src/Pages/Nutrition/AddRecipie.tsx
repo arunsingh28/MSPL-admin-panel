@@ -1,6 +1,6 @@
 import React from 'react'
 import { getAllRecipeCategory, getAllIngridient, saveRecipie } from '../../http/api'
-// import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import CustomEditor from '../../Components/InstractionEditor/Editor';
 import { TextField } from '@mui/material'
 import { Button } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
@@ -18,6 +18,7 @@ interface IRecipie {
     // instructions: string;
     preparationTime: number;
     tags: any[] | any;
+    instractions: any[] | any;
     image: any[] | any;
     status: boolean | any;
     sourceLink: string;
@@ -33,6 +34,8 @@ interface ImageProps {
 const NewRecipie = ({ title, content }: ParentCompProps) => {
     const { token } = useAppSelector(state => state.auth)
 
+    const { content: prepration } = useAppSelector(state => state.editorContent)
+
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -41,6 +44,7 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
     const imgRef = React.useRef<HTMLInputElement>(null)
     const [disable, setDisable] = React.useState(true)
     const [isLoading, setIsLoading] = React.useState(false)
+
     const [recipeData, setRecipiData] = React.useState<IRecipie>({
         name: '',
         ingredients: [],
@@ -50,6 +54,7 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
         image: [],
         status: true,
         sourceLink: '',
+        instractions: '',
         nutritionName: '',
     })
 
@@ -70,11 +75,12 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
             setLoadingCategory(true)
             setFoodCategory(res.data.data)
         })
-        getAllIngridient(token).then(res => {
+        getAllIngridient(1, 10, token).then(res => {
             setLoadingIngridient(true)
             setIngridient(res.data.data)
         })
     }, [])
+
 
 
     const [preview, setPreview] = React.useState<ImageProps>({
@@ -108,12 +114,10 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
         }
     }
 
-    const handleSaveCategory = async () => {
-
-        // getAllRecipe().then(res => { console.log(res) })
-
-        console.log({ recipeData })
-
+    const handleSaveRecipe = async () => {
+        setIsLoading(true)
+        setRecipiData({ ...recipeData, instractions: prepration })
+        console.log('RECIPE DATA', recipeData)
         const form = new FormData()
         form.append('data', JSON.stringify(recipeData))
         form.append('file', recipeData.image)
@@ -121,8 +125,10 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
         saveRecipie(form, token).then(res => {
             console.log('RES', res)
             toast.error(res.data.message)
+            setIsLoading(false)
         }).catch((err) => {
             toast.error(err.response.data.message)
+            setIsLoading(false)
         })
     }
 
@@ -275,11 +281,11 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
                                             ingridientVisiable ?
                                                 <div className='flex flex-col border bg-white absolute top-14 w-full shadow-md rounded-md left-0 max-h-36 overflow-hidden overflow-y-scroll justify-start items-start z-50'>
                                                     {
-                                                        filterIngridient.length < 0 ? 'not found' : null
+                                                        filterIngridient?.length < 0 ? 'not found' : null
 
                                                     }
                                                     {
-                                                        filterIngridient.map((item: any, index: number) => {
+                                                        filterIngridient?.map((item: any, index: number) => {
                                                             return (
                                                                 <div key={index} className="flex w-full py-1 px-2 hover:bg-gray-200" onClick={() => handleSelect(item.name)}>
                                                                     <p>{item.name}</p>
@@ -356,6 +362,11 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
                         }
 
                     </div>
+                    {/* instraction */}
+                    <div className=''>
+                        <p className='text-gray-600 text-sm mb-2'>Prepration</p>
+                        <CustomEditor />
+                    </div>
 
                     <div className='flex flex-col'>
                         <label htmlFor="category" className='text-gray-600 text-sm'>Select Category</label>
@@ -393,7 +404,7 @@ const NewRecipie = ({ title, content }: ParentCompProps) => {
                     </div>
 
                     <Button size='medium' sx={{ paddingX: 7, paddingY: 1.8, background: '#1b356b' }}
-                        variant="contained" disabled={disable} className='w-40' onClick={handleSaveCategory}><SaveIcon className='mr-2' />
+                        variant="contained" disabled={disable} className='w-40' onClick={handleSaveRecipe}><SaveIcon className='mr-2' />
                         {
                             isLoading ? <CircularProgress size={20} color="inherit" /> : 'save'
                         }

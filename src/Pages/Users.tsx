@@ -9,6 +9,8 @@ const Users = ({ title, content }: ParentCompProps) => {
 
     const { token } = useAppSelector(state => state.auth)
 
+    const { id } = useAppSelector(state => state.deleteClient)
+
     React.useEffect(() => {
         document.title = title
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
@@ -35,7 +37,7 @@ const Users = ({ title, content }: ParentCompProps) => {
         }).finally(() => {
             setIsLoading(true)
         })
-    }, [])
+    }, [id])
 
     const handleFilter = () => {
         console.log({ filter })

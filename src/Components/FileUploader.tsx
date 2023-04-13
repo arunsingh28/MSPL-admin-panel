@@ -57,7 +57,7 @@ const FileUploader = ({ type }: FileUploaderProps) => {
                     }
                 }).catch((err: any) => {
                     console.log('ERROR', err.response)
-                    toast.error(err.response.data.message)
+                    toast.error(err.response.message)
                     setLoading(false)
                 }).finally(() => setLoading(false))
             }
@@ -72,7 +72,7 @@ const FileUploader = ({ type }: FileUploaderProps) => {
                     }
                 }).catch((err: any) => {
                     console.log('ERROR ing', err.response)
-                    toast.error(err.response.data.message)
+                    toast.error(err.response.message)
                     setLoading(false)
                 }).finally(() => setLoading(false))
             }
@@ -85,7 +85,7 @@ const FileUploader = ({ type }: FileUploaderProps) => {
                     }
                 }).catch((err: any) => {
                     console.log('ERROR1', err)
-                    toast.error(err.response.data.message)
+                    toast.error(err.response.data)
                     setLoading(false)
                 }).finally(() => setLoading(false))
             }

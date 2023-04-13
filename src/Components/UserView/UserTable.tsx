@@ -13,9 +13,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useNavigate } from 'react-router-dom';
 import EditProfile from './EditProfile';
-import { useAppSelector } from '../../store/hook'
-
-
+import { useAppSelector, useAppDispatch } from '../../store/hook'
+import { deleteClientState } from '../../store/slices/deleteClientSlice'
+import { deleteClient } from '../../http/api'
+import { toast } from 'react-toastify'
 
 export interface Iuser {
     _id: string;
@@ -42,10 +43,18 @@ export interface Iuser {
 
 const UserTable = ({ allUser }: any) => {
 
-    const { user } = useAppSelector(state => state.auth)
+    const { user, token } = useAppSelector(state => state.auth)
+
+    const dispatch = useAppDispatch()
 
 
     const [disableDelete, setDisableDelete] = React.useState(false)
+
+
+    const router = useNavigate()
+    const [isLoading, setIsloading] = React.useState(false)
+    const [visiable, setVisiable] = React.useState(false)
+    const [userId, setUserId] = React.useState('')
 
     React.useEffect(() => {
         // find the 71 in the role array
@@ -53,16 +62,27 @@ const UserTable = ({ allUser }: any) => {
         if (index === -1) {
             setDisableDelete(true)
         }
-    }, [])
-
-    const router = useNavigate()
-    const [isLoading, setIsloading] = React.useState(false)
-    const [visiable, setVisiable] = React.useState(false)
-    const [userId, setUserId] = React.useState('')
+    }, [isLoading, user])
 
     const handleEditProfile = (id: string) => {
         setVisiable(true)
         setUserId(id)
+    }
+
+    const handleDeleteClient = async (id: string) => {
+        setIsloading(true)
+        try {
+            const res = await deleteClient(id, token)
+            if (res.status === 200) {
+                setIsloading(false)
+                // dispatch the delete client
+                dispatch(deleteClientState({ id, delete: false }))
+                toast.success(res.data.message)
+            }
+        } catch (error: any) {
+            setIsloading(false)
+            toast.error(error.response.data.message)
+        }
     }
 
     return (
@@ -119,7 +139,7 @@ const UserTable = ({ allUser }: any) => {
                                                 </TableCell>
 
                                                 <TableCell align="center">
-                                                    <Button variant="outlined" sx={{ cursor: disableDelete ? 'not-allowed' : 'auto' }} color='error' disabled={disableDelete}><DeleteIcon />
+                                                    <Button onClick={() => handleDeleteClient(row._id)} variant="outlined" sx={{ cursor: disableDelete ? 'not-allowed' : 'auto' }} color='error' disabled={disableDelete}><DeleteIcon />
                                                         {
                                                             isLoading ? <CircularProgress size={20} /> : 'Delete'
                                                         }

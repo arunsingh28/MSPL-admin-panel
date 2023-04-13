@@ -57,7 +57,6 @@ const MyClient = ({ title, content }: ParentCompProps) => {
     React.useEffect(() => {
         fetchMyClient(user._id, token)
             .then(res => {
-                console.log(res.data)
                 setAllUser(res.data.myClient)
             })
             .catch(err => {
@@ -113,7 +112,7 @@ const MyClient = ({ title, content }: ParentCompProps) => {
                             </TableHead>
                             <TableBody>
                                 {
-                                    allUser && allUser?.map((row: Iuser, index: number) => {
+                                    allUser && allUser.length === 0 ? <p className='py-2 px-1 text-gray-500'>No client found</p> : allUser?.map((row: Iuser, index: number) => {
                                         return (
                                             <>
                                                 <TableRow

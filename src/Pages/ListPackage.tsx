@@ -3,7 +3,7 @@ import { ParentCompProps } from './Dashboard'
 import { getAllPackage } from '../http/api'
 import Back from '../Components/Back'
 import { useAppSelector } from '../store/hook'
-
+import WifiTetheringErrorOutlinedIcon from '@mui/icons-material/WifiTetheringErrorOutlined';
 
 interface ListPackageProps {
     _id: string,
@@ -41,17 +41,17 @@ const ListPackage = ({ title, content }: ParentCompProps) => {
             setAllPackage(res.data.data)
         }).catch(err => {
         }).finally(() => { })
-    }, [])
+    }, [token])
 
     return (
         <div>
             <Back />
             <h1 className='text-2xl text-gray-700 font-semibold pb-2'>List Package</h1>
             <div className='text-gray-600'>
-                <span className='text-sm '>Total {allPackage.length} Package</span>
+                <span className='text-sm '>Total {allPackage?.length || 0} Package</span>
                 <div className='flex gap-4 flex-wrap'>
                     {
-                        allPackage.map((item: ListPackageProps) => {
+                        allPackage && allPackage.length > 0 ? allPackage.map((item: ListPackageProps) => {
                             return (
                                 <div key={item._id} className='mt-3 border w-[400px] py-5 px-4 rounded-sm text-gray-100'>
                                     <h2 className='text-gray-800 font-bold text-xl'>{item.packageName}</h2>
@@ -88,9 +88,12 @@ const ListPackage = ({ title, content }: ParentCompProps) => {
                                     </div>
                                 </div>
                             )
-                        })
+                        }) : <div className='text-gray-500 py-5 mx-auto'>
+                            <p className='text-sm flex items-center gap-2'>
+                                <WifiTetheringErrorOutlinedIcon fontSize='large' className='ml-2'/>
+                                No Package</p>
+                        </div>
                     }
-
                 </div>
             </div>
         </div>

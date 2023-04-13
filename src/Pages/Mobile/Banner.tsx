@@ -1,12 +1,21 @@
 import React from 'react'
 import Back from '../../Components/Back'
 import { ParentCompProps } from '../Dashboard'
-import { createMobileBanner } from '../../http/api'
+import { createMobileBanner, fetchAllBanner, deleteBanner } from '../../http/api'
 import { useAppSelector } from '../../store/hook'
 import { toast } from 'react-toastify'
 import CircularProgress from '@mui/material/CircularProgress';
 import SaveIcon from '@mui/icons-material/Save';
 import UploadIcon from '@mui/icons-material/Upload';
+
+interface BannerProps {
+    bannerImage: {
+        location: string
+        key: string
+    },
+    bannerkey: string
+    _id: string
+}
 
 const Banner = ({ title, content }: ParentCompProps) => {
     React.useEffect(() => {
@@ -14,7 +23,14 @@ const Banner = ({ title, content }: ParentCompProps) => {
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
     }, [content, title])
 
+
     const { token } = useAppSelector(state => state.auth)
+
+    const [allBanner, setAllBanner] = React.useState<BannerProps[]>()
+
+    const [bannerLoading, setBannerLoading] = React.useState<boolean>(false)
+
+
 
     const fileRef = React.useRef<HTMLInputElement>(null)
 
@@ -25,6 +41,15 @@ const Banner = ({ title, content }: ParentCompProps) => {
     const [diabled, setDisabled] = React.useState<boolean>(true)
 
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
+
+    React.useEffect(() => {
+        setBannerLoading(true)
+        fetchAllBanner(token).then(res => {
+            setBannerLoading(false)
+            return setAllBanner(res.data.data)
+        })
+    }, [token, filePreview])
+
 
     const handleClick = () => {
         fileRef.current?.click()
@@ -71,6 +96,18 @@ const Banner = ({ title, content }: ParentCompProps) => {
         })
     }
 
+
+    const deleteBannerHandler = (id: string) => {
+        const confirm = window.confirm('Are you sure you want to delete this banner?')
+        if (!confirm) return
+        deleteBanner(id, token).then(res => {
+            toast.success(res.data.message)
+            setAllBanner(allBanner?.filter(item => item._id !== id))
+        }).catch(err => {
+            toast.error(err.response.data.message)
+        })
+    }
+
     return (
         <div>
             <Back />
@@ -96,6 +133,32 @@ const Banner = ({ title, content }: ParentCompProps) => {
                     isLoading ? <CircularProgress color='inherit' size={20} /> : 'Save'
                 }
             </button>
+            <div className='py-5'>
+                <h1 className='text-xl text-gray-700 font-semibold'>All Banner</h1>
+                <div className='flex flex-wrap gap-3'>
+                    {
+                        bannerLoading ?
+                            <div className='mx-auto mt-5'>
+                                <div className='flex items-center justify-center gap-2'>
+                                    <CircularProgress color='inherit' size={20} />
+                                    <p className='text-gray-600'>Banner are loading...</p>
+                                </div>
+                            </div> : allBanner && allBanner.map((item: BannerProps) => {
+                                return (
+                                    <div key={item._id} className='mt-3 border w-[200px] rounded-sm text-gray-100'>
+                                        <img src={item.bannerImage.location} alt={item._id} />
+                                        <h2 className='text-gray-500 ml-1 mt-2'>Key
+                                            <span className='text-gray-600 px-2 rounded-sm ml-2 bg-gray-300 break-words'>{item.bannerkey}</span>
+                                        </h2>
+                                        <div className='flex gap-2 mb-2 mt-2 mx-1'>
+                                            <button className='px-3 py-1 border w-full rounded-sm border-red-500 text-red-500 hover:bg-red-500 hover:text-gray-50' onClick={() => deleteBannerHandler(item._id)}>Delete</button>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                    }
+                </div>
+            </div>
         </div>
     )
 }

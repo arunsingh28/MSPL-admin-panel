@@ -11,6 +11,8 @@ import Back from '../../Components/Back';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../store/hook';
+import CustomEditor from '../../Components/InstractionEditor/Editor'
+
 
 interface IRecipie {
     name: string;
@@ -49,6 +51,8 @@ const EditRecipie = ({ title, content }: ParentCompProps) => {
 
     const [recipeData, setRecipiData] = React.useState<IRecipie>(location.state.from)
 
+    console.log(location.state.from)
+
 
     const [loadingCategory, setLoadingCategory] = React.useState<boolean>(false)
     const [loadingIngridient, setLoadingIngridient] = React.useState<boolean>(false)
@@ -67,7 +71,7 @@ const EditRecipie = ({ title, content }: ParentCompProps) => {
             setLoadingCategory(true)
             setFoodCategory(res.data.data)
         })
-        getAllIngridient(token).then(res => {
+        getAllIngridient(1, 10, token).then(res => {
             setLoadingIngridient(true)
             setIngridient(res.data.data)
         })
@@ -147,7 +151,6 @@ const EditRecipie = ({ title, content }: ParentCompProps) => {
     }, [searchRef.current?.value])
 
 
-    // const [ingridientArray, setIngridientArray] = React.useState<Ingridient | any>([])
 
     // create new array of ingridient with quantity and unit in object
     const [ingridientArray, setIngridientArray] = React.useState<any>(location.state.from.ingredients)
@@ -187,6 +190,7 @@ const EditRecipie = ({ title, content }: ParentCompProps) => {
     }
 
     const handleSaveCategory = async () => {
+        console.log('save category', recipeData)
         const form = new FormData()
         form.append('data', JSON.stringify(recipeData))
         form.append('id', await location.state.from._id)
@@ -211,10 +215,9 @@ const EditRecipie = ({ title, content }: ParentCompProps) => {
     return (
         <div className='mr-64'>
             <Back />
-            <p className='text-2xl text-gray-700 font-semibold mb-4 '>New Recipie</p>
+            <p className='text-2xl text-gray-700 font-semibold mb-4 '>New Recipe</p>
             <div className='h-auto relative'>
-                {/* header */}
-                <Back />
+
                 {/* body */}
                 <div className='py-5 flex flex-col gap-6'>
                     <div className='flex gap-2'>
@@ -347,6 +350,7 @@ const EditRecipie = ({ title, content }: ParentCompProps) => {
                                                                             <option value="Liter">Liter (L)</option>
                                                                             <option value="Teaspoon">Teaspoon</option>
                                                                             <option value="Cup">Cup</option>
+                                                                            <option value="Unit">Unit</option>
                                                                             <option value="HalfCup">Half cup</option>
                                                                         </select>
                                                                     </td>
@@ -366,6 +370,11 @@ const EditRecipie = ({ title, content }: ParentCompProps) => {
 
                         }
 
+                    </div>
+                    {/* instraction */}
+                    <div className=''>
+                        <p className='text-gray-600 text-sm mb-2'>Prepration</p>
+                        <CustomEditor instructions={location.state.from.instructions} />
                     </div>
 
                     <div className='flex flex-col'>

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { truncate } from 'fs/promises'
 import { RootState } from '../store'
 
 export interface AuthState {
@@ -24,6 +23,7 @@ const authSlice = createSlice({
         auth: (state, action: PayloadAction<AuthState>) => {
             state.user = action.payload.user
             state.token = action.payload.token
+            state.isAuthenticated = true
             // state.isLoading = false
             // state.error = null
         },

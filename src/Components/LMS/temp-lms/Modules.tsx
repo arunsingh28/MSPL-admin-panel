@@ -5,6 +5,8 @@ import { useAppSelector } from '../../../store/hook'
 import { useParams } from 'react-router-dom'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { toast } from 'react-toastify'
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const Modules = ({ title, content }: ParentCompProps) => {
 
@@ -18,13 +20,15 @@ const Modules = ({ title, content }: ParentCompProps) => {
     }, [content, title])
 
     const [savedName, setSavedName] = React.useState<any>([])
+    const [isLoading, setIsLoading] = React.useState<boolean>(true)
 
     React.useEffect(() => {
         fetchCourseById(id, token).then((res: any) => {
-            console.log(res.data.data.moduleNames)
+            setIsLoading(false)
             setSavedName(res.data.data.moduleNames)
         })
     }, [id, token])
+
 
 
     // const [disable, setDisable] = React.useState<boolean>(true)
@@ -73,16 +77,20 @@ const Modules = ({ title, content }: ParentCompProps) => {
             </div>
             <div className='px-4 py-2 w-full h-[500px] overflow-scroll'>
                 {
-                    savedName.map((item: any, index: number) => {
-                        return (
-                            <div key={index} className='flex flex-col text-gray-600 mb-2'>
-                                <label htmlFor="moduleNmae" className='text-sm'>{item.id}. Name of Module</label>
-                                <div className='flex items-center w-full gap-2'>
-                                    <input type="text" value={item.moduleName} className='border h-10 rounded-sm px-2 w-full' onChange={(e) => handleChangeInput(e, index)} placeholder='Enter Modules Name' />
-                                    <DeleteOutlineIcon onClick={() => handleDeleteModuleName(index)} className='text-sm cursor-pointer hover:text-red-500' fontSize='small' />
-                                </div>
-                            </div>)
-                    })
+                    isLoading ?
+                        <div className='mt-3'>
+                            <CircularProgress size={20} />
+                        </div>
+                        : savedName?.map((item: any, index: number) => {
+                            return (
+                                <div key={index} className='flex flex-col text-gray-600 mb-2'>
+                                    <label htmlFor="moduleNmae" className='text-sm'>{item.id}. Name of Module</label>
+                                    <div className='flex items-center w-full gap-2'>
+                                        <input type="text" value={item.moduleName} className='border h-10 rounded-sm px-2 w-full' onChange={(e) => handleChangeInput(e, index)} placeholder='Enter Modules Name' />
+                                        <DeleteOutlineIcon onClick={() => handleDeleteModuleName(index)} className='text-sm cursor-pointer hover:text-red-500' fontSize='small' />
+                                    </div>
+                                </div>)
+                        })
                 }
                 <button className={'px-4 py-1 bg-blue-500 border border-blue-500 text-gray-100 rounded-sm mt-3 hover:bg-blue-600'} onClick={handleNextModule}>Add Modules</button>
                 <button className='px-4 py-1 rounded-sm border-blue-500 border ml-3 text-blue-600 hover:bg-blue-500 hover:text-gray-50' onClick={handleSave} >Save</button>

@@ -1,5 +1,6 @@
 import React from 'react'
 import PasswordImage from '../../Assets/password.svg'
+import PasswordPoster from '../../Assets/padlock.png'
 import { changePassword } from '../../http/api'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -191,7 +192,7 @@ const PasswordChange = () => {
                     </div>
                     <div className='flex-1'>
                         <div className='justify-center items-center h-full flex'>
-                            <img src={PasswordImage} alt="poster" className="drop-shadow-2xl pointer-events-none w-1/2" />
+                            <img src={PasswordPoster} alt="poster" className="drop-shadow-2xl pointer-events-none w-1/2" />
                         </div>
                     </div>
                 </div>
