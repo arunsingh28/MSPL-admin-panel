@@ -9,9 +9,11 @@ const Protected = ({ allowdRole }: any) => {
     // fething the state from redux store
     const auth = useSelector((state: any) => state.auth)
 
-    const getAuth = localStorage.getItem('isAuth',)
-    const localAuth = JSON.parse(getAuth || '{}')
+    const getUser = localStorage.getItem('userState')
+    const localUser = JSON.parse(getUser || '{}')
+    console.log(localUser)
 
+    const localAuth = localUser.isAuthenticated
 
     return auth.user?.role?.find((role: any) => allowdRole?.includes(role))
         ?  <Outlet /> : <Navigate to="/not-allowed" state={{ from: location }} replace />

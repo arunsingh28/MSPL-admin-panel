@@ -13,28 +13,45 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { toast } from 'react-toastify'
 import { useAppSelector } from '../../store/hook'
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
+import CopyAllOutlinedIcon from '@mui/icons-material/CopyAllOutlined';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+
+import Activity from './Activity';
 
 const CreateCourse = () => {
-    const { token } = useAppSelector(state => state.auth)
+    const { token, user } = useAppSelector(state => state.auth)
     const [open, setOpen] = React.useState(false);
 
     const handleClose = () => setOpen(false);
 
     const [disableButton, setDisableButton] = React.useState(true)
+
     const [loading, setLoading] = React.useState(false)
 
     const [courseData, setCourseData] = React.useState({
         courseTitle: '',
         courseDescription: '',
-        courseId: ''
+        courseId: '',
+        creator: user.name
     })
 
-    const handleOpen = () => {
+    const [showActivity, setShowActivity] = React.useState(false)
+
+
+    const handleInit = () => {
         setLoading(true)
-        initLMS(courseData, token).then((res) => {
+        if (thumbnail === null) return toast.error('Please select a thumbnail')
+        const form = new FormData()
+        form.append('data', JSON.stringify(courseData))
+        form.append('file', fileRef.current?.files![0])
+
+        initLMS(form, token).then((res) => {
             if (res.data.success) {
-                setOpen(true)
-                toast.success(res.data.data.message)
+                setShowActivity(true)
+                console.log(res.data)
+                setReplaceImage(true)
+                toast.success('Course Init Successfully')
                 setLoading(false)
                 setCourseData({
                     ...courseData,
@@ -51,45 +68,132 @@ const CreateCourse = () => {
         })
     };
 
+    const [replaceImage, setReplaceImage] = React.useState(false)
+
+
     React.useEffect(() => {
-        if (courseData.courseTitle !== '' && courseData.courseDescription !== '') {
-            setDisableButton(false)
-        } else {
-            setDisableButton(true)
-        }
+        if (courseData.courseTitle !== '' && courseData.courseDescription !== '' && thumbnail) setDisableButton(false)
+        else setDisableButton(true)
     }, [courseData])
 
+    const [thumbnail, setThumbnail] = React.useState<any>(null)
+
+    const handleCopyCourseID = () => {
+        navigator.clipboard.writeText(courseData.courseId)
+        toast.success(`${courseData.courseId} Copied`)
+    }
+
+    const fileRef = React.useRef<HTMLInputElement | any>(null)
+
+    const handleClickFile = () => {
+        fileRef.current?.click()
+    }
+
+
+
+    const handleChangeFile = () => {
+        // create url for image
+        if (fileRef.current?.files![0].size > 10000000) return toast.error('File size is too large')
+        const url = URL.createObjectURL(fileRef.current?.files![0])
+        setThumbnail(url)
+    }
+
+    // find the size of the file
+    function formatBytes(bytes: number, decimals = 2) {
+        if (!+bytes) return '0 Bytes'
+        const k = 1024
+        const dm = decimals < 0 ? 0 : decimals
+        const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+        const i = Math.floor(Math.log(bytes) / Math.log(k))
+        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+    }
+
+
     return (
-        <div className=''>
-            <div className='w-[600px] gap-4 py-4 rounded-md'>
-                <h4 className='mb-5 text-gray-600 font-semibold text-xl'>Course Info</h4>
-                <TextField value={courseData.courseTitle} onChange={(e) => setCourseData({
-                    ...courseData,
-                    courseTitle: e.target.value
-                })} label="Course title" placeholder='Enter Course Title' className='w-full' />
-                <div className='mt-5'>
-                    <TextField
-                        value={courseData.courseDescription}
-                        onChange={(e) => setCourseData({
-                            ...courseData,
-                            courseDescription: e.target.value
-                        })}
-                        label="Course Description"
-                        placeholder="Descripe the course in short"
-                        multiline
-                        className='w-full mt-4'
-                        rows={4}
-                        maxRows={4}
-                    />
-                </div>
-                <div className='mt-5'>
-                    {/* <h4 className='mb-5 text-gray-700 font-semibold text-xl'>Course Type</h4> */}
+        <div className='w-full'>
+            <div className='gap-4 py-4 rounded-md'>
+                <div className='flex items-center pb-3 justify-between'>
+                    <h4 className='text-gray-600 font-semibold text-xl'>Course Info</h4>
                     {
-                        loading ? <LinearProgress /> : <Button variant="contained"
-                            sx={{ background: '#1b356b' }} onClick={handleOpen} disabled={disableButton}>Design Course</Button>
+                        courseData.courseId !== '' && (
+                            <div className='bg-gray-300 rounded-sm flex items-center gap-2'>
+                                <p className='text-gray-700 px-2'>Coruse ID</p>
+                                <p className='text-gray-800 bg-gray-400 px-3 py-2 flex items-center gap-2 rounded-t-sm rounded-b-sm'>
+                                    {courseData.courseId}
+                                    <CopyAllOutlinedIcon onClick={handleCopyCourseID} className='cursor-pointer text-white' />
+                                </p>
+                            </div>
+                        )
                     }
+                </div>
+                <div className='w-full'>
+                    <TextField value={courseData.courseTitle} disabled={courseData.courseId !== '' ? true : false} onChange={(e) => setCourseData({
+                        ...courseData,
+                        courseTitle: e.target.value
+                    })} label="Course title" placeholder='Enter Course Title' className='w-full' />
+                    <div className='mt-5'>
+                        <TextField
+                            disabled={courseData.courseId !== '' ? true : false}
+                            value={courseData.courseDescription}
+                            onChange={(e) => setCourseData({
+                                ...courseData,
+                                courseDescription: e.target.value
+                            })}
+                            label="Course Description"
+                            placeholder="Descripe the course in short"
+                            multiline
+                            className='w-full mt-4'
+                            rows={4}
+                            maxRows={4}
+                        />
+                    </div>
+                    <div className='py-2'>
+                        <label htmlFor="thumbnail" className='text-[12px] text-gray-600'>Course Thumbnail</label>
+                        <div className='flex items-start gap-0 justify-start'>
+                            <div>
+                                {
+                                    thumbnail && (
+                                        <div className='flex items-start gap-2'>
+                                            <img src={thumbnail} className='w-52 h-36 object-cover rounded-sm shadow-sm' alt='thumbnail' />
+                                            <div>
+                                                {/* thumbnail info */}
+                                                <div className='flex items-center gap-2'>
+                                                    <p className='text-[12px] text-gray-500'>File Name</p>
+                                                    <p className='text-[12px] text-gray-600'>{fileRef.current?.files![0]?.name}</p>
+                                                </div>
+                                                <div className='flex items-center gap-2'>
+                                                    <p className='text-[12px] text-gray-500'>File Type</p>
+                                                    <p className='text-[12px] text-gray-600 ml-[7px]'>{fileRef.current?.files![0]?.type}</p>
+                                                </div>
+                                                <div className='flex items-center gap-2'>
+                                                    <p className='text-[12px] text-gray-500'>Size</p>
+                                                    <p className='text-[12px] text-gray-600 ml-[30px]'>{formatBytes(fileRef.current?.files![0]?.size)}</p>
+                                                </div>
+                                                {/* <div className='flex items-center gap-2'>
+                                                    <p className='text-[12px] text-gray-500'>Height</p>
+                                                    <p className='text-[12px] text-gray-600'>{imageResolution.height}</p>
+                                                </div> */}
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                            {
+                                !replaceImage && (
+                                    <div className={replaceImage ? '' : 'ml-4 cursor-pointer'}>
+                                        <div className='border border-gray-400 w-32 h-28 px-10 flex items-center justify-center rounded-sm' onClick={handleClickFile}>
+                                            <input type="file" ref={fileRef} className='hidden' onChange={handleChangeFile} />
+
+                                            <AddPhotoAlternateOutlinedIcon className='text-gray-600' />
+                                        </div>
+                                        <p className='text-[12px] text-gray-500'>upload 400 x 400</p>
+                                    </div>)
+                            }
+
+                        </div>
+                    </div>
                     {
-                        open ? <Model handleClose={handleClose} courseData={courseData} /> : null
+                        !showActivity ? <button onClick={handleInit} disabled={disableButton} className={!disableButton ? 'px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-sm text-gray-50 mt-3 flex items-center gap-2 border hover:shadow-md border-blue-500' : 'px-6 py-2 bg-gray-500 hover:bg-gray-600 rounded-sm text-gray-50 mt-3 flex items-center gap-2 border hover:shadow-md border-gray-500'}><NoteAddOutlinedIcon fontSize='small' />Create</button> : <Activity courseID={courseData.courseId} />
                     }
                 </div>
             </div>
@@ -99,179 +203,3 @@ const CreateCourse = () => {
 
 export default CreateCourse
 
-
-
-
-const Model = ({ handleClose, courseData }: any) => {
-
-    console.log(courseData)
-
-    const LinkRef = React.useRef<HTMLAnchorElement>(null)
-    const inputRef = React.useRef<HTMLInputElement>(null)
-
-    const [checked, setChecked] = React.useState({
-        quiz: false,
-        feedback: false,
-        choice: false,
-        checklist: false,
-        chapter: false,
-        lesson: false,
-        file: false
-    })
-
-
-    React.useEffect(() => {
-        LinkRef.current?.click()
-        setChecked({
-            ...checked,
-            chapter: true,
-        })
-    }, [])
-
-
-    return (
-        <div className='h-screen w-screen absolute top-0 left-0 bg-[#3d3d3d72] flex justify-center items-center' style={{ zIndex: '9991' }}>
-            <div className='bg-white py-4 w-[900px] rounded-md shadow-lg'>
-                {/* header */}
-                <div className='flex justify-between items-center px-3 py-2'>
-                    <h2 className='text-lg font-semibold text-gray-600'>Add an activity or resource</h2>
-                    <CloseIcon onClick={handleClose} sx={{ color: '#4b5563', cursor: 'pointer' }} />
-                </div>
-                <hr />
-                {/* workspace */}
-                <div className='flex justify-between border-b-2'>
-                    <div className='bg-[#90a4b62e] flex-2 w-[200px]'>
-                        <h5 className='px-2 py-3 border-b-2 text-gray-700 font-semibold'>ACTIVITES</h5>
-                        <div className='pl-4 mb-3 mt-3'>
-                            {/* <div className='flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700'>
-                                <input type="radio" name="" id="" />
-                                <AssignmentTurnedInIcon/>
-                                <span>Assignment</span>
-                            </div> */}
-                            <Link to={`/new-course-enroll/modules/${courseData.courseId}`} ref={LinkRef} onClick={() => {
-                                setChecked({
-                                    chapter: true,
-                                    quiz: false,
-                                    feedback: false,
-                                    checklist: false,
-                                    choice: false,
-                                    lesson: false,
-                                    file: false
-                                })
-                            }} className={checked.chapter ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
-                                <input type="radio" checked={checked.chapter} />
-                                <PlayLessonIcon />
-                                <span>Modules</span>
-                            </Link>
-                            <Link to={`/new-course-enroll/lesson/${courseData.courseId}`} onClick={() => {
-                                setChecked({
-                                    chapter: false,
-                                    quiz: false,
-                                    feedback: false,
-                                    checklist: false,
-                                    choice: false,
-                                    lesson: true,
-                                    file: false
-                                })
-                            }} className={checked.lesson ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
-                                <input type="radio" checked={checked.lesson} />
-                                <CastForEducationIcon />
-                                <span>Lessons</span>
-                            </Link>
-                            <Link to={`/new-course-enroll/file/${courseData.courseId}`} onClick={() => {
-                                setChecked({
-                                    chapter: false,
-                                    quiz: false,
-                                    feedback: false,
-                                    checklist: false,
-                                    choice: false,
-                                    lesson: false,
-                                    file: true
-                                })
-                            }} className={checked.file ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
-                                <input type="radio" checked={checked.file} />
-                                <PlayLessonIcon />
-                                <span>File</span>
-                            </Link>
-                            {/* <Link to="/new-course-enroll/quiz" onClick={() => {
-                                setChecked({
-                                    chapter: false,
-                                    choice: false,
-                                    feedback: false,
-                                    checklist: false,
-                                    quiz: true,
-                                    lesson: false
-                                })
-                            }} className={checked.quiz ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
-                                <input type="radio" checked={checked.quiz} />
-                                <QuizIcon />
-                                <span>Quiz</span>
-                            </Link> */}
-                            {/* <Link to="/new-course-enroll/choice" onClick={() => {
-                                setChecked({
-                                    chapter: false,
-                                    quiz: false,
-                                    feedback: false,
-                                    checklist: false,
-                                    choice: true,
-                                    lesson: false
-                                })
-                            }} className={checked.choice ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
-                                <input type="radio" checked={checked.choice} />
-                                <PlaylistAddCheckIcon />
-                                <span>Choice</span>
-                            </Link> */}
-                            {/* <Link to="/new-course-enroll/checklist" onClick={() => {
-                                setChecked({
-                                    chapter: false,
-                                    quiz: false,
-                                    feedback: false,
-                                    choice: false,
-                                    checklist: true,
-                                    lesson: false
-                                })
-                            }} className={checked.checklist ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
-                                <input type="radio" checked={checked.checklist} />
-                                <RuleIcon />
-                                <span>Checklist</span>
-                            </Link> */}
-                            {/* <Link to="/new-course-enroll/feedback" onClick={() => {
-                                setChecked({
-                                    chapter: false,
-                                    quiz: false,
-                                    choice: false,
-                                    checklist: false,
-                                    feedback: true,
-                                    lesson: false
-                                })
-                            }} className={checked.feedback ? "flex justify-start gap-4 items-center py-2 bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700" : "flex justify-start gap-4 items-center py-2 hover:bg-blue-200 rounded-tl-3xl rounded-bl-3xl px-2 cursor-pointer text-gray-700"}>
-                                <input type="radio" checked={checked.feedback} />
-                                <FeedbackIcon />
-                                <span>Feedback</span>
-                            </Link> */}
-                        </div>
-                    </div>
-
-                    {/* show content */}
-                    <div className='flex-1 overflow-scroll'>
-                        <Outlet />
-                    </div>
-
-
-
-                </div>
-                {/* footer */}
-                <div className='flex justify-between items-center gap-6 mr-5 mt-3'>
-                    <p className='text-sm text-gray-600 ml-2'>Don't deploy the cousre without completing the course**</p>
-                    <div className='flex gap-6'>
-                        <Button variant="contained" sx={{ background: '#07226d' }} >
-                            <FlightTakeoffIcon className='mr-2' />
-                            Deploy
-                        </Button>
-                        <Button variant="contained" sx={{ background: '#3c6bee' }} onClick={handleClose}>Cancel</Button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}

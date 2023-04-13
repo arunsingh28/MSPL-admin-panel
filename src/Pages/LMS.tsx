@@ -10,28 +10,13 @@ const CreateCourse = ({ content, title }: ParentCompProps) => {
         document.querySelector('meta[name="description"]')?.setAttribute('content', content)
     }, [content, title])
 
-    const [showForm, setShowForm] = React.useState(false)
 
-    const handleFormShow = () => {
-        setShowForm(true)
-    }
 
     return (
         <div className=''>
-            <Back/>
+            <Back />
             <h1 className='text-gray-700 font-semibold text-2xl'>Enroll New Course</h1>
-            {
-                showForm ? <CreateCourseForm /> :
-                    <div className='my-5 flex justify-center items-center'>
-                        <Button variant='contained' onClick={handleFormShow} sx={
-                            {
-                                background: '#19356a',
-                                paddingX: 5,
-                                paddingY: 2,
-                            }
-                        }>Create Course</Button>
-                    </div>
-            }
+            <CreateCourseForm />
         </div>
     )
 }

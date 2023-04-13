@@ -2,7 +2,7 @@ import React from 'react'
 import { ParentCompProps } from '../../../Pages/Dashboard'
 import { updateModuleName, fetchCourseById } from '../../../http/api'
 import { useAppSelector } from '../../../store/hook'
-import { useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { toast } from 'react-toastify'
 import CircularProgress from '@mui/material/CircularProgress';
@@ -10,8 +10,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 const Modules = ({ title, content }: ParentCompProps) => {
 
+    const location = useLocation()
 
-    const { id } = useParams<{ id: any }>()
+    console.log('location ID:',location.state.id)
+
     const { token } = useAppSelector(state => state.auth)
 
     React.useEffect(() => {
@@ -23,11 +25,11 @@ const Modules = ({ title, content }: ParentCompProps) => {
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
 
     React.useEffect(() => {
-        fetchCourseById(id, token).then((res: any) => {
+        fetchCourseById(location.state.id, token).then((res: any) => {
             setIsLoading(false)
             setSavedName(res.data.data.moduleNames)
         })
-    }, [id, token])
+    }, [location.state, token])
 
 
 
@@ -58,7 +60,7 @@ const Modules = ({ title, content }: ParentCompProps) => {
     }
 
     const handleSave = () => {
-        updateModuleName(id, { name: savedName }, token).then((res: any) => {
+        updateModuleName(location.state.id, { name: savedName }, token).then((res: any) => {
             console.log(res.data)
             toast.success('Modules Name Updated Successfully', {
                 style: {

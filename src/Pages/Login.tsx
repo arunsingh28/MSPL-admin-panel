@@ -47,6 +47,13 @@ const Login = ({ title, content }: ParentCompProps) => {
           isAuthenticated: true
         }))
 
+        // set this auth value to local storage
+        localStorage.setItem('userState', JSON.stringify({
+          data: data.data,
+          token: data.data.accessToken,
+          isAuthenticated: true
+        }))
+
         setLoading(false)
         // play sound if user set to true
         if (data.data.user.isMute.loginNotification) {
@@ -78,7 +85,7 @@ const Login = ({ title, content }: ParentCompProps) => {
 
   return (
     <>
-      <div className="antialiased bg-gray-200 text-gray-900 font-sans">
+      <div className="antialiased bg-gray-200 h-screen text-gray-900 font-sans">
         <div className="flex items-center h-screen w-full">
           <div className="w-full bg-white rounded shadow-lg p-8 m-4 md:max-w-sm md:mx-auto">
             <span className="block w-full text-xl uppercase font-bold mb-4">Login</span>

@@ -2,8 +2,8 @@ import axios from 'axios'
 
 // const productionLink = 'https://itchy-deer-boot.cyclic.app' http://localhost:4000 
 
-// const developmentLink = "http://143.110.186.93/"
-const developmentLink = "http://localhost:4000/"
+const developmentLink = "http://143.110.186.93/"
+// const developmentLink = "http://localhost:4000/"
 
 
 
@@ -423,13 +423,7 @@ export const fetchAllCourse = async (token: string) => await lmsApi.get('/get-al
     }
 })
 
-// inti course
-export const initLMS = async (data: any, token: string) => await lmsApi.post('/init-course', JSON.stringify(data), {
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-    }
-})
+
 
 export const updateModuleName = async (id: string, data: any, token: string) => await lmsApi.put(`/update-course/${id}`, JSON.stringify(data), {
     headers: {
@@ -446,13 +440,6 @@ export const fetchCourseById = async (id: string, token: string) => await lmsApi
 })
 
 export const fetchModules = async (id: string, token: string) => await lmsApi.get(`/fetch-modules/${id}`, {
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-    }
-})
-
-export const updateModuleContent = async (id: string, data: any, token: string) => await lmsApi.put(`/update-lesson/${id}`, JSON.stringify(data), {
     headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
@@ -508,6 +495,21 @@ export const deleteCourse = async (id: string, token: string) => await lmsApi.de
 })
 
 export const uploadPDFCourse = async (data: any, id: string, token: string) => await lmsApi.post(`/upload-pdf-course/${id}`, data, {
+    headers: {
+        'Content-type': 'multipart/form-data',
+        'Authorization': 'Bearer ' + token
+    }
+})
+// inti course
+export const initLMS = async (data: any, token: string) => await lmsApi.post('/init-course', data, {
+    headers: {
+        'Content-type': 'multipart/form-data',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+
+export const updateModuleContent = async (id: string, data: any, token: string) => await lmsApi.post(`/update-lesson/${id}`, data, {
     headers: {
         'Content-type': 'multipart/form-data',
         'Authorization': 'Bearer ' + token

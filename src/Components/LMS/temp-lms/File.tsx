@@ -1,14 +1,19 @@
 import React from 'react'
 import { fetchModules, updateModuleContent } from '../../../http/api'
 import { useAppSelector } from '../../../store/hook'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
 
+
+
 const File = () => {
     const { token } = useAppSelector(state => state.auth)
+
+    const location = useLocation()
+
 
     const fileRef = React.useRef<HTMLInputElement | any>(null)
 
@@ -51,7 +56,7 @@ const File = () => {
                     <div className='px-3 py-3'>
                         <div className='flex items-center'>
                             <div className='w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center'>
-                                <PictureAsPdfOutlinedIcon className='text-gray-600'/>
+                                <PictureAsPdfOutlinedIcon className='text-gray-600' />
                             </div>
                             <div className='ml-3'>
                                 <p className='text-gray-700 font-semibold'>{file[0].name}</p>
@@ -67,9 +72,9 @@ const File = () => {
             <div className='px-3 py-3 flex gap-3'>
                 <input type="file" ref={fileRef} className='hidden' onChange={handleChangeFile} />
                 <button className='px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-sm text-gray-50 flex items-center gap-1' onClick={handleFile}>
-                   {
-                    state && <RestartAltOutlinedIcon />
-                   }
+                    {
+                        state && <RestartAltOutlinedIcon />
+                    }
                     LOAD PDF</button>
                 {
                     state && <button className='px-7 py-2 bg-indigo-600 rounded-sm text-gray-50 hover:bg-indigo-700 flex items-center gap-2'>

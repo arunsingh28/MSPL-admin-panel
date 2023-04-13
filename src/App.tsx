@@ -154,14 +154,14 @@ function App() {
             <Route path='/lms/:id' index element={<EditModule title="Edit" content="Edit" />} />
 
             <Route path='new-course-enroll' element={<CreateCourse title="Create Course" content="course" />}>
-              <Route path='modules/:id' index element={<Modules title="Module" content="Module" />} />
-              <Route path='chapter/:id' element={<Chapter />} />
-              <Route path='file/:id' element={<File />} />
+              <Route path='modules' index element={<Modules title="Module" content="Module" />} />
+              <Route path='chapter' element={<Chapter />} />
+              <Route path='file' element={<File />} />
               <Route path='choice' element={<Choice />} />
               <Route path='checklist' element={<Checklist />} />
               <Route path='feedback' element={<Feedback />} />
               <Route path='quiz' element={<Quiz />} />
-              <Route path='lesson/:id' element={<Lesson />} />
+              <Route path='lesson' element={<Lesson />} />
             </Route>
           </Route>
 

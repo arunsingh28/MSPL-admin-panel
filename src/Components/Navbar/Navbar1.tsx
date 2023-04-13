@@ -144,6 +144,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const Navbar1 = () => {
 
     const theme = useTheme();
+
     const [open, setOpen] = React.useState(true);
 
     const [openProfile, setOpenProfile] = React.useState(false);
@@ -172,11 +173,16 @@ const Navbar1 = () => {
 
 
     React.useEffect(() => {
-
     }, [auth])
 
-    const firstInitial = auth.user?.name?.charAt(0)
-    const lastInitial = auth.user?.name?.split(" ").pop().charAt(0)
+    const localUser = JSON.parse(localStorage.getItem('userState') || '{}')
+
+
+
+
+
+    const firstInitial = auth.user?.name?.charAt(0) || localUser?.user?.name?.charAt(0)
+    const lastInitial = auth.user?.name?.split(" ").pop().charAt(0) || localUser?.user?.name?.split(" ").pop().charAt(0)
 
     const intials = firstInitial + lastInitial
 

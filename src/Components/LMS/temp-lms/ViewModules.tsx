@@ -4,10 +4,10 @@ import { fetchAllCourse, deleteCourse } from '../../../http/api'
 import Back from '../../Back'
 import { useAppSelector } from '../../../store/hook'
 import { useNavigate } from 'react-router-dom'
-import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import FlightLandIcon from '@mui/icons-material/FlightLand';
 import { toast } from 'react-toastify'
+import ViewInArOutlinedIcon from '@mui/icons-material/ViewInArOutlined';
+import DoNotTouchOutlinedIcon from '@mui/icons-material/DoNotTouchOutlined';
 
 const ViewModules = ({ title, content }: ParentCompProps) => {
 
@@ -28,7 +28,7 @@ const ViewModules = ({ title, content }: ParentCompProps) => {
         }).catch((err: any) => {
             console.log(err)
         })
-    }, [token])
+    }, [])
 
     const handleDeleteCourse = (id: string) => {
         const prompt = window.confirm('Are you sure you want to delete this course?')
@@ -51,32 +51,48 @@ const ViewModules = ({ title, content }: ParentCompProps) => {
                 {
                     allCourse && allCourse.length === 0 ? <p className='mx-auto text-gray-600'>No Course Found</p> : allCourse?.map((course: any) => {
                         return (
-                            <div key={course._id} className='border px-2 py-1 rounded-sm'>
-                                <h1>{course.courseTitle}</h1>
-                                <p>{course.courseDescription}</p>
-                                {/* <span>{course._id}</span> */}
-                                <div className='flex my-2 gap-3'>
-                                    <div className='flex gap-2'>
-                                        <button className='px-4 py-1 bg-blue-500 rounded-sm text-gray-50' onClick={() => {
-                                            console.log(course._id)
-                                            navigate(`/lms/${course._id}`)
-                                        }}>Edit</button>
-                                        <button className='px-4 py-1 border border-blue-500 rounded-sm text-blue-500'>
-                                            <FlightTakeoffIcon className='mr-2' />
-                                            On Air
-                                        </button>
+                            <div key={course._id} className='border px-2 py-1 rounded-sm relative'>
+                                <div className='bg-gray-300 absolute top-2 right-2 rounded-sm flex items-center gap-2'>
+                                    <p className='text-gray-700 px-2'>Coruse ID</p>
+                                    <p className='text-gray-800 bg-gray-400 px-3 py-2 flex items-center gap-2 rounded-t-sm rounded-b-sm'>
+                                        {course._id}
+                                        {/* <CopyAllOutlinedIcon onClick={handleCopyCourseID} className='cursor-pointer text-white' /> */}
+                                    </p>
+                                </div>
+                                <div className='flex justify-end flex-row-reverse'>
+                                    <div className='w-full -ml-20'>
+                                        <h1 className='text-2xl text-gray-800 font-semibold pb-2'>{course?.courseTitle}</h1>
+                                        <div className=''>
+                                            <h1 className='font-semibold text-gray-700'>Course Description</h1>
+                                            <p className='pb-2 text-sm text-gray-700'>{course?.courseDescription}</p>
+                                            <div className='flex my-2 gap-3'>
+                                                <div className='flex gap-2'>
+                                                    <button className='px-4 py-1 bg-blue-500 rounded-sm text-gray-50 flex items-center gap-1' onClick={() => {
+                                                        console.log(course._id)
+                                                        navigate(`/lms/${course._id}`)
+                                                    }}>
+                                                        <ViewInArOutlinedIcon />
+                                                        View</button>
+                                                </div>
+                                                <div className='flex gap-2'>
+                                                    <button className='px-4 py-1 border border-red-500 rounded-sm text-red-500 hover:bg-red-500 hover:text-gray-50 flex items-center gap-1' onClick={() => handleDeleteCourse(course._id)}>
+                                                        <DeleteOutlineIcon />
+                                                        Delete
+                                                    </button>
+                                                    <button className='px-4 py-1 border border-indigo-600 rounded-sm text-indigo-600 flex items-center gap-1'>
+                                                        <DoNotTouchOutlinedIcon />
+                                                        Disable
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='flex gap-2'>
-                                        <button className='px-4 py-1 border border-red-500 rounded-sm text-red-500 hover:bg-red-500 hover:text-gray-50' onClick={() => handleDeleteCourse(course._id)}>
-                                            <DeleteOutlineIcon className='mr-2' />
-                                            Delete
-                                        </button>
-                                        <button className='px-4 py-1 border border-green-500 rounded-sm text-green-500'>
-                                            <FlightLandIcon className='mr-2' />
-                                            Park Course
-                                        </button>
+                                    <div className='w-96'>
+                                        <img src={course?.thumbnail.location} alt="thumnail" className='object-cover rounded-sm w-52 h-52' />
                                     </div>
                                 </div>
+                                {/* <span>{course._id}</span> */}
+
                             </div>
                         )
                     })

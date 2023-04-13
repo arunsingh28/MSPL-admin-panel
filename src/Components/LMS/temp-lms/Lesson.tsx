@@ -1,18 +1,18 @@
 import React from 'react'
 import { fetchModules, updateModuleContent } from '../../../http/api'
 import { useAppSelector } from '../../../store/hook'
-import { useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import CircularProgress from '@mui/material/CircularProgress';
 import { toast } from 'react-toastify'
 import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
-
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 
 const Lesson = () => {
   const { token } = useAppSelector(state => state.auth)
 
-  const { id } = useParams<{ id: any }>()
+  const location = useLocation()
 
   const [modules, setModules] = React.useState<any>([])
 
@@ -21,7 +21,7 @@ const Lesson = () => {
   const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
-    fetchModules(id, token).then((res: any) => {
+    fetchModules(location.state.id, token).then((res: any) => {
       setLoading(true)
       setModules(res.data.data.moduleNames)
     }).catch((err: any) => {
@@ -52,11 +52,16 @@ const Lesson = () => {
     setLesson({ ...lesson, lessonName: lesson.moduleName, lessonContent: e.target.value })
   }
 
-  const handleSave = () => {
-    updateModuleContent(id, lesson, token).then((res: any) => {
-      console.log(res.data)
+  const handleSave = async () => {
+    const form = new FormData()
+    const data = JSON.stringify(lesson)
+    form.append('data', data)
+    form.append('file', await fileRef.current.files[0])
+
+    updateModuleContent(location.state.id, form, token).then((res: any) => {
+      toast.success(res.data.message)
     }).catch((err: any) => {
-      console.log(err)
+      toast.error(err.response.data.message)
     })
   }
   const fileRef = React.useRef<HTMLInputElement | any>(null)
@@ -89,6 +94,7 @@ const Lesson = () => {
     }
   }
 
+  
   return (
     <div>
       <h4 className='py-3 px-3 font-semibold text-gray-700 uppercase'>Lessons</h4>
@@ -132,21 +138,16 @@ const Lesson = () => {
                   </div>
                 )
               }
-              <div className='px-3 py-0 flex gap-3'>
+              <div className='pb-5 flex gap-3'>
                 <input type="file" ref={fileRef} className='hidden' onChange={handleChangeFile} />
-                {/* <button className='px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-sm text-gray-50 flex items-center gap-1' onClick={handleFile}>
+                <button className='bg-indigo-500 my-2 px-7 py-2 rounded-sm text-gray-100 flex items-center gap-2' onClick={handleFile}>
                   {
-                    state && <RestartAltOutlinedIcon />
-                  }
-                  LOAD PDF</button> */}
-                {/* {
-                  state && <button className='px-7 py-2 bg-indigo-600 rounded-sm text-gray-50 hover:bg-indigo-700 flex items-center gap-2'>
-                    <DriveFolderUploadOutlinedIcon />
-                    UPLOAD FILE</button>
-                } */}
+                    state ? <><RestartAltOutlinedIcon /> REPLACE PDF</> : <> <DriveFolderUploadOutlinedIcon />UPLOAD PDF</>
+                  }</button>
+                <button className='bg-blue-500 my-2 px-7 py-2 rounded-sm text-gray-100 flex items-center gap-2' onClick={handleSave}><SaveOutlinedIcon />SAVE</button>
               </div>
               {/* save button */}
-              <button className='bg-blue-500 my-2 px-7 py-2 rounded-md text-gray-100' onClick={handleSave}>Save</button>
+
             </div>
           </>
         ) : <div className='mt-3 ml-3'>
