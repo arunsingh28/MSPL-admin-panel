@@ -4,6 +4,11 @@ import Back from '../../Back'
 import { useParams } from 'react-router-dom'
 import { fetchCourseById } from '../../../http/api'
 import { useAppSelector } from '../../../store/hook'
+import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
+import PublishedWithChangesOutlinedIcon from '@mui/icons-material/PublishedWithChangesOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 const EditCourse = ({ title, content }: ParentCompProps) => {
     const { token } = useAppSelector(state => state.auth)
@@ -26,12 +31,41 @@ const EditCourse = ({ title, content }: ParentCompProps) => {
     }, [token, id])
 
 
+    const [urlPdf, setUrlPdf] = React.useState<any>('')
 
 
-    const handleViewPdf = (pdf: string) => {
-        window.open(pdf)
+
+    const handleViewPdf = async (pdf: string) => {
+        // download the file internally 
+        await fetch(pdf)
+            .then(response => {
+                // Convert the response to a Blob
+                return response.blob();
+            })
+            .then(blob => {
+                console.log(blob)
+                // Create a URL object from the Blob
+                const url = URL.createObjectURL(blob);
+                // Open the URL in a new window
+                window.open(url);
+            })
+
+
+
+
+
+        // const blob = new Blob([pdf], { type: 'application/pdf' })
+        // const url = URL.createObjectURL(blob)
+        // // open pdf in new tab
+        // // setUrlPdf('https://sg3storage.sgp1.cdn.digitaloceanspaces.com/test/1681465316925.a2606ad9-0198-4f6c-a2ff-5ec5d08f6bdb.pdf')
+        // window.open(url)
     }
 
+    const [editName, setEditName] = React.useState(false)
+
+    const handleEditName = () => {
+        setEditName(!editName)
+    }
 
     return (
         <div className=''>
@@ -39,9 +73,9 @@ const EditCourse = ({ title, content }: ParentCompProps) => {
             {/* <h1 className='text-2xl text-gray-800 font-semibold pb-2'>Edit Course</h1> */}
             <div className=''>
                 <div className=''>
-                    <div className='flex justify-end gap-5 flex-row-reverse'>
+                    <div className='flex justify-end gap-5 flex-row-reverse relative'>
                         <div>
-                            <h1 className='text-2xl text-gray-800 font-semibold pb-2'>{course?.courseTitle}</h1>
+                            <h1 className='text-2xl text-gray-800 font-semibold pb-2'>{course?.courseTitle} <ModeEditOutlinedIcon className='-mt-6 text-blue-600 border rounded-full p-0.5 border-blue-600 cursor-pointer' onClick={handleEditName} fontSize='small' /></h1>
                             <div className='text-sm text-gray-700 flex gap-2'>
                                 <span className='italic text-gray-700'>Design by</span>
                                 <h5 className='underline'>{course?.creator}</h5>
@@ -52,6 +86,12 @@ const EditCourse = ({ title, content }: ParentCompProps) => {
                             </div>
                         </div>
                         <img src={course?.thumbnail.location} alt="thumnail" className='w-52 h-48 object-cover rounded-sm' />
+                        <div className='bg-gray-300 rounded-sm flex items-center gap-2 absolute top-2 right-2'>
+                            <p className='text-gray-700 px-2'>Coruse ID</p>
+                            <p className='text-gray-800 bg-gray-400 px-3 py-2 flex items-center gap-2 rounded-t-sm rounded-b-sm'>
+                                {localStorage.getItem('courseId')}
+                            </p>
+                        </div>
                     </div>
 
                     <div className='flex flex-col gap-2 my-2'>
@@ -68,15 +108,30 @@ const EditCourse = ({ title, content }: ParentCompProps) => {
                                                 <span className='font-semibold text-gray-700'>Chapter Description</span>
                                                 <p className='text-sm text-gray-800'>{item.lessonContent}</p>
                                             </div>
-                                            <button className='bg-blue-400 mt-3 px-5 py-2 rounded-sm text-gray-50 text-sm hover:shadow-md' onClick={() => handleViewPdf(item.pdf.location)}>View PDF</button>
+                                            <div className='flex justify-between items-center'>
+                                                <div className='flex gap-2 items-center'>
+                                                    <button className='bg-blue-400 mt-3 px-5 py-2 rounded-sm text-gray-50 text-sm hover:shadow-md flex items-center gap-1' onClick={() => handleViewPdf(item.pdf.location)}>
+                                                        <VisibilityOutlinedIcon />
+                                                        View PDF</button>
+                                                    <button className='bg-indigo-400 mt-3 px-5 py-2 rounded-sm text-gray-50 text-sm hover:shadow-md flex items-center gap-1'>
+                                                        <PublishedWithChangesOutlinedIcon />
+                                                        Replace PDF</button>
+                                                    <button className='bg-orange-400 mt-3 px-5 py-2 rounded-sm text-gray-50 text-sm hover:shadow-md flex items-center gap-1'>
+                                                        <AutoFixHighOutlinedIcon />
+                                                        Edit Chapter</button>
+                                                </div>
+                                                <div>
+                                                    <button className='bg-red-400 mt-3 px-5 py-2 rounded-sm text-gray-50 text-sm hover:shadow-md flex items-center gap-1'>
+                                                        <DeleteOutlinedIcon />
+                                                        Delete Chapter</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 )
                             }).slice(1)
                         }
                     </div>
-
-
                 </div>
             </div>
         </div>

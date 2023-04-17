@@ -2,10 +2,12 @@ import React, { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react'
 import { useAppDispatch } from '../../store/hook';
 import { setContent } from '../../store/slices/editorContentSlice'
+import { toast } from 'react-toastify'
+
 
 export default function CustomEditor({ instructions }: any) {
-    const editorRef = useRef<any>(null);
 
+    const editorRef = useRef<any>(null);
     const dispatch = useAppDispatch()
 
     const [preprartion, setPreprartion] = React.useState<string>('')
@@ -14,6 +16,7 @@ export default function CustomEditor({ instructions }: any) {
         dispatch(setContent({
             content: preprartion
         }))
+        toast.info('Preparation Synced')
     };
 
     const [contentt, setContentt] = React.useState<string>('')
@@ -21,7 +24,7 @@ export default function CustomEditor({ instructions }: any) {
     React.useEffect(() => {
         if (instructions) {
             setContentt(instructions)
-        }else{
+        } else {
             setContentt('')
         }
     }, [instructions])

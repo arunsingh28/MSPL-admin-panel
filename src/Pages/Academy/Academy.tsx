@@ -107,7 +107,7 @@ const Academy = ({ title, content }: ParentCompProps) => {
     return (
         <div>
             <p className='text-2xl text-gray-700 font-semibold mb-4'>Acadmey Register</p>
-            <FileUploader type={"acd"} />
+            <FileUploader type={"academy"} />
             <div className='flex justify-center'>
                 <div className="mt-6 grid grid-cols-3 w-1/3 justify-center items-center text-gray-400">
                     <hr className='border-gray-400' />

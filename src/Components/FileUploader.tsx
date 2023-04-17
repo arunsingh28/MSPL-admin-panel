@@ -12,14 +12,15 @@ import Box from '@mui/material/Box';
 import { useAppSelector } from '../store/hook'
 
 interface FileUploaderProps {
-    type: string
+    type: 'emp' | 'school' | 'ingridienents' | 'academy'
 }
 
 const FileUploader = ({ type }: FileUploaderProps) => {
 
     const { token } = useAppSelector(state => state.auth)
 
-    const [file, setFile] = React.useState<any>(null)
+    const [file, setFile] = React.useState<string>('')
+
     const fileEl = React.useRef<HTMLInputElement>(null)
 
     const [loading, setLoading] = React.useState(false)
@@ -31,63 +32,77 @@ const FileUploader = ({ type }: FileUploaderProps) => {
         if (type === 'ingridienents') {
             setFile(ingridienentFile)
         }
-        else {
+        if (type === 'school') {
             setFile(schollFile)
         }
-    }, [type, file, fileEl])
+        if (type === 'academy') {
+            setFile(empFile)
+        }
+    }, [type])
 
-    const handleUpload = () => {
+    const handleUpload = async () => {
         fileEl.current?.click()
     }
 
-    const handleFile = () => {
+    const handleFile = async () => {
         setLoading(true)
         const file = fileEl.current?.files?.[0]
+        // create blob of file
+
+
         if (file) {
-            const formData = new FormData()
-            formData.append('file', file)
-            // for emp bulk upload function
+            const data = new FormData()
+            data.append('file', file)
+            console.log('file data', data)
+
             if (type === 'emp') {
-                // for academy bulk upload function
-                empWithFile(formData, token).then((res: any) => {
+                try {
+                    const res = await empWithFile(data, token)
                     if (res.data.success) {
-                        console.log(res.data)
                         toast.success(res.data.message)
                         setLoading(false)
                     }
-                }).catch((err: any) => {
-                    console.log('ERROR', err.response)
-                    toast.error(err.response.message)
+                } catch (err: any) {
+                    console.log('ERROR1', err.response)
+                    toast.error(err.response.data.message)
                     setLoading(false)
-                }).finally(() => setLoading(false))
+                } finally {
+                    setLoading(false)
+                }
             }
             if (type === 'ingridienents') {
-                // for academy bulk upload function
-                ingridientWithFile(formData, token).then((res: any) => {
-                    console.log('ingri', res)
+                try {
+                    const res = await ingridientWithFile(data, token)
                     if (res.data.success) {
-                        console.log(res.data)
                         toast.success(res.data.message)
                         setLoading(false)
                     }
-                }).catch((err: any) => {
-                    console.log('ERROR ing', err.response)
-                    toast.error(err.response.message)
+                } catch (err: any) {
+                    console.log('ERROR2', err.response)
+                    toast.error(err.response.data.message)
                     setLoading(false)
-                }).finally(() => setLoading(false))
+                } finally {
+                    setLoading(false)
+                }
             }
-            else {
-                // for school bulk upload function
-                schoolWithFile(formData, token).then((res: any) => {
+            if (type === 'school') {
+                try {
+                    const res = await schoolWithFile(data, token)
                     if (res.data.success) {
                         toast.success(res.data.message)
                         setLoading(false)
                     }
-                }).catch((err: any) => {
-                    console.log('ERROR1', err)
-                    toast.error(err.response.data)
+                } catch (err: any) {
+                    console.log('ERROR3', err.response)
+                    toast.error(err.response.data.message)
                     setLoading(false)
-                }).finally(() => setLoading(false))
+                } finally {
+                    setLoading(false)
+                }
+            }
+            if (type === 'academy') {
+                // for academy bulk upload function
+                console.log('academy')
             }
         } else {
             toast.error('No File Selected')
@@ -106,7 +121,7 @@ const FileUploader = ({ type }: FileUploaderProps) => {
                             </Box>
                         </> :
                         <>
-                            <p className='text-gray-600 text-[18px] text-center py-2'>Upload only .xlsx File Format </p>
+                            <p className='text-gray-600 text-[18px] text-center py-2'>Upload only .xlsx File Format</p>
                             <button className='flex items-center gap-2 bg-[#1b356b] px-5 py-2 rounded-md text-white hover:bg-[#11244e] hover:shadow-md uppercase' disabled={loading} onClick={handleUpload}>
                                 <input type="file" ref={fileEl} onChange={handleFile} className='hidden' />
                                 <FileUploadIcon /> Upload

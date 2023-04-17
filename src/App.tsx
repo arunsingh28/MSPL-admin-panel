@@ -72,6 +72,9 @@ import ViewModules from './Components/LMS/temp-lms/ViewModules';
 import EditModule from './Components/LMS/temp-lms/EditCourse'
 
 
+// assessment form
+import Athlete from './Components/AssesmentForm/Athlete';
+
 // mobile
 import Banner from './Pages/Mobile/Banner';
 
@@ -144,7 +147,7 @@ function App() {
               <Route path="progress-tracker" element={<NotAvailable from="Progress Tracker" />} />
               <Route path="meal-planner" index element={<DietPlanner title="Diet Planner" content="Planner" />} />
               <Route path="notes" element={<NotAvailable from="Notes" />} />
-              <Route path="assisment-form" element={<NotAvailable from="Assisment From" />} />
+              <Route path="assisment-form" element={<Athlete />} />
             </Route>
           </Route>
 

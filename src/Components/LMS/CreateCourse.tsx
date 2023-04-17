@@ -39,44 +39,17 @@ const CreateCourse = () => {
     const [showActivity, setShowActivity] = React.useState(false)
 
 
-    const handleInit = () => {
-        setLoading(true)
-        if (thumbnail === null) return toast.error('Please select a thumbnail')
-        const form = new FormData()
-        form.append('data', JSON.stringify(courseData))
-        form.append('file', fileRef.current?.files![0])
 
-        initLMS(form, token).then((res) => {
-            if (res.data.success) {
-                setShowActivity(true)
-                console.log(res.data)
-                setReplaceImage(true)
-                toast.success('Course Init Successfully')
-                setLoading(false)
-                setCourseData({
-                    ...courseData,
-                    courseId: res.data.data._id
-                })
-                localStorage.setItem('courseId', res.data.data._id)
-            }
-        }).catch((err) => {
-            console.log(err)
-            setLoading(false)
-            toast.error(err.response.data.message)
-        }).finally(() => {
-            setLoading(false)
-        })
-    };
 
     const [replaceImage, setReplaceImage] = React.useState(false)
 
+    const [thumbnail, setThumbnail] = React.useState<any>(null)
 
     React.useEffect(() => {
         if (courseData.courseTitle !== '' && courseData.courseDescription !== '' && thumbnail) setDisableButton(false)
         else setDisableButton(true)
-    }, [courseData])
+    }, [courseData.courseDescription, courseData.courseTitle, thumbnail])
 
-    const [thumbnail, setThumbnail] = React.useState<any>(null)
 
     const handleCopyCourseID = () => {
         navigator.clipboard.writeText(courseData.courseId)
@@ -89,9 +62,10 @@ const CreateCourse = () => {
         fileRef.current?.click()
     }
 
-
+    const [thumbnailFile, setThumbnailFile] = React.useState<any>(null)
 
     const handleChangeFile = () => {
+        setThumbnailFile(fileRef.current?.files![0])
         // create url for image
         if (fileRef.current?.files![0].size > 10000000) return toast.error('File size is too large')
         const url = URL.createObjectURL(fileRef.current?.files![0])
@@ -107,6 +81,55 @@ const CreateCourse = () => {
         const i = Math.floor(Math.log(bytes) / Math.log(k))
         return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
     }
+
+    const handleInit = async () => {
+        console.log({ thumbnailFile })
+        setLoading(true)
+        if (thumbnail === null) return toast.error('Please select a thumbnail')
+        const data = JSON.stringify(courseData)
+        const file = thumbnailFile
+
+
+        const formData = new FormData()
+        formData.append('data', data)
+        formData.append('file', file)
+
+        // fetch('https://localhost:4000/v2/lms/init-course', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data',
+        //         'Authorization': 'Bearer ' + token
+        //     },
+        //     body: formData
+        // }).then((res) => {
+        //     return res.json()
+        // }).then((res) => {
+        //     console.log(res)
+        // }).catch((err) => {
+        //     console.log(err)
+        // })
+
+        initLMS(formData, token).then((res) => {
+            if (res.data.success) {
+                setShowActivity(true)
+                console.log(res.data)
+                setReplaceImage(true)
+                toast.success('Course Init Successfully')
+                setLoading(false)
+                setCourseData({
+                    ...courseData,
+                    courseId: res.data.data._id
+                })
+                localStorage.setItem('courseId', res.data.data._id)
+            }
+        }).catch((err) => {
+            console.log('error', err)
+            setLoading(false)
+            toast.error(err.response.data.message)
+        }).finally(() => {
+            setLoading(false)
+        })
+    };
 
 
     return (

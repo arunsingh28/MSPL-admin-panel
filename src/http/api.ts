@@ -2,8 +2,8 @@ import axios from 'axios'
 
 // const productionLink = 'https://itchy-deer-boot.cyclic.app' http://localhost:4000 
 
-const developmentLink = "http://143.110.186.93/"
-// const developmentLink = "http://localhost:4000/"
+// const developmentLink = "http://143.110.186.93/"
+const developmentLink = "http://localhost:4000/"
 
 
 
@@ -138,14 +138,14 @@ export const schoolSearch = async (data: any, token: string) => await privateApi
 // create emp wiht file
 export const empWithFile = async (data: any, token: string) => await filePrivateApi.post('/create-emp-from-file', data, {
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'Authorization': 'Bearer ' + token
     }
 })
 // create school with file
 export const schoolWithFile = async (data: any, token: string) => await filePrivateApi.post('/create-school-from-file', data, {
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'Authorization': 'Bearer ' + token
     }
 })
@@ -153,7 +153,7 @@ export const schoolWithFile = async (data: any, token: string) => await filePriv
 export const ingridientWithFile = async (data: any, token: string) => await filePrivateApi.post('/create-ingridient-from-file', data,
     {
         headers: {
-            'Content-type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer ' + token
         }
     }
@@ -512,6 +512,69 @@ export const initLMS = async (data: any, token: string) => await lmsApi.post('/i
 export const updateModuleContent = async (id: string, data: any, token: string) => await lmsApi.post(`/update-lesson/${id}`, data, {
     headers: {
         'Content-type': 'multipart/form-data',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+
+export const createDietPlan = async (data: any, token: string) => await privateApi.post('/create-diet-plan', JSON.stringify(data), {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// assessment form apis
+export const saveIntroduction = async (data: any, token: string) => await privateApi.post('/save-introduction', JSON.stringify(data), {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// save-measurement
+export const saveMeasurement = async (data: any, token: string) => await privateApi.post('/save-measurement', JSON.stringify(data), {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// get assessment form
+export const getAssessmentForm = async (id: string, token: string) => await privateApi.get(`/get-assessment/${id}`, {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+export const saveMedicalHistory = async (data: any, token: string) => await privateApi.post('/save-medical-history', JSON.stringify(data), {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+
+// update lifestyle
+export const saveLifestyle = async (data: any, token: string) => await privateApi.post('/save-lifestyle-habits', JSON.stringify(data), {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+// save-food-recall
+export const saveFoodRecall = async (data: any, token: string) => await privateApi.post('/save-food-recall', JSON.stringify(data), {
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }
+})
+
+// save summary
+export const saveSummary = async (data: any, token: string) => await privateApi.post('/save-summary', JSON.stringify(data), {
+    headers: {
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
     }
 })

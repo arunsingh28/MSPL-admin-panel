@@ -28,6 +28,7 @@ export interface Iuser {
     dob: Date;
     referal_code: string;
     planType: string;
+    isSelected: boolean;
     measurement: {
         height: number;
         weight: number;
@@ -43,6 +44,21 @@ export interface Iuser {
 
 const UserTable = ({ allUser }: any) => {
 
+
+    const [newAllUser, setNewAllUser] = React.useState<Iuser[]>([])
+
+    React.useEffect(() => {
+        // add isSeletect property to the allUser array
+        const newAllUser = allUser.map((user: Iuser) => {
+            return {
+                ...user,
+                isSelected: false
+            }
+        })
+        setNewAllUser(newAllUser)
+    }, [allUser])
+
+
     const { user, token } = useAppSelector(state => state.auth)
 
     const dispatch = useAppDispatch()
@@ -57,7 +73,7 @@ const UserTable = ({ allUser }: any) => {
     const [userId, setUserId] = React.useState('')
 
     React.useEffect(() => {
-        // find the 71 in the role array
+        // find the 71 in the role array and restrict the delete button
         const index = user?.role.findIndex((role: number) => role === 71)
         if (index === -1) {
             setDisableDelete(true)
@@ -85,6 +101,27 @@ const UserTable = ({ allUser }: any) => {
         }
     }
 
+
+    // create toggle function for select row
+    const handleRowSelect = (e: any) => {
+        const { checked } = e.target
+        const newAllUser = allUser.map((user: Iuser) => {
+            return {
+                ...user,
+                isSelected: checked
+            }
+        })
+        setNewAllUser(newAllUser)
+    }
+
+    // selecte multiple column 
+    const handleColumnSelect = (e: any, index: number) => {
+        const { checked } = e.target
+        const newAllUser = [...allUser]
+        newAllUser[index].isSelected = checked
+        setNewAllUser(newAllUser)
+    }
+
     return (
         <div>
             {
@@ -96,6 +133,9 @@ const UserTable = ({ allUser }: any) => {
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
+                                <TableCell align="left" sx={{ fontWeight: '600', color: '#444' }}>
+                                    <input type="checkbox" className='w-4 h-4' onClick={handleRowSelect} />
+                                </TableCell>
                                 <TableCell align="left" sx={{ fontWeight: '600', color: '#444' }}>SN</TableCell>
                                 <TableCell align="left" sx={{ fontWeight: '600', color: '#444' }}>Name</TableCell>
                                 <TableCell align="center" sx={{ fontWeight: '600', color: '#444' }}>Phone</TableCell>
@@ -109,7 +149,7 @@ const UserTable = ({ allUser }: any) => {
                         </TableHead>
                         <TableBody>
                             {
-                                allUser && allUser?.map((row: Iuser, index: number) => {
+                                newAllUser && newAllUser?.map((row: Iuser, index: number) => {
                                     return (
                                         <>
                                             <TableRow
@@ -119,6 +159,9 @@ const UserTable = ({ allUser }: any) => {
                                                 key={index}
                                                 className={row.profileTimeline === 'init' ? 'bg-red-50' : 'bg-inherit'}
                                             >
+                                                <TableCell align="left">
+                                                    <input type="checkbox" onClick={(e: any) => handleColumnSelect(e, index)} className='w-4 h-4' checked={row.isSelected} />
+                                                </TableCell>
                                                 <TableCell align="left">{index + 1}</TableCell>
                                                 <TableCell align="left">{row?.name || 'Lead'}</TableCell>
                                                 <TableCell align="left">{(row as any)?.phone}</TableCell>

@@ -49,7 +49,7 @@ const ViewModules = ({ title, content }: ParentCompProps) => {
             <h1 className='text-gray-700 font-semibold text-2xl'>All Modules</h1>
             <div className='flex flex-col gap-3 mt-5'>
                 {
-                    allCourse && allCourse.length === 0 ? <p className='mx-auto text-gray-600'>No Course Found</p> : allCourse?.map((course: any) => {
+                    allCourse && allCourse?.length === 0 ? <p className='mx-auto text-gray-600'>No Course Found</p> : allCourse?.map((course: any) => {
                         return (
                             <div key={course._id} className='border px-2 py-1 rounded-sm relative'>
                                 <div className='bg-gray-300 absolute top-2 right-2 rounded-sm flex items-center gap-2'>
@@ -88,7 +88,7 @@ const ViewModules = ({ title, content }: ParentCompProps) => {
                                         </div>
                                     </div>
                                     <div className='w-96'>
-                                        <img src={course?.thumbnail.location} alt="thumnail" className='object-cover rounded-sm w-52 h-52' />
+                                        <img src={course?.thumbnail?.location} alt="thumnail" className='object-cover rounded-sm w-52 h-52' />
                                     </div>
                                 </div>
                                 {/* <span>{course._id}</span> */}

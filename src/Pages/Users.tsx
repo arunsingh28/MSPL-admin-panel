@@ -74,7 +74,7 @@ const Users = ({ title, content }: ParentCompProps) => {
                     <option value="paid">Paid</option>
                     <option value="init">Hot download</option>
                 </select>
-                <button className='px-8 py-2 bg-blue-500 text-gray-50 rounded-sm' onClick={handleFilter}>Run</button>
+                <button className='px-8 py-2 bg-blue-500 text-gray-50 rounded-sm' onClick={handleFilter}>Search</button>
             </div>
             <div className='mt-5'>
                 {

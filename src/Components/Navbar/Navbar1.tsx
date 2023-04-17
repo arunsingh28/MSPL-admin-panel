@@ -67,6 +67,8 @@ import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import { logoutApi } from '../../http/api'
+import Tooltip from '@mui/material/Tooltip';
+import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
 
 const drawerWidth = 240;
 
@@ -257,8 +259,8 @@ const Navbar1 = () => {
                     {
                         [999]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
-                            <>
-                                <Link to="/">
+                            <Tooltip title="Dashboard" arrow placement="right">
+                                < Link to="/">
                                     <ListItem key="Dashboard" disablePadding sx={{ display: 'block' }}>
                                         {/* text with button */}
                                         <ListItemButton
@@ -281,7 +283,7 @@ const Navbar1 = () => {
                                         </ListItemButton>
                                     </ListItem>
                                 </Link>
-                            </> : null
+                            </Tooltip> : null
                     }
                     {/* nutrisit dashboard */}
                     {/* {
@@ -318,7 +320,7 @@ const Navbar1 = () => {
                     {
                         [91]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
-                            <>
+                            <Tooltip title="Users" arrow placement="right">
                                 <Link to="/users">
                                     <ListItem key="users" disablePadding sx={{ display: 'block' }}>
                                         {/* text with button */}
@@ -342,7 +344,7 @@ const Navbar1 = () => {
                                         </ListItemButton>
                                     </ListItem>
                                 </Link>
-                            </> : null
+                            </Tooltip> : null
                     }
                     {
                         open ? [92]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
@@ -350,7 +352,7 @@ const Navbar1 = () => {
                     {
                         [91]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
-                            <>
+                            <Tooltip title="My Clients" arrow placement="right">
                                 <Link to="/my-client">
                                     <ListItem key="MY-Client" disablePadding sx={{ display: 'block' }}>
                                         {/* text with button */}
@@ -374,7 +376,7 @@ const Navbar1 = () => {
                                         </ListItemButton>
                                     </ListItem>
                                 </Link>
-                            </> : null
+                            </Tooltip> : null
 
                     }
                     {
@@ -384,32 +386,35 @@ const Navbar1 = () => {
                     {
                         [92]?.find((role: any) => auth.user?.role?.includes(role))
                             ?
-                            <>
+                            <div>
                                 <ListItem key="Nutrition" onClick={() => setNutritionMenu(!nutritionMenu)} disablePadding sx={{ display: 'block' }}>
                                     {/* text with button */}
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open ? 'initial' : 'center',
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        {/* icons here */}
-                                        <ListItemIcon
+                                    <Tooltip title="Nutrition" arrow placement="right">
+                                        <ListItemButton
                                             sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : 'auto',
-                                                justifyContent: 'center',
-                                            }} >
-                                            <NoteAltOutlinedIcon sx={{ color: '#1bc5d1' }} />
-                                            {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                        </ListItemIcon>
-                                        <ListItemText primary="Nutrition" sx={{ opacity: open ? 1 : 0 }} />
-                                        {/* down arrow */}
-                                        {
-                                            open ? nutritionMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
-                                        }
-                                    </ListItemButton>
+                                                minHeight: 48,
+                                                justifyContent: open ? 'initial' : 'center',
+                                                px: 2.5,
+                                            }}
+                                            className='bg-gray-100'
+                                        >
+                                            {/* icons here */}
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 3 : 'auto',
+                                                    justifyContent: 'center',
+                                                }} >
+                                                <NoteAltOutlinedIcon sx={{ color: '#1bc5d1' }} />
+                                                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                            </ListItemIcon>
+                                            <ListItemText primary="Nutrition" sx={{ opacity: open ? 1 : 0 }} />
+                                            {/* down arrow */}
+                                            {
+                                                open ? nutritionMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                                            }
+                                        </ListItemButton>
+                                    </Tooltip>
                                     <Collapse in={nutritionMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
@@ -569,9 +574,17 @@ const Navbar1 = () => {
                                         </List>
                                     </Collapse>
                                 </ListItem>
-                            </>
+                                {/* arrow down when is collapse */}
+                                {
+                                    // open ? nutritionMenu ? null : <div className='flex items-start justify-center'> <ExpandMoreOutlinedIcon /> </div> 
+
+                                    !open ? nutritionMenu ? null : <div className='flex items-start justify-center -mt-2'> <ExpandMoreOutlinedIcon sx={{ color: '#514f4f' }} /> </div> : null
+                                }
+                            </div>
                             : null
                     }
+                    {/* end Nutrition */}
+
                     {
                         open ? [82]?.find((role: any) => auth.user?.role?.includes(role)) ? <Divider /> : null : null
                     }
@@ -581,35 +594,37 @@ const Navbar1 = () => {
                             <>
                                 <ListItem key="mobile" onClick={() => setMobileMenu(!mobileMenu)} disablePadding sx={{ display: 'block' }}>
                                     {/* text with button */}
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open ? 'initial' : 'center',
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        {/* icons here */}
-                                        <ListItemIcon
+                                    <Tooltip title="Mobile" arrow placement="right">
+                                        <ListItemButton
                                             sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : 'auto',
-                                                justifyContent: 'center',
-                                            }} >
-                                            <MobileFriendlyIcon sx={{ color: '#323131' }} />
-                                            {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                        </ListItemIcon>
-                                        <ListItemText primary="Mobile" sx={{ opacity: open ? 1 : 0 }} />
-                                        {/* down arrow */}
-                                        {
-                                            open ? mobileMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
-                                        }
-                                    </ListItemButton>
+                                                minHeight: 48,
+                                                justifyContent: open ? 'initial' : 'center',
+                                                px: 2.5,
+                                            }}
+                                        >
+                                            {/* icons here */}
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 3 : 'auto',
+                                                    justifyContent: 'center',
+                                                }} >
+                                                <MobileFriendlyIcon sx={{ color: '#323131' }} />
+                                                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                            </ListItemIcon>
+                                            <ListItemText primary="Mobile" sx={{ opacity: open ? 1 : 0 }} />
+                                            {/* down arrow */}
+                                            {
+                                                open ? mobileMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                                            }
+                                        </ListItemButton>
+                                    </Tooltip>
                                     <Collapse in={mobileMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
                                                 [821]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="Mobile Banner" arrow placement="right">
                                                         <Link to="mobile-banner">
                                                             <ListItem key="banner" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -634,7 +649,7 @@ const Navbar1 = () => {
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
-                                                    </> : null
+                                                    </Tooltip> : null
                                             }
                                             {/* second view */}
                                             {
@@ -684,35 +699,37 @@ const Navbar1 = () => {
                             <>
                                 <ListItem key="Packges" onClick={() => setPackageMenu(!packageMenu)} disablePadding sx={{ display: 'block' }}>
                                     {/* text with button */}
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open ? 'initial' : 'center',
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        {/* icons here */}
-                                        <ListItemIcon
+                                    <Tooltip title="Package" arrow placement="right">
+                                        <ListItemButton
                                             sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : 'auto',
-                                                justifyContent: 'center',
-                                            }} >
-                                            <LocalOfferOutlinedIcon sx={{ color: '#ef2926' }} />
-                                            {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                        </ListItemIcon>
-                                        <ListItemText primary="Packges" sx={{ opacity: open ? 1 : 0 }} />
-                                        {/* down arrow */}
-                                        {
-                                            open ? packageMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
-                                        }
-                                    </ListItemButton>
+                                                minHeight: 48,
+                                                justifyContent: open ? 'initial' : 'center',
+                                                px: 2.5,
+                                            }}
+                                        >
+                                            {/* icons here */}
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 3 : 'auto',
+                                                    justifyContent: 'center',
+                                                }} >
+                                                <LocalOfferOutlinedIcon sx={{ color: '#ef2926' }} />
+                                                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                            </ListItemIcon>
+                                            <ListItemText primary="Packges" sx={{ opacity: open ? 1 : 0 }} />
+                                            {/* down arrow */}
+                                            {
+                                                open ? packageMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                                            }
+                                        </ListItemButton>
+                                    </Tooltip>
                                     <Collapse in={packageMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
                                                 [931]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="Create Package" arrow placement="right">
                                                         <Link to="new-create-package">
                                                             <ListItem key="Create Package" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -738,13 +755,13 @@ const Navbar1 = () => {
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
-                                                    </> : null
+                                                    </Tooltip> : null
                                             }
                                             {/* second view */}
                                             {
                                                 [932]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="View Package" arrow placement="right">
                                                         <Link to="list-package">
                                                             <ListItem key="List Package" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -770,7 +787,7 @@ const Navbar1 = () => {
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
-                                                    </> : null
+                                                    </Tooltip> : null
                                             }
                                         </List>
                                     </Collapse>
@@ -788,35 +805,37 @@ const Navbar1 = () => {
                             <>
                                 <ListItem key="Core Circle" onClick={() => setCoreMenu(!coreMenu)} disablePadding sx={{ display: 'block' }}>
                                     {/* text with button */}
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open ? 'initial' : 'center',
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        {/* icons here */}
-                                        <ListItemIcon
+                                    <Tooltip title="Core Oprations" arrow placement="right">
+                                        <ListItemButton
                                             sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : 'auto',
-                                                justifyContent: 'center',
-                                            }} >
-                                            <AdminPanelSettingsOutlinedIcon sx={{ color: '#fd8a0f' }} />
-                                            {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                        </ListItemIcon>
-                                        <ListItemText primary="Core Operation" sx={{ opacity: open ? 1 : 0 }} />
-                                        {/* down arrow */}
-                                        {
-                                            open ? coreMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
-                                        }
-                                    </ListItemButton>
+                                                minHeight: 48,
+                                                justifyContent: open ? 'initial' : 'center',
+                                                px: 2.5,
+                                            }}
+                                        >
+                                            {/* icons here */}
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 3 : 'auto',
+                                                    justifyContent: 'center',
+                                                }} >
+                                                <AdminPanelSettingsOutlinedIcon sx={{ color: '#fd8a0f' }} />
+                                                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                            </ListItemIcon>
+                                            <ListItemText primary="Core Operation" sx={{ opacity: open ? 1 : 0 }} />
+                                            {/* down arrow */}
+                                            {
+                                                open ? coreMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                                            }
+                                        </ListItemButton>
+                                    </Tooltip>
                                     <Collapse in={coreMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
                                                 [941]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="Create Employe" arrow placement="right">
                                                         <Link to="create-emp">
                                                             <ListItem key="Create Employe" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -842,13 +861,13 @@ const Navbar1 = () => {
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
-                                                    </> : null
+                                                    </Tooltip> : null
                                             }
                                             {/* second view */}
                                             {
                                                 [942]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="Permission" arrow placement="right">
                                                         <Link to="emp-permission">
                                                             <ListItem key="Permission" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -874,7 +893,7 @@ const Navbar1 = () => {
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
-                                                    </> : null
+                                                    </Tooltip> : null
                                             }
                                         </List>
                                     </Collapse>
@@ -1130,35 +1149,37 @@ const Navbar1 = () => {
                             <>
                                 <ListItem key="Academy Circle" onClick={() => setSportsMenu(!sportsMenu)} disablePadding sx={{ display: 'block' }}>
                                     {/* text with button */}
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open ? 'initial' : 'center',
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        {/* icons here */}
-                                        <ListItemIcon
+                                    <Tooltip title="Academy Circle" placement="right">
+                                        <ListItemButton
                                             sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : 'auto',
-                                                justifyContent: 'center',
-                                            }} >
-                                            <SportsVolleyballOutlinedIcon sx={{ color: '#C47AFF' }} />
-                                            {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                        </ListItemIcon>
-                                        <ListItemText primary="Academy Circle" sx={{ opacity: open ? 1 : 0 }} />
-                                        {
-                                            open ? sportsMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
-                                        }
-                                    </ListItemButton>
+                                                minHeight: 48,
+                                                justifyContent: open ? 'initial' : 'center',
+                                                px: 2.5,
+                                            }}
+                                        >
+                                            {/* icons here */}
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 3 : 'auto',
+                                                    justifyContent: 'center',
+                                                }} >
+                                                <SportsVolleyballOutlinedIcon sx={{ color: '#C47AFF' }} />
+                                                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                            </ListItemIcon>
+                                            <ListItemText primary="Academy Circle" sx={{ opacity: open ? 1 : 0 }} />
+                                            {
+                                                open ? sportsMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                                            }
+                                        </ListItemButton>
+                                    </Tooltip>
                                     {/* collapse menu */}
                                     <Collapse in={sportsMenu} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
                                                 [981]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="Create Academy" placement="right">
                                                         <Link to="Create-academy">
                                                             <ListItem key="Create Academy" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -1185,14 +1206,14 @@ const Navbar1 = () => {
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
-                                                    </> : null
+                                                    </Tooltip> : null
                                             }
 
                                             {/* second view */}
                                             {
                                                 [982]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="Academy Control" placement="right">
                                                         <Link to="/edit-gym">
                                                             <ListItem key="AcademyControl" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -1216,13 +1237,14 @@ const Navbar1 = () => {
                                                                     <ListItemText primary="Academy Control" sx={{ opacity: open ? sportsMenu ? 1 : 1 : 0, color: '#fff' }} />
                                                                 </ListItemButton>
                                                             </ListItem>
-                                                        </Link>  </> : null
+                                                        </Link>
+                                                    </Tooltip> : null
                                             }
                                             {/* coache */}
                                             {
                                                 [983]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="Academy Coach" placement="right">
                                                         <Link to="/create-coach">
                                                             <ListItem key="academy coach" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -1246,7 +1268,8 @@ const Navbar1 = () => {
                                                                     <ListItemText primary="Create Coach" sx={{ opacity: open ? sportsMenu ? 1 : 1 : 0, color: '#fff' }} />
                                                                 </ListItemButton>
                                                             </ListItem>
-                                                        </Link>  </> : null
+                                                        </Link>
+                                                    </Tooltip> : null
                                             }
                                         </List>
 
@@ -1265,34 +1288,36 @@ const Navbar1 = () => {
                             <>
                                 <ListItem key="LMS" onClick={() => setLms(!lms)} disablePadding sx={{ display: 'block' }}>
                                     {/* text with button */}
-                                    <ListItemButton
-                                        sx={{
-                                            minHeight: 48,
-                                            justifyContent: open ? 'initial' : 'center',
-                                            px: 2.5,
-                                        }}
-                                    >
-                                        {/* icons here */}
-                                        <ListItemIcon
+                                    <Tooltip title="LMS" placement="right">
+                                        <ListItemButton
                                             sx={{
-                                                minWidth: 0,
-                                                mr: open ? 3 : 'auto',
-                                                justifyContent: 'center',
-                                            }} >
-                                            <SchoolOutlinedIcon sx={{ color: '#6D67E4' }} />
-                                            {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                        </ListItemIcon>
-                                        <ListItemText primary="LMS" sx={{ opacity: open ? 1 : 0 }} />
-                                        {
-                                            open ? lms ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
-                                        }
-                                    </ListItemButton>
+                                                minHeight: 48,
+                                                justifyContent: open ? 'initial' : 'center',
+                                                px: 2.5,
+                                            }}
+                                        >
+                                            {/* icons here */}
+                                            <ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 3 : 'auto',
+                                                    justifyContent: 'center',
+                                                }} >
+                                                <SchoolOutlinedIcon sx={{ color: '#6D67E4' }} />
+                                                {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                                            </ListItemIcon>
+                                            <ListItemText primary="LMS" sx={{ opacity: open ? 1 : 0 }} />
+                                            {
+                                                open ? lms ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> : null
+                                            }
+                                        </ListItemButton>
+                                    </Tooltip>
                                     <Collapse in={lms} timeout="auto" unmountOnExit sx={{ background: '#1d3d7d' }}>
                                         <List component="div" disablePadding>
                                             {
                                                 [901]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="Create Course" placement="right">
                                                         <Link to="new-course-enroll">
                                                             <ListItem key="Create Course" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -1317,13 +1342,13 @@ const Navbar1 = () => {
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
-                                                    </> : null
+                                                    </Tooltip> : null
                                             }
                                             {/* edit view */}
                                             {
                                                 [901]?.find((role: any) => auth.user?.role?.includes(role))
                                                     ?
-                                                    <>
+                                                    <Tooltip title="View Course" placement="right">
                                                         <Link to="/view-course">
                                                             <ListItem key="view Course" disablePadding sx={{ display: 'block' }}>
                                                                 {/* text with button */}
@@ -1348,7 +1373,7 @@ const Navbar1 = () => {
                                                                 </ListItemButton>
                                                             </ListItem>
                                                         </Link>
-                                                    </> : null
+                                                    </Tooltip> : null
                                             }
                                             {
                                                 [909]?.find((role: any) => auth.user?.role?.includes(role))
@@ -1585,37 +1610,65 @@ const Navbar1 = () => {
                             </>
                             : null
                     }
-                </List>
+                </List >
 
                 <Divider />
                 <List>
                     {/* setting */}
-                    <Link to="/settings">
-                        <ListItem key="Setting" disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                sx={{
-                                    minHeight: 48,
-                                    justifyContent: open ? 'initial' : 'center',
-                                    px: 2.5,
-                                }}
-                            >
-                                <ListItemIcon
+                    <Tooltip title="Settings" arrow placement="right">
+                        <Link to="/settings">
+                            <ListItem key="Setting" disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
                                     sx={{
-                                        minWidth: 0,
-                                        mr: open ? 3 : 'auto',
-                                        justifyContent: 'center',
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
                                     }}
                                 >
-                                    <SettingsOutlinedIcon color='info' />
-                                </ListItemIcon>
-                                <ListItemText primary="Setting" sx={{ opacity: open ? 1 : 0 }} />
-                            </ListItemButton>
-                        </ListItem>
-                    </Link>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <SettingsOutlinedIcon color='info' />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Setting" sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </ListItem>
+                        </Link>
+                    </Tooltip>
                     {/* support */}
-                    <Link to="/support">
-                        <ListItem key="Support" disablePadding sx={{ display: 'block' }}>
+                    <Tooltip title="Support" arrow placement="right">
+                        <Link to="/support">
+                            <ListItem key="Support" disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
+                                    sx={{
+                                        minHeight: 48,
+                                        justifyContent: open ? 'initial' : 'center',
+                                        px: 2.5,
+                                    }}
+                                >
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 3 : 'auto',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <SupportIcon color='error' />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Support" sx={{ opacity: open ? 1 : 0 }} />
+                                </ListItemButton>
+                            </ListItem>
+                        </Link>
+                    </Tooltip>
+                    {/* logout ExitToAppIcon */}
+                    <Tooltip title="Logout" arrow placement="right">
+                        <ListItem key="Logout" disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
+                                onClick={handleLogout}
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
@@ -1629,36 +1682,14 @@ const Navbar1 = () => {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    <SupportIcon color='error' />
+                                    <ExitToAppIcon color='secondary' />
                                 </ListItemIcon>
-                                <ListItemText primary="Support" sx={{ opacity: open ? 1 : 0 }} />
+                                <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
                         </ListItem>
-                    </Link>
-                    {/* logout ExitToAppIcon */}
-                    <ListItem key="Logout" disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            onClick={handleLogout}
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <ExitToAppIcon color='secondary' />
-                            </ListItemIcon>
-                            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
-                    </ListItem>
+                    </Tooltip>
                 </List>
-            </Drawer>
+            </Drawer >
         </>
     )
 }

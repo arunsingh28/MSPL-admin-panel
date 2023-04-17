@@ -81,6 +81,18 @@ const Login = ({ title, content }: ParentCompProps) => {
     })
   }
 
+  //  DETECT IF USER PRESSED ENTER and logged in 
+  React.useEffect(() => {
+    const handleEnter = (e: any) => {
+      if (e.key === 'Enter') {
+        handleLogin(e)
+      }
+    }
+    window.addEventListener('keydown', handleEnter)
+    return () => {
+      window.removeEventListener('keydown', handleEnter)
+    }
+  }, [cred])
 
 
   return (

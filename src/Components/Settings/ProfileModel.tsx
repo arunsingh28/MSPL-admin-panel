@@ -76,14 +76,14 @@ const ProfileModel = ({ data, setOpenProfile, intials, profile }: any) => {
                     </div>
 
                 </div>
-                <div className='flex gap-3 mt-3 items-center justify-start ml-2'>
+                {/* <div className='flex gap-3 mt-3 items-center justify-start ml-2'>
                     <button className='text-gray-50 bg-blue-400 rounded-sm px-4 py-1 border-blue-400 cursor-pointer hover:bg-transparent hover:border-blue-500 border hover:text-blue-500'>
                         <LogoutIcon fontSize='small' className='mr-1' />
                         logout</button>
                     <button className='border-blue-500 border text-blue-400 rounded-sm px-4 py-1'>
                         <AutoAwesomeIcon fontSize='small' className='mr-1' />
                         Edit</button>
-                </div>
+                </div> */}
             </div>
         </div>
     )

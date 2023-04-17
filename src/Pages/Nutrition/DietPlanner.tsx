@@ -1,6 +1,6 @@
 import React from 'react'
 import { ParentCompProps } from '../Dashboard'
-import { getUserById, getAllRecipe, getAllDietFrequency } from '../../http/api'
+import { getUserById, getAllRecipe, getAllDietFrequency, createDietPlan } from '../../http/api'
 import Back from '../../Components/Back'
 import { useAppSelector } from '../../store/hook';
 import { useParams } from 'react-router-dom'
@@ -8,6 +8,7 @@ import FileDownloadDoneOutlinedIcon from '@mui/icons-material/FileDownloadDoneOu
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import { toast } from 'react-toastify'
 
 interface Nutrition {
     protein: number,
@@ -24,6 +25,11 @@ interface Recipe {
         quantity: string,
         unit: string
     }[]
+    quntity: {
+        size: string,
+        unit: string
+    }
+    foodFrequency: string
     name: string
     nutritionName: string
     preparationTime: number
@@ -35,7 +41,10 @@ interface Recipe {
 }
 
 const DietPlanner = ({ title, content }: ParentCompProps) => {
-    const { token } = useAppSelector(state => state.auth)
+    const { token, user } = useAppSelector(state => state.auth)
+
+    console.log('user', user)
+
     const location = useParams<{ id: any }>()
 
 
@@ -71,6 +80,9 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
         total: 0
     })
 
+    // save btn disable
+    const [disable, setDisable] = React.useState<boolean>(true)
+
     const [recipe, setRecipe] = React.useState<string>('')
 
     const handleView = (id: number) => {
@@ -91,10 +103,21 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
     const handleAddRecipe = (id: string) => {
         const newRecipe = [...allRecipe]
         const newAddedRecipe = [...addedRecipe]
+
         const index = newRecipe.findIndex((item: any) => item._id === id)
         newAddedRecipe.push(newRecipe[index])
-        setAddedRecipe(newAddedRecipe)
         newRecipe.splice(index, 1)
+        const newAddedRecipe1 = newAddedRecipe.map((item: any) => {
+            return {
+                ...item,
+                quantity: {
+                    size: '0',
+                    unit: 'Gram'
+                },
+                foodFrequency: 'Lunch'
+            }
+        })
+        setAddedRecipe(newAddedRecipe1)
         setFilterRecipe(newRecipe)
     }
 
@@ -116,8 +139,37 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
         setAddedRecipe(newAddedRecipe)
     }
 
-    const handleSaveMealPlan = () => {
-        console.log(addedRecipe)
+    const handleSaveMealPlan = async () => {
+        const data = { recipe: addedRecipe, userId: id }
+        createDietPlan(data, token).then((res) => {
+            if (res.data.status === 'success') {
+                toast.success(res.data.message)
+                setDisable(true)
+            }
+        }).catch((err: any) => {
+            toast.error(err.response.data.message)
+        })
+    }
+
+    const handleQuantity = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+        const newAddedRecipe = [...addedRecipe]
+        const index = newAddedRecipe.findIndex((item: any) => item._id === id)
+        newAddedRecipe[index].quantity.size = e.target.value
+        setAddedRecipe(newAddedRecipe)
+    }
+
+    const handleUnite = (e: React.ChangeEvent<HTMLSelectElement>, id: string) => {
+        const newAddedRecipe = [...addedRecipe]
+        const index = newAddedRecipe.findIndex((item: any) => item._id === id)
+        newAddedRecipe[index].quantity.unit = e.target.value
+        setAddedRecipe(newAddedRecipe)
+    }
+
+    const handleFoodFrequency = (e: React.ChangeEvent<HTMLSelectElement>, id: string) => {
+        const newAddedRecipe = [...addedRecipe]
+        const index = newAddedRecipe.findIndex((item: any) => item._id === id)
+        newAddedRecipe[index].foodFrequency = e.target.value
+        setAddedRecipe(newAddedRecipe)
     }
 
 
@@ -176,14 +228,12 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
                                                             {item.name}
                                                         </td>
                                                         <td className="px-6 py-4 text-gray-600 capitalize flex items-center gap-1 mt-3">
-
                                                             <AccessTimeOutlinedIcon fontSize='small' /> {item.preparationTime} min
-
                                                         </td>
                                                         <td className="px-6 py-4 text-gray-600">
                                                             {
                                                                 item.tags.map((item: any) => {
-                                                                    return <span className="ml-2 bg-gray-100 px-2 py-1 rounded-sm text-sm">{item}</span>
+                                                                    return <span className="ml-2 bg-gray-100 px-2 py-1 rounded-sm text-sm mt-1">{item}</span>
                                                                 })
                                                             }
                                                         </td>
@@ -196,8 +246,12 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
                                                             }
                                                         </td>
                                                         <td>
-                                                            <button className='bg-blue-300 px-3 py-1 hover:shadow-md hover:bg-blue-400 text-white rounded-sm text-sm flex items-center justify-center gap-1' onClick={() => handleAddRecipe(item._id)}><FileDownloadDoneOutlinedIcon />
-                                                                ADD</button>
+                                                            <button
+                                                                className='bg-blue-300 px-3 py-1 hover:shadow-md hover:bg-blue-400 text-white rounded-sm text-sm flex items-center justify-center gap-1'
+                                                                onClick={() => handleAddRecipe(item._id)}>
+                                                                <FileDownloadDoneOutlinedIcon />
+                                                                ADD
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 )
@@ -255,14 +309,6 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
                                                             <td className="px-6 py-4 text-gray-600 capitalize flex items-center gap-1 mt-3">
                                                                 <AccessTimeOutlinedIcon fontSize='small' /> {item.preparationTime} min
                                                             </td>
-
-                                                            {/* <td className="px-6 py-4 text-gray-600">
-                                                                {
-                                                                    item.tags.map((item: any) => {
-                                                                        return <span className="ml-2 bg-gray-100 px-2 py-1 rounded-sm text-sm">{item}</span>
-                                                                    })
-                                                                }
-                                                            </td> */}
                                                             <td className="px-6 py-4 relative">
                                                                 <button onClick={() => handleViewAdded(index)} className="text-sm px-2 py-1 bg-orange-400 text-gray-50 rounded-sm flex items-center gap-1">
                                                                     <GridViewOutlinedIcon fontSize='small' />
@@ -273,8 +319,8 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
                                                             </td>
                                                             <td className="">
                                                                 <div className='text-gray-600 flex items-center justify-center gap-1'>
-                                                                    <input type="text" className='border rounded-sm w-8 px-1' placeholder='0' />
-                                                                    <select className='border rounded-sm py-0.5'>
+                                                                    <input type="text" value={item.quntity?.size} onChange={(e) => handleQuantity(e, item._id)} className='border rounded-sm w-8 px-1' placeholder='0' />
+                                                                    <select className='border rounded-sm py-0.5' value={item.quntity?.unit} onChange={(e) => handleUnite(e, item._id)}>
                                                                         <option value="gram">Gram (Gm)</option>
                                                                         <option value="Miligram">Miligram (Mg)</option>
                                                                         <option value="Millilitre">Millilitre (Ml)</option>
@@ -286,7 +332,7 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 text-gray-600">
-                                                                <select className='border px-1 py-1 rounded-sm'>
+                                                                <select className='border px-1 py-1 rounded-sm' value={item?.foodFrequency} onChange={(e) => handleFoodFrequency(e, item._id)}>
                                                                     {
                                                                         foodFrequency && foodFrequency?.map((item: any, index: number) => {
                                                                             return <option key={index} value={item.name}>{item.name}</option>
@@ -303,7 +349,7 @@ const DietPlanner = ({ title, content }: ParentCompProps) => {
                                             }
                                         </tbody>
                                     </table>
-                                    <button className='my-4 px-8 py-2 bg-green-500 rounded-md border-green-500 border-2 cursor-pointer text-gray-50 hover:bg-green-600 hover:shadow-md' onClick={handleSaveMealPlan}>Save</button>
+                                    <button className={!disable ? 'my-4 px-8 py-2 bg-green-500 rounded-md border-green-500 border-2 cursor-pointer text-gray-50 hover:bg-green-600 hover:shadow-md' : 'my-4 px-8 py-2 bg-gray-300 rounded-md border-gray-300 border-2 cursor-not-allowed text-gray-50 hover:bg-gray-400 hover:shadow-md'} disabled={disable} onClick={handleSaveMealPlan}>Save</button>
                                 </div>
                         }
                     </div>
